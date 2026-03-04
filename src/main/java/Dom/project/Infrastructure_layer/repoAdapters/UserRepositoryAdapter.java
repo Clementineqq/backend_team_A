@@ -22,7 +22,7 @@ public class UserRepositoryAdapter implements IUserRepository {
 
     @Override
     public User save(User user) {
-         UserJpaEntity entity = _mapper.toEntity(user);
+        UserJpaEntity entity = _mapper.toEntity(user);
         UserJpaEntity saved = _jpaRepository.save(entity);
         return _mapper.toDomain(saved);
     }
