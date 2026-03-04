@@ -1,4 +1,4 @@
-package Dom.project.Infrastructure_layer;
+package Dom.project.Infrastructure_layer.entity;
 
 import jakarta.persistence.*;
 import org.springframework.data.annotation.Id;
