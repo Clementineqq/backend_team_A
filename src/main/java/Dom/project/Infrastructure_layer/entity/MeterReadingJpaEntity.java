@@ -9,6 +9,7 @@ public class MeterReadingJpaEntity extends Base_entity{
 
     // TODO: над этим полем подумать, мб расширить таблицу тоже на созвоне
     @NotBlank(message = "Это поле не должно быть пустым")
+    @Column(name = "name")
     private MeterType type;
 
     @Column(name = "value")

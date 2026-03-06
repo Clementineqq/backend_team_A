@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Entity
 public class ServiceRequestJpaEntity extends Base_entity{
 
-
     @Column(name = "title")
     @Length(max = 255)
     @NotBlank(message = "Это поле не может быть пустым")
@@ -26,8 +25,6 @@ public class ServiceRequestJpaEntity extends Base_entity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_creator")
     private UserJpaEntity assignedWorkerName;
-    // TODO: добавить это поле в БД
-    // TODO: дата завершения
 
     @Length(max=1024)
     private String resolutionComment;
@@ -36,8 +33,8 @@ public class ServiceRequestJpaEntity extends Base_entity{
     @JoinColumn(name = "id_assignee")
     private UserJpaEntity user;
 
+    @Column(name = "completed_at")
     private LocalDateTime completed_at;
-    
 
     
     public String getTitle() {
@@ -88,4 +85,15 @@ public class ServiceRequestJpaEntity extends Base_entity{
         this.user = user;
     }
 
+    public void setAssignedWorkerName(UserJpaEntity assignedWorkerName) {
+        this.assignedWorkerName = assignedWorkerName;
+    }
+
+    public LocalDateTime getCompleted_at() {
+        return completed_at;
+    }
+
+    public void setCompleted_at(LocalDateTime completed_at) {
+        this.completed_at = completed_at;
+    }
 }
