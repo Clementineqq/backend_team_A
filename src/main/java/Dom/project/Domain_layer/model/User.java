@@ -2,9 +2,8 @@ package Dom.project.Domain_layer.model;
 
 import Dom.project.Domain_layer.exception.InvalidUserException;
 import Dom.project.Domain_layer.exception.InvalidCompanyException;
-import Dom.project.Domain_layer.exception.InvalidMemberException;
-import Dom.project.Domain_layer.exception.InvalidLodgerException;
 import Dom.project.Domain_layer.exception.InvalidCounterException;
+import Dom.project.Domain_layer.exception.InvalidAddressException;
 import Dom.project.Domain_layer.enums.UserRole;
 
 import java.util.Date;
@@ -20,9 +19,7 @@ public class User {
     private String name;
     private String lastName;
     private String fatherName;
-    private Member member;
-    private Lodger lodger;
-    private Counter counter;
+    private Address address;
     private Company company;
 
     public User() {
@@ -73,7 +70,9 @@ public class User {
             throw InvalidUserException.phoneCannotBeEmpty();
         }
         String trimmed = phone_number.trim().replaceAll("\\s", "");
-
+        if (!trimmed.matches("^\\+?[0-9]{10,15}$")) {
+            throw InvalidUserException.invalidPhoneFormat(phone_number);
+        }
         this.phone_number = trimmed;
         setUpdatedAt();
     }
@@ -83,7 +82,9 @@ public class User {
             throw InvalidUserException.emailCannotBeEmpty();
         }
         String trimmed = email.trim().toLowerCase();
-
+        if (!trimmed.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw InvalidUserException.invalidEmailFormat(email);
+        }
         this.email = trimmed;
         setUpdatedAt();
     }
@@ -92,8 +93,10 @@ public class User {
         if (password == null || password.trim().isEmpty()) {
             throw InvalidUserException.passwordCannotBeEmpty();
         }
-        // В реальном проекте здесь должно быть хэширование пароля
-        this.password = password; // TODO: Добавить хэширование
+        if (password.length() < 6) {
+            throw InvalidUserException.passwordTooShort(6);
+        }
+        this.password = password;
         setUpdatedAt();
     }
 
@@ -102,7 +105,9 @@ public class User {
             throw InvalidUserException.nameCannotBeEmpty();
         }
         String trimmed = name.trim();
-
+        if (trimmed.length() < 2 || trimmed.length() > 50) {
+            throw InvalidUserException.invalidNameLength();
+        }
         this.name = trimmed;
         setUpdatedAt();
     }
@@ -112,7 +117,9 @@ public class User {
             throw InvalidUserException.lastNameCannotBeEmpty();
         }
         String trimmed = lastName.trim();
-
+        if (trimmed.length() < 2 || trimmed.length() > 50) {
+            throw InvalidUserException.invalidNameLength();
+        }
         this.lastName = trimmed;
         setUpdatedAt();
     }
@@ -120,7 +127,9 @@ public class User {
     public void setFatherName(String fatherName) {
         if (fatherName != null && !fatherName.trim().isEmpty()) {
             String trimmed = fatherName.trim();
-
+            if (trimmed.length() > 50) {
+                throw InvalidUserException.invalidNameLength();
+            }
             this.fatherName = trimmed;
         } else {
             this.fatherName = null;
@@ -128,18 +137,11 @@ public class User {
         setUpdatedAt();
     }
 
-    public void setMember(Member member) {
-        this.member = member;
-        setUpdatedAt();
-    }
-
-    public void setLodger(Lodger lodger) {
-        this.lodger = lodger;
-        setUpdatedAt();
-    }
-
-    public void setCounter(Counter counter) {
-        this.counter = counter;
+    public void setAddress(Address address) {
+        if (address == null) {
+            throw InvalidAddressException.addressCannotBeNull();
+        }
+        this.address = address;
         setUpdatedAt();
     }
 
@@ -161,9 +163,7 @@ public class User {
     public String getName() { return name; }
     public String getLastName() { return lastName; }
     public String getFatherName() { return fatherName; }
-    public Member getMember() { return member; }
-    public Lodger getLodger() { return lodger; }
-    public Counter getCounter() { return counter; }
+    public Address getAddress() { return address; }
     public Company getCompany() { return company; }
 
 
@@ -175,7 +175,6 @@ public class User {
         }
         return fullName.toString();
     }
-
 
     public String getInitials() {
         StringBuilder initials = new StringBuilder();
@@ -189,41 +188,22 @@ public class User {
         return initials.toString();
     }
 
-
-    public boolean isMember() {
-        return member != null;
+    public boolean hasAddress() {
+        return address != null;
     }
-
-
-    public boolean isLodger() {
-        return lodger != null;
-    }
-
-
-    public boolean hasCounter() {
-        return counter != null;
-    }
-
 
     public boolean hasCompany() {
         return company != null;
     }
 
-
-    public UserRole getUserRole() {
-        if (member != null && member.getRole() != null) {
-            return member.getRole().getRoleName();
-        }
-        return null;
+    public String getFullAddress() {
+        return address != null ? address.getFullAddress() : "Адрес не указан";
     }
-
 
     public boolean checkPassword(String rawPassword) {
         if (rawPassword == null) return false;
-        // TODO: Implement proper password hashing comparison
         return this.password.equals(rawPassword);
     }
-
 
     public void changePassword(String oldPassword, String newPassword) {
         if (!checkPassword(oldPassword)) {
@@ -231,7 +211,6 @@ public class User {
         }
         setPassword(newPassword);
     }
-
 
     public void updateProfile(String name, String lastName, String fatherName) {
         boolean updated = false;
@@ -256,7 +235,6 @@ public class User {
         }
     }
 
-
     public void updateContact(String phone_number, String email) {
         boolean updated = false;
 
@@ -275,7 +253,6 @@ public class User {
         }
     }
 
-
     public void assignToCompany(Company company) {
         if (company == null) {
             throw InvalidCompanyException.companyCannotBeNull();
@@ -287,7 +264,6 @@ public class User {
         setUpdatedAt();
     }
 
-
     public void removeFromCompany() {
         if (this.company == null) {
             throw InvalidUserException.noCompanyToRemove();
@@ -296,46 +272,23 @@ public class User {
         setUpdatedAt();
     }
 
-
-    public void assignCounter(Counter counter) {
-        if (counter == null) {
-            throw InvalidCounterException.counterNotFound(null);
+    public void updateAddress(Address newAddress) {
+        if (newAddress == null) {
+            throw InvalidAddressException.addressCannotBeNull();
         }
-        if (this.counter != null) {
-            throw InvalidUserException.alreadyHasCounter();
+        if (this.address != null) {
+            this.address.update(newAddress);
+        } else {
+            setAddress(newAddress);
         }
-        this.counter = counter;
         setUpdatedAt();
     }
-
-
-    public Lodger createLodger(Address address) {
-        if (this.lodger != null) {
-            throw InvalidUserException.alreadyHasLodger();
-        }
-        this.lodger = new Lodger(address);
-        setUpdatedAt();
-        return this.lodger;
-    }
-
-
-    public Member createMember(Role role) {
-        if (this.member != null) {
-            throw InvalidUserException.alreadyHasMember();
-        }
-        this.member = new Member(role);
-        setUpdatedAt();
-        return this.member;
-    }
-
 
     public String getContactInfo() {
         return String.format("Тел: %s, Email: %s",
                 phone_number != null ? phone_number : "не указан",
                 email != null ? email : "не указан");
     }
-
-
 
     @Override
     public boolean equals(Object o) {
@@ -359,8 +312,8 @@ public class User {
                 ", fullName='" + getFullName() + '\'' +
                 ", phone='" + phone_number + '\'' +
                 ", email='" + email + '\'' +
-                ", hasMember=" + (member != null) +
-                ", hasLodger=" + (lodger != null) +
+                ", address=" + (address != null ? address.getShortAddress() : "null") +
+                ", company=" + (company != null ? company.getName() : "null") +
                 '}';
     }
 

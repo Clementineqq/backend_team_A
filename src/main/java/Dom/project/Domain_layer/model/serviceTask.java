@@ -15,7 +15,7 @@ public class serviceTask {
     private String description;
     private RequestStatus requestStatus;
     private User creator;
-    private User assignee;
+    private User assigner;
     private Date completedAt;
 
     public serviceTask() {
@@ -101,8 +101,8 @@ public class serviceTask {
         setUpdatedAt();
     }
 
-    public void setAssignee(User assignee) {
-        this.assignee = assignee;
+    public void setAssigner(User assigner) {
+        this.assigner = assigner;
         setUpdatedAt();
     }
 
@@ -119,7 +119,7 @@ public class serviceTask {
     public String getDescription() { return description; }
     public RequestStatus getRequestStatus() { return requestStatus; }
     public User getCreator() { return creator; }
-    public User getAssignee() { return assignee; }
+    public User getAssigner() { return assigner; }
     public Date getCompletedAt() { return completedAt; }
 
 
@@ -133,7 +133,7 @@ public class serviceTask {
         copy.setDescription(this.description);
         copy.setRequestStatus(this.requestStatus);
         copy.setCreator(this.creator);
-        copy.setAssignee(this.assignee);
+        copy.setAssigner(this.assigner);
         copy.setCompletedAt(this.completedAt);
         copy.setCreatedAt(this.createdAt);
         copy.setUpdatedAt(this.updatedAt);
@@ -169,7 +169,7 @@ public class serviceTask {
                 ", title='" + title + '\'' +
                 ", status=" + requestStatus +
                 ", creator=" + (creator != null ? creator.getFullName() : "null") +
-                ", assignee=" + (assignee != null ? assignee.getFullName() : "null") +
+                ", assigner=" + (assigner != null ? assigner.getFullName() : "null") +
                 ", completedAt=" + completedAt +
                 '}';
     }

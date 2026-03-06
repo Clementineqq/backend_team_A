@@ -1,5 +1,6 @@
 package Dom.project.Domain_layer.model;
 
+import Dom.project.Domain_layer.exception.InvalidAddressException;
 import Dom.project.Domain_layer.exception.InvalidCompanyException;
 import java.util.Date;
 import java.util.Objects;
@@ -8,35 +9,46 @@ public class Company {
     private Long id;
     private Date createdAt;
     private Date updatedAt;
-    private String Name;
-    private String INN;
-    private String KPP;
-    private String legal_address;
+    private String name;
+    private String inn;
+    private String kpp;
+    private Address legalAddress;
     private String email;
 
+
+    //Конструкторы
     public Company() {
         this.createdAt = new Date();
         this.updatedAt = new Date();
     }
 
-    public Company(String Name, String INN) {
+    public Company(String name, String inn) {
         this();
-        setName(Name);
-        setINN(INN);
+        setName(name);
+        setInn(inn);
     }
 
-    public Company(String Name, String INN, String KPP) {
-        this(Name, INN);
-        setKPP(KPP);
+    public Company(String name, String inn, Address legalAddress) {
+        this(name, inn);
+        setLegalAddress(legalAddress);
     }
 
-    public Company(Long id, String Name, String INN) {
-        this(Name, INN);
+    public Company(String name, String inn, String kpp, Address legalAddress, String email) {
+        this(name, inn, legalAddress);
+        setKpp(kpp);
+        setEmail(email);
+    }
+
+    public Company(Long id, String name, String inn, Address legalAddress) {
+        this(name, inn, legalAddress);
         this.id = id;
     }
 
     // Сеттеры с валидацией
     public void setId(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("ID must be positive");
+        }
         this.id = id;
         setUpdatedAt();
     }
@@ -56,44 +68,48 @@ public class Company {
         this.updatedAt = new Date();
     }
 
-    public void setName(String Name) {
-        if (Name == null || Name.trim().isEmpty()) {
+    public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
             throw InvalidCompanyException.nameCannotBeEmpty();
         }
-        this.Name = Name.trim();
+        String trimmed = name.trim();
+        if (trimmed.length() < 2 || trimmed.length() > 255) {
+            throw InvalidCompanyException.invalidNameLength();
+        }
+        this.name = trimmed;
         setUpdatedAt();
     }
 
-    public void setINN(String INN) {
-        if (INN == null || INN.trim().isEmpty()) {
+    public void setInn(String inn) {
+        if (inn == null || inn.trim().isEmpty()) {
             throw InvalidCompanyException.innCannotBeEmpty();
         }
-        String trimmed = INN.trim().replaceAll("\\s", "");
+        String trimmed = inn.trim().replaceAll("\\s", "");
         if (!trimmed.matches("^[0-9]{10}$|^[0-9]{12}$")) {
-            throw InvalidCompanyException.invalidInnFormat(INN);
+            throw InvalidCompanyException.invalidInnFormat(inn);
         }
-        this.INN = trimmed;
+        this.inn = trimmed;
         setUpdatedAt();
     }
 
-    public void setKPP(String KPP) {
-        if (KPP != null && !KPP.trim().isEmpty()) {
-            String trimmed = KPP.trim().replaceAll("\\s", "");
+    public void setKpp(String kpp) {
+        if (kpp != null && !kpp.trim().isEmpty()) {
+            String trimmed = kpp.trim().replaceAll("\\s", "");
             if (!trimmed.matches("^[0-9]{9}$")) {
-                throw InvalidCompanyException.invalidKppFormat(KPP);
+                throw InvalidCompanyException.invalidKppFormat(kpp);
             }
-            this.KPP = trimmed;
+            this.kpp = trimmed;
         } else {
-            this.KPP = null;
+            this.kpp = null;
         }
         setUpdatedAt();
     }
 
-    public void setLegal_address(String legal_address) {
-        if (legal_address == null || legal_address.trim().isEmpty()) {
-            throw InvalidCompanyException.addressCannotBeEmpty();
+    public void setLegalAddress(Address legalAddress) {
+        if (legalAddress == null) {
+            throw InvalidAddressException.addressCannotBeNull();
         }
-        this.legal_address = legal_address.trim();
+        this.legalAddress = legalAddress;
         setUpdatedAt();
     }
 
@@ -114,16 +130,22 @@ public class Company {
     public Long getId() { return id; }
     public Date getCreatedAt() { return createdAt; }
     public Date getUpdatedAt() { return updatedAt; }
-    public String getName() { return Name; }
-    public String getINN() { return INN; }
-    public String getKPP() { return KPP; }
-    public String getLegal_address() { return legal_address; }
+    public String getName() { return name; }
+    public String getInn() { return inn; }
+    public String getKpp() { return kpp; }
+    public Address getLegalAddress() { return legalAddress; }
     public String getEmail() { return email; }
 
     public String getFullName() {
-        return Name;
+        return name;
     }
 
+    public String getInnKpp() {
+        if (kpp != null && !kpp.isEmpty()) {
+            return inn + "/" + kpp;
+        }
+        return inn;
+    }
 
     public void update(Company newData) {
         if (newData == null) {
@@ -132,13 +154,13 @@ public class Company {
 
         boolean updated = false;
 
-        if (newData.getName() != null && !newData.getName().equals(this.Name)) {
+        if (newData.getName() != null && !newData.getName().equals(this.name)) {
             setName(newData.getName());
             updated = true;
         }
 
-        if (newData.getLegal_address() != null && !newData.getLegal_address().equals(this.legal_address)) {
-            setLegal_address(newData.getLegal_address());
+        if (newData.getLegalAddress() != null && !newData.getLegalAddress().equals(this.legalAddress)) {
+            setLegalAddress(newData.getLegalAddress());
             updated = true;
         }
 
@@ -148,13 +170,13 @@ public class Company {
         }
 
         // ИНН и КПП обычно не меняются, но если нужно:
-        if (newData.getINN() != null && !newData.getINN().equals(this.INN)) {
-            setINN(newData.getINN());
+        if (newData.getInn() != null && !newData.getInn().equals(this.inn)) {
+            setInn(newData.getInn());
             updated = true;
         }
 
-        if (newData.getKPP() != null && !newData.getKPP().equals(this.KPP)) {
-            setKPP(newData.getKPP());
+        if (newData.getKpp() != null && !newData.getKpp().equals(this.kpp)) {
+            setKpp(newData.getKpp());
             updated = true;
         }
 
@@ -166,14 +188,18 @@ public class Company {
     public Company copy() {
         Company copy = new Company();
         copy.setId(this.id);
-        copy.setName(this.Name);
-        copy.setINN(this.INN);
-        copy.setKPP(this.KPP);
-        copy.setLegal_address(this.legal_address);
+        copy.setName(this.name);
+        copy.setInn(this.inn);
+        copy.setKpp(this.kpp);
+        copy.setLegalAddress(this.legalAddress != null ? Address.copyOf(this.legalAddress) : null);
         copy.setEmail(this.email);
         copy.setCreatedAt(this.createdAt);
         copy.setUpdatedAt(this.updatedAt);
         return copy;
+    }
+
+    public String getSummary() {
+        return String.format("%s (ИНН: %s)", name, inn);
     }
 
     @Override
@@ -182,21 +208,22 @@ public class Company {
         if (o == null || getClass() != o.getClass()) return false;
         Company company = (Company) o;
         return Objects.equals(id, company.id) ||
-                (Objects.equals(INN, company.INN));
+                (Objects.equals(inn, company.inn));
     }
 
     @Override
     public int hashCode() {
-        return id != null ? Objects.hash(id) : Objects.hash(INN);
+        return id != null ? Objects.hash(id) : Objects.hash(inn);
     }
 
     @Override
     public String toString() {
         return "Company{" +
                 "id=" + id +
-                ", Name='" + Name + '\'' +
-                ", INN='" + INN + '\'' +
-                ", KPP='" + KPP + '\'' +
+                ", name='" + name + '\'' +
+                ", inn='" + inn + '\'' +
+                ", kpp='" + kpp + '\'' +
+                ", city='" + (legalAddress != null ? legalAddress.getCity() : "null") + '\'' +
                 ", email='" + email + '\'' +
                 '}';
     }

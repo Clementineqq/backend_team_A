@@ -2,6 +2,8 @@ package Dom.project.Domain_layer.model;
 
 import Dom.project.Domain_layer.enums.MeterType;
 import Dom.project.Domain_layer.exception.InvalidCounterException;
+import Dom.project.Domain_layer.exception.InvalidUserException;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -12,6 +14,7 @@ public class Counter {
     private MeterType name;
     private Double value;
     private Boolean isApproved;
+    private User owner;
 
     // Конструкторы
     public Counter() {
@@ -26,8 +29,13 @@ public class Counter {
         setValue(value);
     }
 
-    public Counter(Long id, MeterType name, Double value) {
+    public Counter(MeterType name, Double value, User owner) {
         this(name, value);
+        setOwner(owner);
+    }
+
+    public Counter(Long id, MeterType name, Double value, User owner) {
+        this(name, value, owner);
         this.id = id;
     }
 
@@ -74,7 +82,7 @@ public class Counter {
             throw InvalidCounterException.valueCannotDecrease(this.value, value);
         }
         this.value = value;
-        this.isApproved = false; // Сбрасываем подтверждение при изменении значения
+        this.isApproved = false;
         setUpdatedAt();
     }
 
@@ -86,6 +94,14 @@ public class Counter {
         setUpdatedAt();
     }
 
+    public void setOwner(User owner) {
+        if (owner == null) {
+            throw InvalidUserException.userCannotBeNull();
+        }
+        this.owner = owner;
+        setUpdatedAt();
+    }
+
     // Геттеры
     public Long getId() { return id; }
     public Date getCreatedAt() { return createdAt; }
@@ -93,6 +109,7 @@ public class Counter {
     public MeterType getName() { return name; }
     public Double getValue() { return value; }
     public Boolean getIsApproved() { return isApproved; }
+    public User getOwner() { return owner; }
 
 
     public void approve() {
@@ -117,8 +134,17 @@ public class Counter {
             throw InvalidCounterException.valueCannotDecrease(this.value, newValue);
         }
         this.value = newValue;
-        this.isApproved = false; // Новые показания требуют подтверждения
+        this.isApproved = false;
         setUpdatedAt();
+    }
+
+    public boolean isOwnedBy(User user) {
+        if (user == null || owner == null) return false;
+        return owner.equals(user);
+    }
+
+    public String getOwnerName() {
+        return owner != null ? owner.getFullName() : "Не назначен";
     }
 
     public Double getDifference(Double previousValue) {
@@ -137,7 +163,7 @@ public class Counter {
 
     public void resetForNewPeriod() {
         this.value = 0.0;
-        this.isApproved = true; // Новый период начинается с подтвержденного нуля
+        this.isApproved = true;
         setUpdatedAt();
     }
 
@@ -147,21 +173,23 @@ public class Counter {
         if (o == null || getClass() != o.getClass()) return false;
         Counter counter = (Counter) o;
         return Objects.equals(id, counter.id) ||
-                (name == counter.name && Objects.equals(value, counter.value));
+                (name == counter.name && Objects.equals(value, counter.value) &&
+                        Objects.equals(owner, counter.owner));
     }
 
     @Override
     public int hashCode() {
-        return id != null ? Objects.hash(id) : Objects.hash(name, value);
+        return id != null ? Objects.hash(id) : Objects.hash(name, value, owner);
     }
 
     @Override
     public String toString() {
         return "Counter{" +
                 "id=" + id +
-                ", name=" + getName() +
+                ", name=" + name +
                 ", value=" + value +
                 ", isApproved=" + isApproved +
+                ", owner=" + (owner != null ? owner.getFullName() : "null") +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
