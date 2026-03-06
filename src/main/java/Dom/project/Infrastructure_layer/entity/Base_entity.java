@@ -1,16 +1,15 @@
 package Dom.project.Infrastructure_layer.entity;
 
 import jakarta.persistence.*;
-import org.springframework.data.annotation.Id;
-
 import java.time.LocalDateTime;
 
 // Базовая сущность, поля которой наследуются всем остальным
 // Тут ничего менять не нужно
 @MappedSuperclass
-public class Base_entity {
+public abstract class Base_entity {
 
     @Id
+    @Column(name = "id", insertable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ID;
 

@@ -22,7 +22,7 @@ public class UserRepositoryAdapter implements IUserRepository {
 
     @Override
     public User save(User user) {
-         UserJpaEntity entity = _mapper.toEntity(user);
+        UserJpaEntity entity = _mapper.toEntity(user);
         UserJpaEntity saved = _jpaRepository.save(entity);
         return _mapper.toDomain(saved);
     }
@@ -38,10 +38,7 @@ public class UserRepositoryAdapter implements IUserRepository {
     }
 
     @Override
-    public Optional<User> findByPhoneNumber(String phonenumber) {
+    public Optional<User> findByPhone(String phonenumber) {
         return _jpaRepository.findByEmail(phonenumber).map(_mapper::toDomain);
     }
-
-    
-
 }
