@@ -33,15 +33,13 @@ public class UserJpaEntity extends Base_entity {
     @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Некорректный формат телефона")
     private String phone;
 
+    @NotBlank
     @Column(unique = true, nullable = false)
     @Email(message = "Некорректный email")
-    @NotBlank
     private String email;
 
-    private UserRole Role;
-
     @OneToOne(mappedBy = "user") 
-    private ApartmentJpaEntity apartment;
+    private AddressJpaEntity address;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<MeterReadingJpaEntity> meterReadings = new ArrayList<>();
@@ -49,35 +47,59 @@ public class UserJpaEntity extends Base_entity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<ServiceRequestJpaEntity> serviceRequests = new ArrayList<>();
 
-
-    public UserRole getRole() {
-        return Role;
-    }
-    public void setRole(UserRole role) {
-        Role = role;
-    }
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
     public String getSurname() {
         return surname;
     }
+
     public void setSurname(String surname) {
         this.surname = surname;
     }
+
     public String getPhone() {
         return phone;
     }
+
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
     public String getEmail() {
         return email;
     }
+
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public AddressJpaEntity getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressJpaEntity address) {
+        this.address = address;
+    }
+
+    public List<MeterReadingJpaEntity> getMeterReadings() {
+        return meterReadings;
+    }
+
+    public void setMeterReadings(List<MeterReadingJpaEntity> meterReadings) {
+        this.meterReadings = meterReadings;
+    }
+
+    public List<ServiceRequestJpaEntity> getServiceRequests() {
+        return serviceRequests;
+    }
+
+    public void setServiceRequests(List<ServiceRequestJpaEntity> serviceRequests) {
+        this.serviceRequests = serviceRequests;
     }
 }

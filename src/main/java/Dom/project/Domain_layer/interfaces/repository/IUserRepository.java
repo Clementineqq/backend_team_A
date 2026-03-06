@@ -8,6 +8,6 @@ public interface IUserRepository {
      User save(User user);
      Optional<User> findById(Long id);
      Optional<User> findByEmail(String email);
-     Optional<User> findByPhoneNumber(String phonenumber);
+     Optional<User> findByPhone(String phonenumber);
 
 }

@@ -38,10 +38,7 @@ public class UserRepositoryAdapter implements IUserRepository {
     }
 
     @Override
-    public Optional<User> findByPhoneNumber(String phonenumber) {
+    public Optional<User> findByPhone(String phonenumber) {
         return _jpaRepository.findByEmail(phonenumber).map(_mapper::toDomain);
     }
-
-    
-
 }
