@@ -4,6 +4,7 @@ import Dom.project.Domain_layer.interfaces.repository.IAddressRepository;
 import Dom.project.Domain_layer.model.Address;
 import Dom.project.Infrastructure_layer.JpaRepo.SpringDataAddressRepository;
 import Dom.project.Infrastructure_layer.JpaRepo.SpringDataUserRepository;
+import Dom.project.Infrastructure_layer.entity.AddressJpaEntity;
 import Dom.project.Infrastructure_layer.mappers.AddressMapper;
 import Dom.project.Infrastructure_layer.mappers.UserMapper;
 import org.springframework.stereotype.Component;
@@ -28,5 +29,9 @@ public class AddressRepositoryAdapter implements IAddressRepository {
     @Override
     public Optional<Address> findById(Long id) {
         return _jpaRepository.findById(id).map(_mapper::toDomain);
+    }
+
+    public Optional<AddressJpaEntity> findJpaById(Long id) {
+        return _jpaRepository.findById(id);
     }
 }

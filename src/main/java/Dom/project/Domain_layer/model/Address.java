@@ -16,7 +16,6 @@ public class Address {
     private String city;
     private String region;
     private String totalArea;
-    private Long user_id;
 
 
     // Конструкторы
@@ -60,13 +59,6 @@ public class Address {
         setUpdatedAt();
     }
 
-    public void setUser_id(Long user_id){
-        if (user_id == null || id <= 0){
-            throw new IllegalArgumentException("user_ID must be positive or not null");
-        }
-        this.user_id = user_id;
-        setUpdatedAt();
-    }
 
     public void setCreatedAt(LocalDateTime createdAt) {
         if (createdAt == null) {
@@ -171,7 +163,6 @@ public class Address {
     public String getCity() { return city; }
     public String getRegion() { return region; }
     public String getTotalArea() { return totalArea; }
-    public Long getUser_id(){ return user_id; }
 
 
     // Бизнес - логика

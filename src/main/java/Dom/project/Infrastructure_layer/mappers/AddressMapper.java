@@ -14,14 +14,6 @@ import java.util.Optional;
 
 @Component
 public class AddressMapper {
-    private final UserMapper userMapper;
-    private final UserRepositoryAdapter userRepositoryAdapter;
-
-    public AddressMapper(UserMapper userMapper, UserRepositoryAdapter userRepositoryAdapter) {
-        this.userMapper = userMapper;
-        this.userRepositoryAdapter = userRepositoryAdapter;
-    }
-
     public AddressJpaEntity toEntity(Address address){
         AddressJpaEntity addressJpa = new AddressJpaEntity();
 
@@ -33,14 +25,6 @@ public class AddressMapper {
         addressJpa.setDateCreate(address.getCreatedAt());
         addressJpa.setDateUpdate(address.getUpdatedAt());
         addressJpa.setID(addressJpa.getID());
-
-        if (address.getUser_id() != null) {
-            User user = userRepositoryAdapter.findById(address.getUser_id())
-                    .orElseThrow(() -> new EntityNotFoundException("Нет юзера с таким id: " + address.getUser_id()));
-
-            UserJpaEntity userJpa = new UserJpaEntity(UserMapper.toEntity(user));
-            addressJpa.setUser(userJpa);
-        }
 
         return addressJpa;
     }
@@ -56,7 +40,6 @@ public class AddressMapper {
         address.setTotalArea(address.getTotalArea());
         address.setCreatedAt(address.getCreatedAt());
         address.setId(address.getId());
-        address.setUser_id(addressJpa.getUser().getID());
 
         return null;
     };

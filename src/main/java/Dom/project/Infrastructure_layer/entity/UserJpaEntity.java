@@ -39,7 +39,7 @@ public class UserJpaEntity extends Base_entity {
     @Email(message = "Некорректный email")
     private String email;
 
-    @OneToOne(mappedBy = "user") 
+    @OneToOne(mappedBy = "id_adress")
     private AddressJpaEntity address;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

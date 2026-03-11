@@ -7,10 +7,6 @@ import jakarta.validation.constraints.NotBlank;
 @Table(name = "address")
 public class AddressJpaEntity extends Base_entity {
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    UserJpaEntity user;
-
     @Column(name = "region")
     @NotBlank(message = "Это поле не может быть пустым")
     String region;
@@ -67,7 +63,7 @@ public class AddressJpaEntity extends Base_entity {
         return totalArea;
     }
 
-    public String setTotalArea(String totalArea) {
+    public void setTotalArea(String totalArea) {
         this.totalArea = totalArea;
     }
 
@@ -79,18 +75,10 @@ public class AddressJpaEntity extends Base_entity {
         this.street = street;
     }
 
-    public UserJpaEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserJpaEntity user) {
-        this.user = user;
-    }
 
     @Override
     public String toString() {
         return "AddressJpaEntity{" +
-                "user=" + user +
                 ", region='" + region + '\'' +
                 ", city='" + city + '\'' +
                 ", street='" + street + '\'' +

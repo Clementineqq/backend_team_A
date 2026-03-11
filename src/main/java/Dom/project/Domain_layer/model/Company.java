@@ -2,6 +2,7 @@ package Dom.project.Domain_layer.model;
 
 import Dom.project.Domain_layer.exception.InvalidAddressException;
 import Dom.project.Domain_layer.exception.InvalidCompanyException;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -127,14 +128,37 @@ public class Company {
     }
 
     // Геттеры
-    public Long getId() { return id; }
-    public Date getCreatedAt() { return createdAt; }
-    public Date getUpdatedAt() { return updatedAt; }
-    public String getName() { return name; }
-    public String getInn() { return inn; }
-    public String getKpp() { return kpp; }
-    public Address getLegalAddress() { return legalAddress; }
-    public String getEmail() { return email; }
+    public Long getId() {
+        return id;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getInn() {
+        return inn;
+    }
+
+    public String getKpp() {
+        return kpp;
+    }
+
+    public Address getLegalAddress() {
+        return legalAddress;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 
     public String getFullName() {
         return name;

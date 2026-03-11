@@ -2,6 +2,7 @@ package Dom.project.Infrastructure_layer.repoAdapters;
 
 import java.util.Optional;
 
+import Dom.project.Infrastructure_layer.entity.AddressJpaEntity;
 import org.springframework.stereotype.Component;
 
 import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
@@ -40,5 +41,9 @@ public class UserRepositoryAdapter implements IUserRepository {
     @Override
     public Optional<User> findByPhone(String phonenumber) {
         return _jpaRepository.findByEmail(phonenumber).map(_mapper::toDomain);
+    }
+
+    public Optional<UserJpaEntity> findJpaById(Long id) {
+        return _jpaRepository.findById(id);
     }
 }
