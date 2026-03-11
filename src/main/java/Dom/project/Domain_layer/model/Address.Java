@@ -1,25 +1,28 @@
 package Dom.project.Domain_layer.model;
 
 import Dom.project.Domain_layer.exception.InvalidAddressException;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
 public class Address {
     private Long id;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private String street;
     private String house;
     private String flat;
     private String city;
     private String region;
     private String totalArea;
+    private Long user_id;
 
 
     // Конструкторы
     public Address() {
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public Address(String street, String house, String city) {
@@ -57,19 +60,27 @@ public class Address {
         setUpdatedAt();
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setUser_id(Long user_id){
+        if (user_id == null || id <= 0){
+            throw new IllegalArgumentException("user_ID must be positive or not null");
+        }
+        this.user_id = user_id;
+        setUpdatedAt();
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
         if (createdAt == null) {
             throw new IllegalArgumentException("Created date cannot be null");
         }
         this.createdAt = createdAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt != null ? updatedAt : new Date();
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
     }
 
     private void setUpdatedAt() {
-        this.updatedAt = new Date();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void setStreet(String street) {
@@ -152,14 +163,15 @@ public class Address {
 
     // Геттеры
     public Long getId() { return id; }
-    public Date getCreatedAt() { return createdAt; }
-    public Date getUpdatedAt() { return updatedAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
     public String getStreet() { return street; }
     public String getHouse() { return house; }
     public String getFlat() { return flat; }
     public String getCity() { return city; }
     public String getRegion() { return region; }
     public String getTotalArea() { return totalArea; }
+    public Long getUser_id(){ return user_id; }
 
 
     // Бизнес - логика

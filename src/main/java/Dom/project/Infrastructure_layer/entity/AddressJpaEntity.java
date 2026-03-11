@@ -29,7 +29,7 @@ public class AddressJpaEntity extends Base_entity {
 
     @Column(name = "TotalArea")
     @NotBlank(message = "Это поле не может быть пустым")
-    float totalArea;
+    String totalArea;
 
     public String getRegion() {
         return region;
@@ -63,11 +63,11 @@ public class AddressJpaEntity extends Base_entity {
         this.flat = flat;
     }
 
-    public float getTotalArea() {
+    public String getTotalArea() {
         return totalArea;
     }
 
-    public void setTotalArea(float totalArea) {
+    public String setTotalArea(String totalArea) {
         this.totalArea = totalArea;
     }
 

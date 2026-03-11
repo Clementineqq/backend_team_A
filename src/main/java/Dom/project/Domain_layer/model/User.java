@@ -5,14 +5,16 @@ import Dom.project.Domain_layer.exception.InvalidCompanyException;
 import Dom.project.Domain_layer.exception.InvalidCounterException;
 import Dom.project.Domain_layer.exception.InvalidAddressException;
 import Dom.project.Domain_layer.enums.UserRole;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
 public class User {
     private Long id;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private String phone_number;
     private String email;
     private String password;
@@ -23,8 +25,8 @@ public class User {
     private Company company;
 
     public User() {
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public User(String phone_number, String email, String password, String name, String lastName) {
@@ -50,19 +52,19 @@ public class User {
         setUpdatedAt();
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         if (createdAt == null) {
             throw new IllegalArgumentException("Created date cannot be null");
         }
         this.createdAt = createdAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt != null ? updatedAt : new Date();
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
     }
 
     private void setUpdatedAt() {
-        this.updatedAt = new Date();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void setPhone_number(String phone_number) {
@@ -155,8 +157,8 @@ public class User {
 
     // Геттеры
     public Long getId() { return id; }
-    public Date getCreatedAt() { return createdAt; }
-    public Date getUpdatedAt() { return updatedAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
     public String getPhone_number() { return phone_number; }
     public String getEmail() { return email; }
     public String getPassword() { return password; }

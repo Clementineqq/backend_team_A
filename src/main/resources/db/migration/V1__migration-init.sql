@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS address(
     house                   varchar(255) NOT NULL,
     flat                    varchar(255) NOT NULL,
     city                    varchar(255) NOT NULL,
-    region                  varchar(255) NOT NULL
+    region                  varchar(255) NOT NULL,
+    totalArea               varchar(255) NOT NULL,
 );
 
 CREATE TABLE IF NOT EXISTS company (

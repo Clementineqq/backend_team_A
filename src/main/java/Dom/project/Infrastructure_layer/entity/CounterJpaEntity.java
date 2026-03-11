@@ -4,8 +4,9 @@ import Dom.project.Domain_layer.enums.MeterType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
-@Entity
-public class MeterReadingJpaEntity extends Base_entity{
+@Entity()
+@Table(name="counter")
+public class CounterJpaEntity extends Base_entity{
 
     // TODO: над этим полем подумать, мб расширить таблицу тоже на созвоне
     @NotBlank(message = "Это поле не должно быть пустым")
