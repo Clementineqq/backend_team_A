@@ -3,14 +3,16 @@ package Dom.project.Domain_layer.model;
 import Dom.project.Domain_layer.enums.MeterType;
 import Dom.project.Domain_layer.exception.InvalidCounterException;
 import Dom.project.Domain_layer.exception.InvalidUserException;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
 public class Counter {
     private Long id;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private MeterType name;
     private Double value;
     private Boolean isApproved;
@@ -18,8 +20,8 @@ public class Counter {
 
     // Конструкторы
     public Counter() {
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
         this.isApproved = false;
     }
 
@@ -48,19 +50,19 @@ public class Counter {
         setUpdatedAt();
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         if (createdAt == null) {
             throw new IllegalArgumentException("Created date cannot be null");
         }
         this.createdAt = createdAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt != null ? updatedAt : new Date();
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
     }
 
     private void setUpdatedAt() {
-        this.updatedAt = new Date();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void setName(MeterType name) {
@@ -104,8 +106,8 @@ public class Counter {
 
     // Геттеры
     public Long getId() { return id; }
-    public Date getCreatedAt() { return createdAt; }
-    public Date getUpdatedAt() { return updatedAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
     public MeterType getName() { return name; }
     public Double getValue() { return value; }
     public Boolean getIsApproved() { return isApproved; }

@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS counter (
     created_at              TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at              TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     name                    varchar(255) NOT NULL,
-    counter_value           int NOT NULL,
+    counter_value           float NOT NULL,
     is_approved             boolean DEFAULT false
 );
 

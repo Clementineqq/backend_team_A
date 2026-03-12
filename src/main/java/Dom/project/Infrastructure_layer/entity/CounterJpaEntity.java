@@ -8,22 +8,16 @@ import jakarta.validation.constraints.NotBlank;
 @Table(name="counter")
 public class CounterJpaEntity extends Base_entity{
 
-    // TODO: над этим полем подумать, мб расширить таблицу тоже на созвоне
     @NotBlank(message = "Это поле не должно быть пустым")
     @Column(name = "name")
     private MeterType type;
 
     @Column(name = "value")
     @NotBlank(message = "Это поле не должно быть пустым")
-    private float value;
+    private double value;
 
     @Column(name = "is_approved")
     private boolean isApproved;
-        
-    @ManyToOne(fetch = FetchType.LAZY) 
-    @JoinColumn(name = "user_id")      
-    private UserJpaEntity user;
-
     
     public MeterType getType() {
         return type;
@@ -33,30 +27,19 @@ public class CounterJpaEntity extends Base_entity{
         type = type;
     }
 
-    public float getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(float value) {
+    public void setValue(double value) {
         value = value;
     }
 
-    public boolean isIsApproved() {
+    public boolean isApproved() {
         return isApproved;
     }
 
     public void setIsApproved(boolean isApproved) {
         isApproved = isApproved;
     }
-
-    public UserJpaEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserJpaEntity user) {
-        this.user = user;
-    }
-
-
-
 }

@@ -1,9 +1,6 @@
 package Dom.project.Infrastructure_layer.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -33,8 +30,9 @@ public class CompanyJpaEntity extends Base_entity {
     @NotBlank(message = "Email не может быть пустым")
     String email;
 
+    @OneToOne
     @JoinColumn(name = "id_address")
-    String id_adrress;
+    AddressJpaEntity legal_address;
 
     public String getName() {
         return name;
@@ -60,12 +58,12 @@ public class CompanyJpaEntity extends Base_entity {
         this.kpp = kpp;
     }
 
-    public String getLegal_address() {
-        return id_adrress;
+    public AddressJpaEntity getLegal_address() {
+        return legal_address;
     }
 
-    public void setLegal_address(String id_adrress) {
-        this.id_adrress = id_adrress;
+    public void setLegal_address(AddressJpaEntity address) {
+        this.legal_address = address;
     }
 
     public String getEmail() {

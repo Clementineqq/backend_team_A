@@ -38,11 +38,13 @@ public class UserJpaEntity extends Base_entity {
     @JoinColumn(name="id_adress")
     private AddressJpaEntity address;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany()
+    @JoinColumn(name="id_counter")
     private List<CounterJpaEntity> counters = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<ServiceRequestJpaEntity> serviceRequests = new ArrayList<>();
+    @ManyToOne()
+    @JoinColumn(name="id_company")
+    private CompanyJpaEntity company;
 
     public String getName() {
         return name;
@@ -92,12 +94,12 @@ public class UserJpaEntity extends Base_entity {
         this.counters = meterReadings;
     }
 
-    public List<ServiceRequestJpaEntity> getServiceRequests() {
-        return serviceRequests;
+    public CompanyJpaEntity getCompany() {
+        return company;
     }
 
-    public void setServiceRequests(List<ServiceRequestJpaEntity> serviceRequests) {
-        this.serviceRequests = serviceRequests;
+    public void setCompany(CompanyJpaEntity company) {
+        this.company = company;
     }
 
     public String getFather_name() {

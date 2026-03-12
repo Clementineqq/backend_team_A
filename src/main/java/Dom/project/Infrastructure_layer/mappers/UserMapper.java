@@ -44,7 +44,7 @@ public class UserMapper {
 
         // установка счетчиков
 
-        // установка созданных тасков
+        //
 
         return null;
     }

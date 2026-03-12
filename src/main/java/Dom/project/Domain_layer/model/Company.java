@@ -3,13 +3,14 @@ package Dom.project.Domain_layer.model;
 import Dom.project.Domain_layer.exception.InvalidAddressException;
 import Dom.project.Domain_layer.exception.InvalidCompanyException;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
 public class Company {
     private Long id;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private String name;
     private String inn;
     private String kpp;
@@ -19,8 +20,8 @@ public class Company {
 
     //Конструкторы
     public Company() {
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public Company(String name, String inn) {
@@ -54,19 +55,19 @@ public class Company {
         setUpdatedAt();
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         if (createdAt == null) {
             throw new IllegalArgumentException("Created date cannot be null");
         }
         this.createdAt = createdAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt != null ? updatedAt : new Date();
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
     }
 
     private void setUpdatedAt() {
-        this.updatedAt = new Date();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void setName(String name) {
@@ -132,11 +133,11 @@ public class Company {
         return id;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
