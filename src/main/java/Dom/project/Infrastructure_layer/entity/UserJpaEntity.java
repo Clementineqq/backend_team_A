@@ -3,12 +3,7 @@ package Dom.project.Infrastructure_layer.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -39,7 +34,8 @@ public class UserJpaEntity extends Base_entity {
     @Email(message = "Некорректный email")
     private String email;
 
-    @OneToOne(mappedBy = "id_adress")
+    @OneToOne()
+    @JoinColumn(name="id_adress")
     private AddressJpaEntity address;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
