@@ -1,7 +1,14 @@
 package Dom.project.Web_layer.auth;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import Dom.project.Application_layer.auth.AuthService;
+import Dom.project.Domain_layer.model.User;
 import Dom.project.Web_layer.auth.dto.LoginRequest;
 import Dom.project.Web_layer.auth.dto.RegisterRequest;
 
@@ -16,20 +23,26 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody RegisterRequest request) {
-        authService.register(request.getEmail(), request.getName(), request.getSurname(), request.getPhone());
-        return "register skeleton";
+    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+        User registeredUser = authService.register(
+                request.getEmail(),
+                request.getName(),
+                request.getSurname(),
+                request.getPhone(),
+                request.getPassword()
+        );
+        return ResponseEntity.ok("Регистрация успешна! Пользователь: " + registeredUser.getFullName());
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest request) {
-        authService.login(request.getEmail(), request.getPassword());
-        return "login skeleton";
+    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+        User loggedUser = authService.login(request.getEmail(), request.getPassword());
+        return ResponseEntity.ok("Логин успешен! Пользователь: " + loggedUser.getFullName());
     }
 
     @PostMapping("/logout/{userId}")
-    public String logout(@PathVariable Long userId) {
+    public ResponseEntity<String> logout(@PathVariable Long userId) {
         authService.logout(userId);
-        return "logout skeleton";
+        return ResponseEntity.ok("Выход выполнен");
     }
 }
