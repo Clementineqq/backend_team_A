@@ -6,22 +6,29 @@ public class UserRequestDto {
     private Long id;
     private String title;
     private String description;
-    private String status; // NEW, IN_PROGRESS, COMPLETED, CANCELLED
-    private String type; // REPAIR, CONSULTATION, MAINTENANCE
+    private String status;
+    private String creator;
+    private String assigner;
+    private String resolutionComment;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private LocalDateTime completedAt;
 
     public UserRequestDto() {}
 
-    public UserRequestDto(Long id, String title, String description, String status,
-                          String type, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public UserRequestDto(Long id, String title, String description, String status, String creator,
+                          String assigner, String resolutionComment, LocalDateTime createdAt, LocalDateTime updatedAt,
+                          LocalDateTime completedAt) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
-        this.type = type;
+        this.creator = creator;
+        this.assigner = assigner;
+        this.resolutionComment = resolutionComment;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.completedAt = completedAt;
     }
 
     // Геттеры и сеттеры
@@ -37,12 +44,21 @@ public class UserRequestDto {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    public String getCreator() { return creator; }
+    public void setCreator(String creator) { this.creator = creator; }
+
+    public String getAssigner() { return assigner; }
+    public void setAssigner(String assigner) { this.assigner = assigner; }
+
+    public String getResolutionComment() { return resolutionComment; }
+    public void setResolutionComment(String serviceRequest) { this.resolutionComment = serviceRequest; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public LocalDateTime getCompletedAt() { return completedAt; }
+    public void setCompletedAt(LocalDateTime completedAt) { this.completedAt = completedAt; }
 }
