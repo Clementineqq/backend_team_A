@@ -9,21 +9,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import Dom.project.Application_layer.auth.AuthService;
 import Dom.project.Domain_layer.model.User;
+import Dom.project.Web_layer.auth.dto.AuthResponse;
 import Dom.project.Web_layer.auth.dto.LoginRequest;
 import Dom.project.Web_layer.auth.dto.RegisterRequest;
+import Dom.project.Web_layer.utils.JwtUtils;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
+    private final JwtUtils jwtUtils;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, JwtUtils jwtUtils) {
         this.authService = authService;
+        this.jwtUtils = jwtUtils;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         User registeredUser = authService.register(
                 request.getEmail(),
                 request.getName(),
@@ -31,13 +35,29 @@ public class AuthController {
                 request.getPhone(),
                 request.getPassword()
         );
-        return ResponseEntity.ok("Регистрация успешна! Пользователь: " + registeredUser.getFullName());
+        
+        String token = jwtUtils.generateToken(registeredUser.getEmail());
+        
+        return ResponseEntity.ok(new AuthResponse(
+            "Регистрация успешна!", 
+            token,
+            registeredUser.getEmail(),
+            registeredUser.getFullName()
+        ));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         User loggedUser = authService.login(request.getEmail(), request.getPassword());
-        return ResponseEntity.ok("Логин успешен! Пользователь: " + loggedUser.getFullName());
+        
+        String token = jwtUtils.generateToken(loggedUser.getEmail());
+        
+        return ResponseEntity.ok(new AuthResponse(
+            "Логин успешен!", 
+            token,
+            loggedUser.getEmail(),
+            loggedUser.getFullName()
+        ));
     }
 
     @PostMapping("/logout/{userId}")
