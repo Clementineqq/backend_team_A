@@ -3,8 +3,13 @@ package Dom.project.Infrastructure_layer.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -35,7 +40,7 @@ public class UserJpaEntity extends Base_entity {
     private String email;
 
     @OneToOne()
-    @JoinColumn(name="id_adress")
+    @JoinColumn(name="id_address")
     private AddressJpaEntity address;
 
     @OneToMany()
