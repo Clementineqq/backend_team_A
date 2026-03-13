@@ -2,10 +2,10 @@ package Dom.project.Domain_layer.model;
 
 import Dom.project.Domain_layer.exception.InvalidAddressException;
 import Dom.project.Domain_layer.exception.InvalidCompanyException;
+import Dom.project.Domain_layer.exception.InvalidUserException;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 public class Company {
     private Long id;
@@ -16,6 +16,8 @@ public class Company {
     private String kpp;
     private Address legalAddress;
     private String email;
+    private List<User> members;
+    private List<User> workers;
 
 
     //Конструкторы
@@ -128,6 +130,16 @@ public class Company {
         setUpdatedAt();
     }
 
+    public void setMembers(List<User> members) {
+        this.members = members != null ? members : new ArrayList<>();
+        setUpdatedAt();
+    }
+
+    public void setWorkers(List<User> workers) {
+        this.workers = workers != null ? workers : new ArrayList<>();
+        setUpdatedAt();
+    }
+
     // Геттеры
     public Long getId() {
         return id;
@@ -170,6 +182,14 @@ public class Company {
             return inn + "/" + kpp;
         }
         return inn;
+    }
+
+    public List<User> getMembers() {
+        return Collections.unmodifiableList(members);
+    }
+
+    public List<User> getWorkers() {
+        return Collections.unmodifiableList(workers);
     }
 
     public void update(Company newData) {
@@ -226,6 +246,61 @@ public class Company {
     public String getSummary() {
         return String.format("%s (ИНН: %s)", name, inn);
     }
+
+    public void addMember(User user) {
+        if (user == null) {
+            throw InvalidUserException.userCannotBeNull();
+        }
+        if (members.contains(user)) {
+            throw InvalidCompanyException.userAlreadyMember(user.getId());
+        }
+        members.add(user);
+        setUpdatedAt();
+    }
+
+    public void removeMember(User user) {
+        if (user == null) {
+            throw InvalidUserException.userCannotBeNull();
+        }
+        if (!members.contains(user)) {
+            throw InvalidCompanyException.userNotMember(user.getId());
+        }
+        members.remove(user);
+        setUpdatedAt();
+    }
+
+    public void clearMembers() {
+        members.clear();
+        setUpdatedAt();
+    }
+
+    public void addWorker(User user) {
+        if (user == null) {
+            throw InvalidUserException.userCannotBeNull();
+        }
+        if (workers.contains(user)) {
+            throw InvalidCompanyException.userAlreadyWorker(user.getId());
+        }
+        workers.add(user);
+        setUpdatedAt();
+    }
+
+    public void removeWorker(User user) {
+        if (user == null) {
+            throw InvalidUserException.userCannotBeNull();
+        }
+        if (!workers.contains(user)) {
+            throw InvalidCompanyException.userNotWorker(user.getId());
+        }
+        workers.remove(user);
+        setUpdatedAt();
+    }
+
+    public void clearWorkers() {
+        workers.clear();
+        setUpdatedAt();
+    }
+
 
     @Override
     public boolean equals(Object o) {

@@ -1,6 +1,5 @@
 package Dom.project.Domain_layer.exception;
 
-
 public class InvalidCompanyException extends DomainException {
 
     private static final String ERROR_CODE = "INVALID_COMPANY";
@@ -76,4 +75,21 @@ public class InvalidCompanyException extends DomainException {
     public static InvalidCompanyException incompleteCompanyDetails() {
         return new InvalidCompanyException("Company details are incomplete. Name, INN and Legal Address are required", null, null);
     }
+
+    public static InvalidCompanyException userAlreadyMember(Long userId) {
+        return new InvalidCompanyException("User with id " + userId + " is already a member", "members", userId);
+    }
+
+    public static InvalidCompanyException userAlreadyWorker(Long userId) {
+        return new InvalidCompanyException("User with id " + userId + " is already a worker", "workers", userId);
+    }
+
+    public static InvalidCompanyException userNotMember(Long userId) {
+        return new InvalidCompanyException("User with id " + userId + " is not a member", "members", userId);
+    }
+
+    public static InvalidCompanyException userNotWorker(Long userId) {
+        return new InvalidCompanyException("User with id " + userId + " is not a worker", "workers", userId);
+    }
+
 }
