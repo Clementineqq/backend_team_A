@@ -1,66 +1,80 @@
 package Dom.project.Infrastructure_layer.entity;
 
 import Dom.project.Domain_layer.enums.RequestStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
+
+import java.time.LocalDateTime;
 
 @Entity
 public class ServiceRequestJpaEntity extends Base_entity{
 
+    @Column(name = "title")
+    @Length(max = 255)
+    @NotBlank(message = "Это поле не может быть пустым")
+    private String title;
 
-    private String Title;
-    private String Description;
-    private RequestStatus Status;
+    @Length(max = 255)
+    @Column(name = "description")
+    private String description;
 
-    private String AssignedWorkerName;
-    private String ResolutionComment;
+    @Column(name="status")
+    private RequestStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_creator")
+    private UserJpaEntity assignedWorkerName;
+
+    @Length(max=1024)
+    private String resolutionComment;
 
     @ManyToOne(fetch = FetchType.LAZY) 
-    @JoinColumn(name = "user_id")      
+    @JoinColumn(name = "id_assignee")
     private UserJpaEntity user;
-    
+
+    @Column(name = "completed_at")
+    private LocalDateTime completed_at;
 
     
     public String getTitle() {
-        return Title;
+        return title;
     }
 
     public void setTitle(String title) {
-        Title = title;
+        title = title;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        description = description;
     }
 
     public RequestStatus getStatus() {
-        return Status;
+        return status;
     }
 
     public void setStatus(RequestStatus status) {
-        Status = status;
+        status = status;
     }
 
-    public String getAssignedWorkerName() {
-        return AssignedWorkerName;
+    public UserJpaEntity getAssignedWorkerName() {
+        return assignedWorkerName;
     }
 
     public void setAssignedWorkerName(String assignedWorkerName) {
-        AssignedWorkerName = assignedWorkerName;
+        assignedWorkerName = assignedWorkerName;
     }
 
     public String getResolutionComment() {
-        return ResolutionComment;
+        return resolutionComment;
     }
 
     public void setResolutionComment(String resolutionComment) {
-        ResolutionComment = resolutionComment;
+        resolutionComment = resolutionComment;
     }
 
     public UserJpaEntity getUser() {
@@ -71,4 +85,15 @@ public class ServiceRequestJpaEntity extends Base_entity{
         this.user = user;
     }
 
+    public void setAssignedWorkerName(UserJpaEntity assignedWorkerName) {
+        this.assignedWorkerName = assignedWorkerName;
+    }
+
+    public LocalDateTime getCompleted_at() {
+        return completed_at;
+    }
+
+    public void setCompleted_at(LocalDateTime completed_at) {
+        this.completed_at = completed_at;
+    }
 }
