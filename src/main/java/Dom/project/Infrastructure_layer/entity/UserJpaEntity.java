@@ -30,9 +30,9 @@ public class UserJpaEntity extends Base_entity {
     @Column(name = "fathers_name")
     private String father_name;
 
-    @Column(unique = true, length = 20)
+    @Column(unique = true, length = 20, name = "phone_number")
     @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Некорректный формат телефона")
-    private String phone;
+    private String phoneNumber;
 
     @NotBlank
     @Column(unique = true, nullable = false)
@@ -68,11 +68,11 @@ public class UserJpaEntity extends Base_entity {
     }
 
     public String getPhone() {
-        return phone;
+        return phoneNumber;
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        this.phoneNumber = phone;
     }
 
     public String getEmail() {
