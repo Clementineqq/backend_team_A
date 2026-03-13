@@ -24,10 +24,10 @@ public class AuthService {
     public User register(String email, String name, String surname, String phone, String password) {
         System.out.println("регистрация");
 
-        if (userRepository.findByEmail(email).isPresent() ||
-            userRepository.findByPhone(phone).isPresent()) {
-            throw InvalidUserException.userAlreadyExists(phone, email);
-        }
+        // if (userRepository.findByEmail(email).isPresent() ||
+        //     userRepository.findByPhone(phone).isPresent()) {
+        //     throw InvalidUserException.userAlreadyExists(phone, email);
+        // }
 
         // тута хешируем пароль
         String hashedPassword = passwordEncoder.encode(password);

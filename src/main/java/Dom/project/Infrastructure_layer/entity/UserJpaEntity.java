@@ -51,6 +51,13 @@ public class UserJpaEntity extends Base_entity {
     @JoinColumn(name="id_company")
     private CompanyJpaEntity company;
 
+    @Column(name = "password")
+    private String password;
+
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
     public String getName() {
         return name;
     }
