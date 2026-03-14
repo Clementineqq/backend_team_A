@@ -17,7 +17,6 @@ public class CompanyMapper {
         this.addressMapper = addressMapper;
     }
 
-
     public CompanyJpaEntity toEntity(Company company){
         if (company == null){
             return null;

@@ -1,8 +1,11 @@
 package Dom.project.Infrastructure_layer.repoAdapters;
 
+import java.util.List;
 import java.util.Optional;
 
+import Dom.project.Domain_layer.model.Counter;
 import Dom.project.Infrastructure_layer.entity.AddressJpaEntity;
+import Dom.project.Infrastructure_layer.entity.CounterJpaEntity;
 import org.springframework.stereotype.Component;
 
 import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
@@ -14,7 +17,7 @@ import Dom.project.Infrastructure_layer.mappers.UserMapper;
 @Component
 public class UserRepositoryAdapter implements IUserRepository { 
     private final SpringDataUserRepository _jpaRepository; 
-    private final UserMapper _mapper; 
+    private final UserMapper _mapper;
 
     public UserRepositoryAdapter(SpringDataUserRepository jpaRepository, UserMapper mapper) {
         _jpaRepository= jpaRepository;
@@ -40,7 +43,7 @@ public class UserRepositoryAdapter implements IUserRepository {
 
     @Override
     public Optional<User> findByPhone(String phonenumber) {
-        return _jpaRepository.findByEmail(phonenumber).map(_mapper::toDomain);
+        return _jpaRepository.findByPhone(phonenumber).map(_mapper::toDomain);
     }
 
     public Optional<UserJpaEntity> findJpaById(Long id) {

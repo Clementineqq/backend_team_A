@@ -25,7 +25,7 @@ public class UserJpaEntity extends Base_entity {
     @Column(name = "fathers_name")
     private String father_name;
 
-    @Column(unique = true, length = 20)
+    @Column(name="phone_number", unique = true, length = 20)
     @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Некорректный формат телефона")
     private String phone;
 
@@ -35,16 +35,16 @@ public class UserJpaEntity extends Base_entity {
     private String email;
 
     @OneToOne()
-    @JoinColumn(name="id_adress")
+    @JoinColumn(name="id_address")
     private AddressJpaEntity address;
-
-    @OneToMany()
-    @JoinColumn(name="id_counter")
-    private List<CounterJpaEntity> counters = new ArrayList<>();
 
     @ManyToOne()
     @JoinColumn(name="id_company")
     private CompanyJpaEntity company;
+
+    @Column(name = "password")
+    @NotBlank(message = "Пароль не может быть пустым")
+    private String password;
 
     public String getName() {
         return name;
@@ -86,13 +86,6 @@ public class UserJpaEntity extends Base_entity {
         this.address = address;
     }
 
-    public List<CounterJpaEntity> getCounters() {
-        return counters;
-    }
-
-    public void setCounters(List<CounterJpaEntity> meterReadings) {
-        this.counters = meterReadings;
-    }
 
     public CompanyJpaEntity getCompany() {
         return company;
@@ -108,5 +101,13 @@ public class UserJpaEntity extends Base_entity {
 
     public void setFather_name(String father_name) {
         this.father_name = father_name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -1,0 +1,39 @@
+package Dom.project.Infrastructure_layer.repoAdapters;
+
+import Dom.project.Domain_layer.interfaces.repository.IAddressRepository;
+import Dom.project.Domain_layer.interfaces.repository.ICompanyRepository;
+import Dom.project.Domain_layer.model.Company;
+import Dom.project.Infrastructure_layer.JpaRepo.SpringDataCompanyRepository;
+import Dom.project.Infrastructure_layer.entity.AddressJpaEntity;
+import Dom.project.Infrastructure_layer.entity.CompanyJpaEntity;
+import Dom.project.Infrastructure_layer.mappers.CompanyMapper;
+
+import java.util.Optional;
+
+public class CompanyRepositoryAdapter implements ICompanyRepository {
+    private CompanyMapper _mapper;
+    private SpringDataCompanyRepository _jpaRepository;
+
+    public CompanyRepositoryAdapter(CompanyMapper mapper, SpringDataCompanyRepository jpaRepository) {
+        _mapper = mapper;
+        _jpaRepository = jpaRepository;
+    }
+
+
+    @Override
+    public Company save(Company company) {
+        CompanyJpaEntity entity = _mapper.toEntity(company);
+        CompanyJpaEntity saved = _jpaRepository.save(entity);
+
+        return _mapper.toDomain(saved);
+    }
+
+    @Override
+    public Optional<Company> findById(Long id) {
+        return _jpaRepository.findById(id).map(_mapper::toDomain);
+    }
+
+    public Optional<CompanyJpaEntity> findJpaById(Long id) {
+        return _jpaRepository.findById(id);
+    }
+}

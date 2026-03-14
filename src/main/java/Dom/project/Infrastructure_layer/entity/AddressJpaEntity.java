@@ -23,7 +23,7 @@ public class AddressJpaEntity extends Base_entity {
     @NotBlank(message = "Это поле не может быть пустым")
     String flat;
 
-    @Column(name = "TotalArea")
+    @Column(name = "totalarea")
     @NotBlank(message = "Это поле не может быть пустым")
     String totalArea;
 

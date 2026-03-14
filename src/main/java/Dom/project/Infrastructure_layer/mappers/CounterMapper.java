@@ -2,10 +2,20 @@ package Dom.project.Infrastructure_layer.mappers;
 
 import Dom.project.Domain_layer.model.Counter;
 import Dom.project.Infrastructure_layer.entity.CounterJpaEntity;
+import Dom.project.Infrastructure_layer.entity.UserJpaEntity;
+import Dom.project.Infrastructure_layer.repoAdapters.UserRepositoryAdapter;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CounterMapper {
+    private final UserRepositoryAdapter userRepositoryAdapter;
+    private final UserMapper userMapper;
+
+    public CounterMapper(UserRepositoryAdapter userRepositoryAdapter, UserMapper userMapper) {
+        this.userRepositoryAdapter = userRepositoryAdapter;
+        this.userMapper = userMapper;
+    }
 
     public CounterJpaEntity toEntity(Counter counter){
         if (counter == null){
@@ -21,6 +31,12 @@ public class CounterMapper {
         counterJpa.setDateCreate(counter.getCreatedAt());
         counterJpa.setDateUpdate(counter.getUpdatedAt());
 
+        if (counter.getOwner().getId() != null){
+            UserJpaEntity owner = userRepositoryAdapter.findJpaById(counter.getOwner().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Такого пользователя нет"));
+
+            counterJpa.setUser(owner);
+        }
 
         return counterJpa;
     }
@@ -37,6 +53,7 @@ public class CounterMapper {
         counter.setValue(counter.getValue());
         counter.setCreatedAt(counterJpa.getDateCreate());
         counter.setIsApproved(counterJpa.isApproved());
+        counter.setOwner(userMapper.toDomain(counterJpa.getUser()));
 
         return counter;
     }

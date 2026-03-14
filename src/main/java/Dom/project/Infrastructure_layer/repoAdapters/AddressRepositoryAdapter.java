@@ -23,7 +23,9 @@ public class AddressRepositoryAdapter implements IAddressRepository {
 
     @Override
     public Address save(Address address) {
-        return null;
+        AddressJpaEntity entity = _mapper.toEntity(address);
+        AddressJpaEntity saved = _jpaRepository.save(entity);
+        return _mapper.toDomain(saved);
     }
 
     @Override
