@@ -1,11 +1,8 @@
 package Dom.project.Infrastructure_layer.repoAdapters;
 
-import java.util.List;
 import java.util.Optional;
 
-import Dom.project.Domain_layer.model.Counter;
 import Dom.project.Infrastructure_layer.entity.AddressJpaEntity;
-import Dom.project.Infrastructure_layer.entity.CounterJpaEntity;
 import org.springframework.stereotype.Component;
 
 import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
@@ -26,10 +23,21 @@ public class UserRepositoryAdapter implements IUserRepository {
 
     @Override
     public User save(User user) {
+         System.out.println("========== UserRepositoryAdapter.save ==========");
+        System.out.println("1. Received user with email: " + user.getEmail());
+        System.out.println("2. User password: '" + user.getPassword() + "'");
+
         UserJpaEntity entity = _mapper.toEntity(user);
+        System.out.println("3. After toEntity - entity password: '" + (entity != null ? entity.getPassword() : "NULL ENTITY") + "'");
+
         UserJpaEntity saved = _jpaRepository.save(entity);
-        return _mapper.toDomain(saved);
-    }
+        System.out.println("4. After DB save - saved password: '" + saved.getPassword() + "'");
+        User result = _mapper.toDomain(saved);
+        System.out.println("5. Final result password: '" + result.getPassword() + "'");
+        System.out.println("==================================================");
+
+        return result;
+}
    
     @Override
     public Optional<User> findById(Long id) {
