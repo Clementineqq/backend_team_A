@@ -5,6 +5,8 @@ import java.util.Optional;
 import Dom.project.Domain_layer.interfaces.repository.IAddressRepository;
 import Dom.project.Domain_layer.interfaces.repository.ICompanyRepository;
 
+import Dom.project.Domain_layer.model.Address;
+import Dom.project.Web_layer.auth.dto.AddressDto;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,7 +32,7 @@ public class AuthService {
 
     }
     // Вот это пока не трогай
-    public User register(String email, String name, String surname, String phone, String password, String idCompany, String idAddress) {
+    public User register(String email, String name, String surname, String phone, String password, String idCompany, AddressDto address) {
         System.out.println("регистрация");
 
         // if (userRepository.findByEmail(email).isPresent() ||
@@ -42,12 +44,20 @@ public class AuthService {
         String hashedPassword = passwordEncoder.encode(password);
         User user = new User(phone, email, hashedPassword, name, surname);
 
-        // это надобно в БД по id найти.
-        user.setAddress(addressRepository.findById(Long.parseLong(idAddress)).orElseThrow(() ->
-                new EntityNotFoundException("Cant find address with ID:" + idAddress)));
+        Address domainAddress = new Address(
+                address.getStreet(),
+                address.getHouse(),
+                address.getFlat(),
+                address.getCity(),
+                address.getRegion(),
+                String.valueOf(address.getTotalArea())
+        );
 
-        //   Address address = new Address();
-        //user.setAddress(addressRepository.save(address));
+        System.out.println("ADDRESS_DTO: " + address.toString());
+        System.out.println("ADDRESS_DOMAIN: " + domainAddress.toString());
+
+
+        user.setAddress(addressRepository.save(domainAddress));
 
         user.setCompany(companyRepository.findById(Long.parseLong(idCompany)).orElseThrow(() ->
                 new EntityNotFoundException("Cant find company with ID: " + idCompany)));
