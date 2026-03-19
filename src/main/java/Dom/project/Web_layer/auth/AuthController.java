@@ -1,11 +1,7 @@
 package Dom.project.Web_layer.auth;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import Dom.project.Application_layer.auth.AuthService;
 import Dom.project.Domain_layer.model.User;
@@ -66,5 +62,11 @@ public class AuthController {
     public ResponseEntity<String> logout(@PathVariable Long userId) {
         authService.logout(userId);
         return ResponseEntity.ok("Выход выполнен");
+    }
+
+    @GetMapping("/test")
+    public String test(){
+        System.out.println("Попал в тест");
+        return "TEST OK";
     }
 }

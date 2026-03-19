@@ -24,7 +24,7 @@ public class AddressMapper {
         addressJpa.setTotalArea(address.getTotalArea());
         addressJpa.setDateCreate(address.getCreatedAt());
         addressJpa.setDateUpdate(address.getUpdatedAt());
-        addressJpa.setID(addressJpa.getID());
+        addressJpa.setID(address.getId());
 
         return addressJpa;
     }
@@ -37,10 +37,10 @@ public class AddressMapper {
         address.setCity(addressJpa.getCity());
         address.setHouse(addressJpa.getHouse());
         address.setFlat(addressJpa.getFlat());
-        address.setTotalArea(address.getTotalArea());
-        address.setCreatedAt(address.getCreatedAt());
-        address.setId(address.getId());
+        address.setTotalArea(addressJpa.getTotalArea());
+        address.setCreatedAt(addressJpa.getDateCreate());
+        address.setId(addressJpa.getID());
 
-        return null;
+        return address;
     };
 }

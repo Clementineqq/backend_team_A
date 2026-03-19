@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import Dom.project.Domain_layer.interfaces.repository.IAddressRepository;
 import Dom.project.Domain_layer.interfaces.repository.ICompanyRepository;
-import Dom.project.Domain_layer.model.Address;
+
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import Dom.project.Domain_layer.exception.InvalidUserException;
 import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
 import Dom.project.Domain_layer.model.User;
-import org.yaml.snakeyaml.events.Event;
 
 @Service
 public class AuthService {
@@ -51,7 +50,7 @@ public class AuthService {
         //user.setAddress(addressRepository.save(address));
 
         user.setCompany(companyRepository.findById(Long.parseLong(idCompany)).orElseThrow(() ->
-                new EntityNotFoundException("Cant find company with ID: " + idAddress)));
+                new EntityNotFoundException("Cant find company with ID: " + idCompany)));
 
         return userRepository.save(user);
     }

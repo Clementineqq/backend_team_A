@@ -4,9 +4,11 @@ import Dom.project.Domain_layer.model.Address;
 import Dom.project.Domain_layer.model.Counter;
 import Dom.project.Domain_layer.model.User;
 import Dom.project.Infrastructure_layer.entity.AddressJpaEntity;
+import Dom.project.Infrastructure_layer.entity.CompanyJpaEntity;
 import Dom.project.Infrastructure_layer.entity.CounterJpaEntity;
 import Dom.project.Infrastructure_layer.entity.UserJpaEntity;
 import Dom.project.Infrastructure_layer.repoAdapters.AddressRepositoryAdapter;
+import Dom.project.Infrastructure_layer.repoAdapters.CompanyRepositoryAdapter;
 import Dom.project.Infrastructure_layer.repoAdapters.CounterRepositoryAdapter;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
@@ -16,12 +18,14 @@ import java.util.List;
 @Component
 public class UserMapper {
     private final AddressRepositoryAdapter addressRepositoryAdapter;
+    private final CompanyRepositoryAdapter companyRepositoryAdapter;
 
     private final CompanyMapper companyMapper;
     private final AddressMapper addressMapper;
 
-    public UserMapper(AddressRepositoryAdapter addressRepositoryAdapter, CompanyMapper companyMapper, AddressMapper addressMapper) {
+    public UserMapper(AddressRepositoryAdapter addressRepositoryAdapter, CompanyRepositoryAdapter companyRepositoryAdapter, CompanyMapper companyMapper, AddressMapper addressMapper) {
         this.addressRepositoryAdapter = addressRepositoryAdapter;
+        this.companyRepositoryAdapter = companyRepositoryAdapter;
         this.companyMapper = companyMapper;
         this.addressMapper = addressMapper;
     }
@@ -51,6 +55,14 @@ public class UserMapper {
 
             userJpa.setAddress(address);
         }
+
+        if (user.getCompany() != null){
+            CompanyJpaEntity companyJpa = companyRepositoryAdapter.findJpaById(user.getCompany().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Нет компании с таким id: " + user.getCompany().getId()));
+
+            userJpa.setCompany(companyJpa);
+        }
+
         return userJpa;
     }
 
