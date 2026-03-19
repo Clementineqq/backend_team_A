@@ -6,9 +6,11 @@ import Dom.project.Infrastructure_layer.JpaRepo.SpringDataServiceRequestReposito
 import Dom.project.Infrastructure_layer.entity.AddressJpaEntity;
 import Dom.project.Infrastructure_layer.entity.ServiceRequestJpaEntity;
 import Dom.project.Infrastructure_layer.mappers.ServiceRequestMapper;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+@Component
 public class ServiceRequestRepositoryAdapter implements IServiceRequestRepository {
     private ServiceRequestMapper _mapper;
     private SpringDataServiceRequestRepository _jpaRepository;

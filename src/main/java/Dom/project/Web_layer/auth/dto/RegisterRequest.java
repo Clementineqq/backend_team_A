@@ -5,7 +5,10 @@ public class RegisterRequest {
     private String name;
     private String surname;
     private String phone;
-    private String password; 
+    private String password;
+    private String id_address;
+    private String id_company;
+
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
@@ -20,4 +23,11 @@ public class RegisterRequest {
 
     public String getPassword() { return password; }
 
+    public String getId_address() {
+        return id_address;
+    }
+
+    public String getId_company() {
+        return id_company;
+    }
 }

@@ -7,9 +7,11 @@ import Dom.project.Infrastructure_layer.JpaRepo.SpringDataCompanyRepository;
 import Dom.project.Infrastructure_layer.entity.AddressJpaEntity;
 import Dom.project.Infrastructure_layer.entity.CompanyJpaEntity;
 import Dom.project.Infrastructure_layer.mappers.CompanyMapper;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+@Component
 public class CompanyRepositoryAdapter implements ICompanyRepository {
     private CompanyMapper _mapper;
     private SpringDataCompanyRepository _jpaRepository;

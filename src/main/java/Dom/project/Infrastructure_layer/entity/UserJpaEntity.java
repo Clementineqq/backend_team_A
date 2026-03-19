@@ -15,23 +15,23 @@ import jakarta.validation.constraints.Pattern;
 public class UserJpaEntity extends Base_entity {
     
     @Column(nullable = false, length = 50)
-    @NotBlank(message = "Имя обязательно")
+    @NotBlank(message = "Name cant be empty")
     private String name;
 
     @Column(nullable = false, length = 50, name="last_name")
-    @NotBlank(message = "Фамилия обязательна")
+    @NotBlank(message = "Last name cant be empty")
     private String surname;
 
     @Column(name = "fathers_name")
     private String father_name;
 
     @Column(name="phone_number", unique = true, length = 20)
-    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Некорректный формат телефона")
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Incorrect phone number")
     private String phone;
 
     @NotBlank
     @Column(unique = true, nullable = false)
-    @Email(message = "Некорректный email")
+    @Email(message = "Incorrect email")
     private String email;
 
     @OneToOne()
@@ -43,7 +43,7 @@ public class UserJpaEntity extends Base_entity {
     private CompanyJpaEntity company;
 
     @Column(name = "password")
-    @NotBlank(message = "Пароль не может быть пустым")
+    @NotBlank(message = "Password cant be empty")
     private String password;
 
     public String getName() {

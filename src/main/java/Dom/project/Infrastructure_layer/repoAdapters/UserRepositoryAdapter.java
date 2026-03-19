@@ -2,7 +2,10 @@ package Dom.project.Infrastructure_layer.repoAdapters;
 
 import java.util.Optional;
 
+import Dom.project.Domain_layer.exception.DomainException;
 import Dom.project.Infrastructure_layer.entity.AddressJpaEntity;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
@@ -12,8 +15,8 @@ import Dom.project.Infrastructure_layer.entity.UserJpaEntity;
 import Dom.project.Infrastructure_layer.mappers.UserMapper;
 
 @Component
-public class UserRepositoryAdapter implements IUserRepository { 
-    private final SpringDataUserRepository _jpaRepository; 
+public class UserRepositoryAdapter implements IUserRepository {
+    private final SpringDataUserRepository _jpaRepository;
     private final UserMapper _mapper;
 
     public UserRepositoryAdapter(SpringDataUserRepository jpaRepository, UserMapper mapper) {
@@ -21,22 +24,31 @@ public class UserRepositoryAdapter implements IUserRepository {
         _mapper = mapper;
     }
 
+    @Transactional
     @Override
     public User save(User user) {
-         System.out.println("========== UserRepositoryAdapter.save ==========");
-        System.out.println("1. Received user with email: " + user.getEmail());
-        System.out.println("2. User password: '" + user.getPassword() + "'");
+        try {
+            System.out.println("========== UserRepositoryAdapter.save ==========");
+            System.out.println("1. Received user with email: " + user.getEmail());
+            System.out.println("2. User password: '" + user.getPassword() + "'");
 
-        UserJpaEntity entity = _mapper.toEntity(user);
-        System.out.println("3. After toEntity - entity password: '" + (entity != null ? entity.getPassword() : "NULL ENTITY") + "'");
+            UserJpaEntity entity = _mapper.toEntity(user);
+            System.out.println("3. After toEntity - entity password: '" + (entity != null ? entity.getPassword() : "NULL ENTITY") + "'");
 
-        UserJpaEntity saved = _jpaRepository.save(entity);
-        System.out.println("4. After DB save - saved password: '" + saved.getPassword() + "'");
-        User result = _mapper.toDomain(saved);
-        System.out.println("5. Final result password: '" + result.getPassword() + "'");
-        System.out.println("==================================================");
+            UserJpaEntity saved = _jpaRepository.save(entity);
+            System.out.println("4. After DB save - saved password: '" + saved.getPassword() + "'");
+            User result = _mapper.toDomain(saved);
+            System.out.println("5. Final result password: '" + result.getPassword() + "'");
+            System.out.println("==================================================");
 
-        return result;
+            return result;
+        } catch (DomainException e) {
+            System.out.println("Errror while saving, " + e.toString());
+            throw e;
+        } catch (EntityNotFoundException e){
+            System.out.println("Not found exception, " + e.toString());
+            throw e;
+        }
 }
    
     @Override

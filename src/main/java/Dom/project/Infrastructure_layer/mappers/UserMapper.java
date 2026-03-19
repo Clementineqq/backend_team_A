@@ -36,6 +36,7 @@ public class UserMapper {
 
         userJpa.setID(user.getId());
         userJpa.setDateCreate(user.getCreatedAt());
+        userJpa.setPassword(user.getPassword());
         userJpa.setDateUpdate(user.getUpdatedAt());
         userJpa.setEmail(user.getEmail());
         userJpa.setPhone(user.getPhone_number());
