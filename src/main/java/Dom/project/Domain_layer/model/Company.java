@@ -1,11 +1,14 @@
 package Dom.project.Domain_layer.model;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 import Dom.project.Domain_layer.exception.InvalidAddressException;
 import Dom.project.Domain_layer.exception.InvalidCompanyException;
 import Dom.project.Domain_layer.exception.InvalidUserException;
-
-import java.time.LocalDateTime;
-import java.util.*;
 
 public class Company {
     private Long id;
@@ -18,7 +21,7 @@ public class Company {
     private String email;
     private List<User> members;
     private List<User> workers;
-
+    
 
     //Конструкторы
     public Company() {
@@ -301,6 +304,22 @@ public class Company {
         setUpdatedAt();
     }
 
+    private String password;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        if (password == null || password.trim().isEmpty()) {
+            throw InvalidCompanyException.passwordCannotBeEmpty();
+        }
+        if (password.length() < 6) {
+            throw InvalidCompanyException.passwordTooShort(6);
+        }
+        this.password = password;
+        setUpdatedAt();
+    }
 
     @Override
     public boolean equals(Object o) {

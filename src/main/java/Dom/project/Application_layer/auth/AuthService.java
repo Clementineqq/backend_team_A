@@ -2,19 +2,19 @@ package Dom.project.Application_layer.auth;
 
 import java.util.Optional;
 
-import Dom.project.Domain_layer.interfaces.repository.IAddressRepository;
-import Dom.project.Domain_layer.interfaces.repository.ICompanyRepository;
-
-import Dom.project.Domain_layer.model.Address;
-import Dom.project.Web_layer.auth.dto.AddressDto;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import Dom.project.Domain_layer.exception.InvalidUserException;
+import Dom.project.Domain_layer.interfaces.repository.IAddressRepository;
+import Dom.project.Domain_layer.interfaces.repository.ICompanyRepository;
 import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
+import Dom.project.Domain_layer.model.Address;
+import Dom.project.Domain_layer.model.Company;
 import Dom.project.Domain_layer.model.User;
+import Dom.project.Web_layer.auth.dto.AddressDto;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class AuthService {
@@ -86,4 +86,38 @@ public class AuthService {
         System.out.println("выход из userId: " + userId);
         
     }
+
+public User loginCompany(String email, String password) {
+    System.out.println("логин компании");
+    
+    // Находим компанию по email
+    Optional<Company> companyOpt = companyRepository.findByEmail(email);
+    if (companyOpt.isEmpty()) {
+        throw InvalidUserException.userNotFoundByEmail(email); // или создать CompanyNotFoundException
+    }
+    
+    Company company = companyOpt.get();
+    
+    // Создаем временного пользователя для компании
+    // Это нужно, чтобы использовать существующую JWT логику
+    User companyUser = new User();
+    companyUser.setEmail(company.getEmail());
+    companyUser.setPassword(company.getPassword()); // если у компании есть пароль
+    companyUser.setName(company.getName());
+    companyUser.setLastName(""); // или "Company"
+    
+    // Проверяем пароль (если у компании есть пароль)
+    if (!passwordEncoder.matches(password, companyUser.getPassword())) {
+        throw InvalidUserException.incorrectPassword();
+    }
+    
+    return companyUser;
+}
+
+
+
+
+
+
+
 }

@@ -34,6 +34,10 @@ public class CompanyRepositoryAdapter implements ICompanyRepository {
     public Optional<Company> findById(Long id) {
         return _jpaRepository.findById(id).map(_mapper::toDomain);
     }
+    @Override
+    public Optional<Company> findByEmail(String email) {
+        return _jpaRepository.findByEmail(email).map(_mapper::toDomain);
+    }
 
     public Optional<CompanyJpaEntity> findJpaById(Long id) {
         return _jpaRepository.findById(id);
