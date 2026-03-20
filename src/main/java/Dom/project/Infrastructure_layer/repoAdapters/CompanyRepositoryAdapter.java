@@ -1,15 +1,14 @@
 package Dom.project.Infrastructure_layer.repoAdapters;
 
-import Dom.project.Domain_layer.interfaces.repository.IAddressRepository;
+import java.util.Optional;
+
+import org.springframework.stereotype.Component;
+
 import Dom.project.Domain_layer.interfaces.repository.ICompanyRepository;
 import Dom.project.Domain_layer.model.Company;
 import Dom.project.Infrastructure_layer.JpaRepo.SpringDataCompanyRepository;
-import Dom.project.Infrastructure_layer.entity.AddressJpaEntity;
 import Dom.project.Infrastructure_layer.entity.CompanyJpaEntity;
 import Dom.project.Infrastructure_layer.mappers.CompanyMapper;
-import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class CompanyRepositoryAdapter implements ICompanyRepository {
@@ -42,4 +41,8 @@ public class CompanyRepositoryAdapter implements ICompanyRepository {
     public Optional<CompanyJpaEntity> findJpaById(Long id) {
         return _jpaRepository.findById(id);
     }
+
+    
+
+
 }

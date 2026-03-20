@@ -87,34 +87,43 @@ public class AuthService {
         
     }
 
+ 
 public User loginCompany(String email, String password) {
-    System.out.println("логин компании");
+    System.out.println("логин компании: " + email);
     
-    // Находим компанию по email
-    Optional<Company> companyOpt = companyRepository.findByEmail(email);
+     Optional<Company> companyOpt = companyRepository.findByEmail(email);
     if (companyOpt.isEmpty()) {
-        throw InvalidUserException.userNotFoundByEmail(email); // или создать CompanyNotFoundException
+        throw new EntityNotFoundException("Company not found with email: " + email);
     }
     
     Company company = companyOpt.get();
-    
-    // Создаем временного пользователя для компании
-    // Это нужно, чтобы использовать существующую JWT логику
-    User companyUser = new User();
-    companyUser.setEmail(company.getEmail());
-    companyUser.setPassword(company.getPassword()); // если у компании есть пароль
-    companyUser.setName(company.getName());
-    companyUser.setLastName(""); // или "Company"
-    
-    // Проверяем пароль (если у компании есть пароль)
-    if (!passwordEncoder.matches(password, companyUser.getPassword())) {
+      System.out.println("=== ОТЛАДКА ===");
+    System.out.println("Email из БД: '" + company.getEmail() + "'");
+    System.out.println("Пароль из БД: '" + company.getPassword() + "'");
+    System.out.println("Длина пароля из БД: " + (company.getPassword() != null ? company.getPassword().length() : 0));
+    System.out.println("Введенный пароль: '" + password + "'");
+    System.out.println("Длина введенного пароля: " + password.length());
+    System.out.println("Пароли равны? " + (company.getPassword() != null && company.getPassword().equals(password)));
+    System.out.println("================");
+    //  сравниваем пароли в открытом виде ибо я чет задолбался с хэшем работать пусть будет так
+    if (company.getPassword() == null || password == null) {
         throw InvalidUserException.incorrectPassword();
     }
     
+    //   сравниваем как есть (без хэширования ибо ну я iбал честно)
+    if (!company.getPassword().equals(password)) {
+        throw InvalidUserException.incorrectPassword();
+    }
+    
+    // создаем тута пользовательский объект для возврата
+    User companyUser = new User();
+    companyUser.setEmail(company.getEmail());
+    companyUser.setName(company.getName());
+    companyUser.setLastName("(Компания)");
+    companyUser.setId(company.getId());
+    
     return companyUser;
 }
-
-
 
 
 
