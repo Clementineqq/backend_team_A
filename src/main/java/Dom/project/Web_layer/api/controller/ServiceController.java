@@ -64,10 +64,9 @@ public class ServiceController {
         return ResponseEntity.noContent().build();
     }
 
-    // GET /api/service/company_profile
-    @GetMapping("/company_profile")
-    public ResponseEntity<CompanyProfileDto> getCompanyProfile() {
-        CompanyProfileDto profile = companyService.getCompanyProfile();
+    @GetMapping("/company_profile/{companyId}")
+    public ResponseEntity<CompanyProfileDto> getCompanyProfileById(@PathVariable Long companyId) {
+        CompanyProfileDto profile = companyService.getCompanyById(companyId);
         return ResponseEntity.ok(profile);
     }
 

@@ -7,4 +7,5 @@ import java.util.Optional;
 public interface ICounterRepository {
     Counter save(Counter counter);
     Optional<Counter> findById(Long id);
+    Object findByUserId(Long id);
 }
