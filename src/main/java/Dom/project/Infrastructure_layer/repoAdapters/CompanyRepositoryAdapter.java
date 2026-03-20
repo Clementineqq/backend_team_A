@@ -2,6 +2,8 @@ package Dom.project.Infrastructure_layer.repoAdapters;
 
 import java.util.Optional;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import Dom.project.Domain_layer.interfaces.repository.ICompanyRepository;
@@ -14,15 +16,22 @@ import Dom.project.Infrastructure_layer.mappers.CompanyMapper;
 public class CompanyRepositoryAdapter implements ICompanyRepository {
     private CompanyMapper _mapper;
     private SpringDataCompanyRepository _jpaRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public CompanyRepositoryAdapter(CompanyMapper mapper, SpringDataCompanyRepository jpaRepository) {
         _mapper = mapper;
         _jpaRepository = jpaRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
 
     @Override
     public Company save(Company company) {
+         if (company.getPassword() != null && !company.getPassword().isEmpty()) {
+            String hashedPassword = passwordEncoder.encode(company.getPassword());
+            company.setPassword(hashedPassword);
+        }
+
         CompanyJpaEntity entity = _mapper.toEntity(company);
         CompanyJpaEntity saved = _jpaRepository.save(entity);
 

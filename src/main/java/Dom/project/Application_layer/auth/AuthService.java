@@ -105,13 +105,12 @@ public User loginCompany(String email, String password) {
     System.out.println("Длина введенного пароля: " + password.length());
     System.out.println("Пароли равны? " + (company.getPassword() != null && company.getPassword().equals(password)));
     System.out.println("================");
-    //  сравниваем пароли в открытом виде ибо я чет задолбался с хэшем работать пусть будет так
+    
     if (company.getPassword() == null || password == null) {
         throw InvalidUserException.incorrectPassword();
     }
     
-    //   сравниваем как есть (без хэширования ибо ну я iбал честно)
-    if (!company.getPassword().equals(password)) {
+    if (!passwordEncoder.matches(password, company.getPassword())) {
         throw InvalidUserException.incorrectPassword();
     }
     
