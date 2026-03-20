@@ -3,12 +3,10 @@ package Dom.project.Infrastructure_layer.repoAdapters;
 import Dom.project.Domain_layer.interfaces.repository.ICounterRepository;
 import Dom.project.Domain_layer.model.Counter;
 import Dom.project.Infrastructure_layer.JpaRepo.SpringDataCounterRepository;
-import Dom.project.Infrastructure_layer.entity.AddressJpaEntity;
 import Dom.project.Infrastructure_layer.entity.CounterJpaEntity;
 import Dom.project.Infrastructure_layer.mappers.CounterMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -30,6 +28,11 @@ public class CounterRepositoryAdapter implements ICounterRepository {
 
     @Override
     public Optional<Counter> findById(Long id) {
+        return _jpaRepository.findById(id).map(_mapper::toDomain);
+    }
+
+    @Override
+    public Object findByUserId(Long id) {
         return _jpaRepository.findById(id).map(_mapper::toDomain);
     }
 

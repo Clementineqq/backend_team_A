@@ -3,10 +3,8 @@ package Dom.project.Domain_layer.model;
 import Dom.project.Domain_layer.enums.RequestStatus;
 import Dom.project.Domain_layer.exception.InvalidTaskException;
 import Dom.project.Domain_layer.exception.InvalidUserException;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Objects;
 
 public class ServiceRequest {
@@ -124,7 +122,7 @@ public class ServiceRequest {
     public User getAssigner() { return assigner; }
     public LocalDateTime getCompletedAt() { return completedAt; }
 
-
+    public String getStringRequestStatus() { return  requestStatus.toString(); }
 
 
 

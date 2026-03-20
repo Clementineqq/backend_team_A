@@ -42,4 +42,7 @@ public class UserCountersDto {
 
     public UserProfileDto getUserProfileDto() { return userProfileDto; }
     public void setUserProfileDto(UserProfileDto userProfileDto) { this.userProfileDto = userProfileDto; }
+
+    public void setId(Long id) { this.id = id;}
+    public Long getId() {return id;}
 }

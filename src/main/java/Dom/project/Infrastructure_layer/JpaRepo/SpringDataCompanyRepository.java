@@ -1,8 +1,11 @@
 package Dom.project.Infrastructure_layer.JpaRepo;
 
-import Dom.project.Infrastructure_layer.entity.CompanyJpaEntity;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SpringDataCompanyRepository extends JpaRepository<CompanyJpaEntity, Long> {
+import Dom.project.Infrastructure_layer.entity.CompanyJpaEntity;
 
+public interface SpringDataCompanyRepository extends JpaRepository<CompanyJpaEntity, Long> {
+    Optional<CompanyJpaEntity> findByEmail(String email);   
 }

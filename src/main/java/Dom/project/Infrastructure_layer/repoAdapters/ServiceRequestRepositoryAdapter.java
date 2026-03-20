@@ -8,6 +8,7 @@ import Dom.project.Infrastructure_layer.entity.ServiceRequestJpaEntity;
 import Dom.project.Infrastructure_layer.mappers.ServiceRequestMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -30,6 +31,16 @@ public class ServiceRequestRepositoryAdapter implements IServiceRequestRepositor
     @Override
     public Optional<ServiceRequest> findById(Long id) {
         return _jpaRepository.findById(id).map(_mapper::toDomain);
+    }
+
+    @Override
+    public List<ServiceRequest> findByCreatorId(Long id) {
+        return List.of();
+    }
+
+    @Override
+    public void delete(ServiceRequest serviceRequest) {
+
     }
 
     public Optional<ServiceRequestJpaEntity> findJpaById(Long id) {

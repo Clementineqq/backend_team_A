@@ -2,19 +2,19 @@ package Dom.project.Application_layer.auth;
 
 import java.util.Optional;
 
-import Dom.project.Domain_layer.interfaces.repository.IAddressRepository;
-import Dom.project.Domain_layer.interfaces.repository.ICompanyRepository;
-
-import Dom.project.Domain_layer.model.Address;
-import Dom.project.Web_layer.auth.dto.AddressDto;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import Dom.project.Domain_layer.exception.InvalidUserException;
+import Dom.project.Domain_layer.interfaces.repository.IAddressRepository;
+import Dom.project.Domain_layer.interfaces.repository.ICompanyRepository;
 import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
+import Dom.project.Domain_layer.model.Address;
+import Dom.project.Domain_layer.model.Company;
 import Dom.project.Domain_layer.model.User;
+import Dom.project.Web_layer.auth.dto.AddressDto;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class AuthService {
@@ -88,4 +88,46 @@ public class AuthService {
         System.out.println("выход из userId: " + userId);
         
     }
+
+ 
+public User loginCompany(String email, String password) {
+    System.out.println("логин компании: " + email);
+    
+     Optional<Company> companyOpt = companyRepository.findByEmail(email);
+    if (companyOpt.isEmpty()) {
+        throw new EntityNotFoundException("Company not found with email: " + email);
+    }
+    
+    Company company = companyOpt.get();
+      System.out.println("=== ОТЛАДКА ===");
+    System.out.println("Email из БД: '" + company.getEmail() + "'");
+    System.out.println("Пароль из БД: '" + company.getPassword() + "'");
+    System.out.println("Длина пароля из БД: " + (company.getPassword() != null ? company.getPassword().length() : 0));
+    System.out.println("Введенный пароль: '" + password + "'");
+    System.out.println("Длина введенного пароля: " + password.length());
+    System.out.println("Пароли равны? " + (company.getPassword() != null && company.getPassword().equals(password)));
+    System.out.println("================");
+    
+    if (company.getPassword() == null || password == null) {
+        throw InvalidUserException.incorrectPassword();
+    }
+    
+    if (!passwordEncoder.matches(password, company.getPassword())) {
+        throw InvalidUserException.incorrectPassword();
+    }
+    
+    // создаем тута пользовательский объект для возврата
+    User companyUser = new User();
+    companyUser.setEmail(company.getEmail());
+    companyUser.setName(company.getName());
+    companyUser.setLastName("(Компания)");
+    companyUser.setId(company.getId());
+    
+    return companyUser;
+}
+
+
+
+
+
 }
