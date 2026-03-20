@@ -1,20 +1,22 @@
 package Dom.project.Application_layer.api;
 
-import Dom.project.Web_layer.api.dto.UserRequestDto;
-import Dom.project.Domain_layer.interfaces.repository.IServiceRequestRepository;
-import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
-import Dom.project.Domain_layer.model.ServiceRequest;
-import Dom.project.Domain_layer.model.User;
-import Dom.project.Domain_layer.enums.RequestStatus;
-import Dom.project.Domain_layer.exception.DomainException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import Dom.project.Domain_layer.enums.RequestStatus;
+import Dom.project.Domain_layer.exception.DomainException;
+import Dom.project.Domain_layer.interfaces.repository.IServiceRequestRepository;
+import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
+import Dom.project.Domain_layer.model.ServiceRequest;
+import Dom.project.Domain_layer.model.User;
+import Dom.project.Web_layer.api.dto.ServiceRequestDto;
+import Dom.project.Web_layer.api.dto.UserRequestDto;
 
 @Service
 public class RequestApplicationService {
@@ -120,4 +122,20 @@ public class RequestApplicationService {
 
         return dto;
     }
+
+    public List<ServiceRequestDto> getAllRequests() {
+    // Временная заглушка
+    return new ArrayList<>();
+}
+
+    public ServiceRequestDto getRequestById(Long id) {
+        // Временная заглушка
+        return null;
+    }
+
+    public ServiceRequestDto updateRequestStatus(Long id, String status) {
+        // Временная заглушка
+        return null;
+    }
+
 }

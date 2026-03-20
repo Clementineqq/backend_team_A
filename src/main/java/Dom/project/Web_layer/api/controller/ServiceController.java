@@ -1,16 +1,24 @@
 package Dom.project.Web_layer.api.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import Dom.project.Application_layer.api.CompanyApplicationService;
+import Dom.project.Application_layer.api.RequestApplicationService;
+import Dom.project.Application_layer.api.WorkerApplicationService;
 import Dom.project.Web_layer.api.dto.CompanyProfileDto;
 import Dom.project.Web_layer.api.dto.ServiceRequestDto;
 import Dom.project.Web_layer.api.dto.WorkerDto;
-import Dom.project.Application_layer.api.WorkerApplicationService;
-import Dom.project.Application_layer.api.CompanyApplicationService;
-import Dom.project.Application_layer.api.RequestApplicationService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/service")
@@ -28,6 +36,8 @@ public class ServiceController {
         this.requestService = requestService;
     }
 
+
+     
     // GET /api/service/workers
     @GetMapping("/workers")
     public ResponseEntity<List<WorkerDto>> getWorkers() {
@@ -77,22 +87,27 @@ public class ServiceController {
         CompanyProfileDto updated = companyService.updateCompanyProfile(profileDto);
         return ResponseEntity.ok(updated);
     }
-
+ 
     // GET /api/service/requests
     @GetMapping("/requests")
-    public ResponseEntity<List<ServiceRequestDto>> getServiceRequests() {
-        List<ServiceRequestDto> requests = requestService.getAllRequests();
+    public ResponseEntity<List<ServiceRequestDto>> getServiceRequests() {  //     public ResponseEntity<List<ServiceRequestDto>> getServiceRequests() {
+
+        List<ServiceRequestDto> requests = requestService.getAllRequests();  //        List<ServiceRequestDto> requests = requestService.getAllRequests();
+
         return ResponseEntity.ok(requests);
     }
 
     // GET /api/service/requests/{id}
-    @GetMapping("/requests/{id}")
+  @GetMapping("/requests/{id}")
     public ResponseEntity<ServiceRequestDto> getServiceRequestById(@PathVariable Long id) {
         ServiceRequestDto request = requestService.getRequestById(id);
         return ResponseEntity.ok(request);
     }
 
-    // PUT /api/service/requests/{id}/status
+
+
+
+     // PUT /api/service/requests/{id}/status
     @PutMapping("/requests/{id}/status")
     public ResponseEntity<ServiceRequestDto> updateRequestStatus(
             @PathVariable Long id,
@@ -100,4 +115,8 @@ public class ServiceController {
         ServiceRequestDto updated = requestService.updateRequestStatus(id, status);
         return ResponseEntity.ok(updated);
     }
+
+   
+
+
 }
