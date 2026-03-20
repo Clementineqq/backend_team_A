@@ -1,5 +1,6 @@
 package Dom.project.Infrastructure_layer.repoAdapters;
 
+import java.util.List;
 import java.util.Optional;
 
 import Dom.project.Domain_layer.exception.DomainException;
@@ -64,6 +65,21 @@ public class UserRepositoryAdapter implements IUserRepository {
     @Override
     public Optional<User> findByPhone(String phonenumber) {
         return _jpaRepository.findByPhone(phonenumber).map(_mapper::toDomain);
+    }
+
+    @Override
+    public List<User> findByCompanyId(Long companyId) {
+        return List.of();
+    }
+
+    @Override
+    public void delete(User user) {
+
+    }
+
+    @Override
+    public List<User> findAllWithCompany() {
+        return List.of();
     }
 
     public Optional<UserJpaEntity> findJpaById(Long id) {

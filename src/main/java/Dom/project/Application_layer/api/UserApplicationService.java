@@ -1,5 +1,6 @@
 package Dom.project.Application_layer.api;
 
+import Dom.project.Domain_layer.exception.DomainException;
 import Dom.project.Domain_layer.model.Address;
 import Dom.project.Infrastructure_layer.repoAdapters.UserRepositoryAdapter;
 import Dom.project.Web_layer.api.dto.UserCountersDto;
@@ -98,7 +99,8 @@ public class UserApplicationService {
 
         String email = authentication.getPrincipal().toString();
 
-        return this.userRepositoryAdapter.findByEmail(email).get();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new DomainException("Текущий пользователь не найден"));
     }
 
     private UserProfileDto convertToUserProfileDto(User user) {

@@ -43,6 +43,11 @@ public class ServiceRequestRepositoryAdapter implements IServiceRequestRepositor
 
     }
 
+    @Override
+    public List<ServiceRequest> findByCompanyId(Long companyId) {
+        return List.of();
+    }
+
     public Optional<ServiceRequestJpaEntity> findJpaById(Long id) {
         return _jpaRepository.findById(id);
     }

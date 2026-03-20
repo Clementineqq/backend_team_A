@@ -1,22 +1,21 @@
 package Dom.project.Application_layer.api;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import Dom.project.Web_layer.api.dto.ServiceRequestDto;
+import Dom.project.Web_layer.api.dto.UserRequestDto;
+import Dom.project.Domain_layer.interfaces.repository.IServiceRequestRepository;
+import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
+import Dom.project.Domain_layer.model.ServiceRequest;
+import Dom.project.Domain_layer.model.User;
+import Dom.project.Domain_layer.enums.RequestStatus;
+import Dom.project.Domain_layer.exception.DomainException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import Dom.project.Domain_layer.enums.RequestStatus;
-import Dom.project.Domain_layer.exception.DomainException;
-import Dom.project.Domain_layer.interfaces.repository.IServiceRequestRepository;
-import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
-import Dom.project.Domain_layer.model.ServiceRequest;
-import Dom.project.Domain_layer.model.User;
-import Dom.project.Web_layer.api.dto.ServiceRequestDto;
-import Dom.project.Web_layer.api.dto.UserRequestDto;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RequestApplicationService {
@@ -89,12 +88,92 @@ public class RequestApplicationService {
         serviceRequestRepository.delete(serviceRequest);
     }
 
+    public List<ServiceRequestDto> getAllRequests() {
+        User currentUser = getCurrentUser();
+        if (currentUser.getCompany() == null) {
+            throw new DomainException("Текущий пользователь не состоит в компании");
+        }
+        // Получаем все запросы всех сотрудников компании
+        List<ServiceRequest> requests = serviceRequestRepository.findByCompanyId(currentUser.getCompany().getId());
+        return requests.stream()
+                .map(this::convertToServiceRequestDto)
+                .collect(Collectors.toList());
+    }
+
+    public ServiceRequestDto getRequestById(Long id) {
+        ServiceRequest request = serviceRequestRepository.findById(id)
+                .orElseThrow(() -> new DomainException("Запрос не найден"));
+
+        User currentUser = getCurrentUser();
+        boolean isCreator = request.getCreator() != null && request.getCreator().getId().equals(currentUser.getId());
+        boolean isAssignee = request.getAssigner() != null && request.getAssigner().getId().equals(currentUser.getId());
+        boolean sameCompany = currentUser.getCompany() != null &&
+                request.getCreator() != null &&
+                currentUser.getCompany().getId().equals(request.getCreator().getCompany().getId());
+
+        if (!isCreator && !isAssignee && !sameCompany) {
+            throw new DomainException("Нет доступа к этому запросу");
+        }
+
+        return convertToServiceRequestDto(request);
+    }
+
+
+    @Transactional
+    public ServiceRequestDto updateRequestStatus(Long id, String statusStr) {
+        ServiceRequest request = serviceRequestRepository.findById(id)
+                .orElseThrow(() -> new DomainException("Запрос не найден"));
+
+        User currentUser = getCurrentUser();
+        if (currentUser.getCompany() == null ||
+                (request.getCreator() != null && !currentUser.getCompany().getId().equals(request.getCreator().getCompany().getId()))) {
+            throw new DomainException("Нет прав на изменение статуса запроса");
+        }
+
+        RequestStatus newStatus;
+        try {
+            newStatus = RequestStatus.valueOf(statusStr);
+        } catch (IllegalArgumentException e) {
+            throw new DomainException("Некорректный статус: " + statusStr);
+        }
+
+        if (newStatus == RequestStatus.InProgress && request.getAssigner() == null) {
+            request.setAssigner(currentUser);
+        }
+        if (newStatus == RequestStatus.Completed && request.getCompletedAt() == null) {
+            request.setCompletedAt(LocalDateTime.now());
+        }
+
+        request.setRequestStatus(newStatus);
+        ServiceRequest updated = serviceRequestRepository.save(request);
+        return convertToServiceRequestDto(updated);
+    }
+
+    // --- Вспомогательные методы ---
+
     private User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getPrincipal().toString();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new DomainException("Пользователь не найден"));
+    }
 
-        String email = authentication.getPrincipal().toString();
-
-        return this.userRepositoryAdapter.findByEmail(email).get();
+    private ServiceRequestDto convertToServiceRequestDto(ServiceRequest request) {
+        ServiceRequestDto dto = new ServiceRequestDto();
+        dto.setId(request.getId());
+        dto.setTitle(request.getTitle());
+        dto.setDescription(request.getDescription());
+        dto.setStatus(request.getRequestStatus().toString());
+        if (request.getCreator() != null) {
+            dto.setCreator(request.getCreator().getFullName());
+        }
+        if (request.getAssigner() != null) {
+            dto.setAssigner(request.getAssigner().getFullName());
+        }
+        dto.setCreatedAt(request.getCreatedAt());
+        dto.setUpdatedAt(request.getUpdatedAt());
+        dto.setCompletedAt(request.getCompletedAt());
+        return dto;
     }
 
     private UserRequestDto convertToUserRequestDto(ServiceRequest serviceRequest) {
@@ -122,20 +201,4 @@ public class RequestApplicationService {
 
         return dto;
     }
-
-    public List<ServiceRequestDto> getAllRequests() {
-    // Временная заглушка
-    return new ArrayList<>();
-}
-
-    public ServiceRequestDto getRequestById(Long id) {
-        // Временная заглушка
-        return null;
-    }
-
-    public ServiceRequestDto updateRequestStatus(Long id, String status) {
-        // Временная заглушка
-        return null;
-    }
-
 }
