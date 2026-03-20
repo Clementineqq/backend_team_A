@@ -3,66 +3,75 @@ package Dom.project.Web_layer.api.controller;
 import Dom.project.Web_layer.api.dto.UserCountersDto;
 import Dom.project.Web_layer.api.dto.UserProfileDto;
 import Dom.project.Web_layer.api.dto.UserRequestDto;
-import Dom.project.Web_layer.api.dto.*;
+import Dom.project.Application_layer.api.UserApplicationService;
+import Dom.project.Application_layer.api.RequestApplicationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
+    private final UserApplicationService userService;
+    private final RequestApplicationService userRequestService;
+
+    public UserController(UserApplicationService userService,
+                          RequestApplicationService userRequestService) {
+        this.userService = userService;
+        this.userRequestService = userRequestService;
+    }
+
     // GET /api/users/counters
     @GetMapping("/counters")
-    public String getUserCounters() {
-
-        return "Счетчики";
+    public ResponseEntity<List<UserCountersDto>> getUserCounters() {
+        List<UserCountersDto> counters = userService.getUserCounters();
+        return ResponseEntity.ok(counters);
     }
 
     // GET /api/users/profile
     @GetMapping("/profile")
-    public String getUserProfile() {
-
-        return "Профиль пользователя";
+    public ResponseEntity<UserProfileDto> getUserProfile() {
+        UserProfileDto profile = userService.getCurrentUserProfile();
+        return ResponseEntity.ok(profile);
     }
 
     // PUT /api/users/profile
     @PutMapping("/profile")
-    public String updateUserProfile(
+    public ResponseEntity<UserProfileDto> updateUserProfile(
             @RequestBody UserProfileDto profileDto) {
-
-        return "Изменения в профиле";
+        UserProfileDto updated = userService.updateUserProfile(profileDto);
+        return ResponseEntity.ok(updated);
     }
 
     // GET /api/users/requests
     @GetMapping("/requests")
-    public String getUserRequests() {
-
-
-        return "Запросы";
+    public ResponseEntity<List<UserRequestDto>> getUserRequests() {
+        List<UserRequestDto> requests = userRequestService.getCurrentUserRequests();
+        return ResponseEntity.ok(requests);
     }
 
     // POST /api/users/requests
     @PostMapping("/requests")
-    public String createUserRequest(
+    public ResponseEntity<UserRequestDto> createUserRequest(
             @RequestBody UserRequestDto requestDto) {
-
-        return "Новый Запрос";
+        UserRequestDto created = userRequestService.createUserRequest(requestDto);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     // GET /api/users/requests/{id}
     @GetMapping("/requests/{id}")
-    public String getUserRequestById(@PathVariable Long id) {
-
-        return "Id реквеста";
+    public ResponseEntity<UserRequestDto> getUserRequestById(@PathVariable Long id) {
+        UserRequestDto request = userRequestService.getUserRequestById(id);
+        return ResponseEntity.ok(request);
     }
 
     // DELETE /api/users/requests/{id}
     @DeleteMapping("/requests/{id}")
     public ResponseEntity<Void> deleteUserRequest(@PathVariable Long id) {
+        userRequestService.deleteUserRequest(id);
         return ResponseEntity.noContent().build();
     }
 }
