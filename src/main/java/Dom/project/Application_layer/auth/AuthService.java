@@ -44,6 +44,8 @@ public class AuthService {
         String hashedPassword = passwordEncoder.encode(password);
         User user = new User(phone, email, hashedPassword, name, surname);
 
+        //TODO: добавить роль
+
         Address domainAddress = new Address(
                 address.getStreet(),
                 address.getHouse(),
