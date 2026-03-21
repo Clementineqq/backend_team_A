@@ -4,39 +4,39 @@ import Dom.project.Domain_layer.enums.RequestStatus;
 import Dom.project.Domain_layer.exception.InvalidTaskException;
 import Dom.project.Domain_layer.exception.InvalidUserException;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class serviceTask {
+public class ServiceRequest {
     private Long id;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private String title;
     private String description;
     private RequestStatus requestStatus;
     private User creator;
     private User assigner;
-    private Date completedAt;
+    private LocalDateTime completedAt;
 
-    public serviceTask() {
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
+    public ServiceRequest() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
         this.requestStatus = RequestStatus.Created;
         this.completedAt = null;
     }
 
-    public serviceTask(String title, User creator) {
+    public ServiceRequest(String title, User creator) {
         this();
         setTitle(title);
         setCreator(creator);
     }
 
-    public serviceTask(String title, String description, User creator) {
+    public ServiceRequest(String title, String description, User creator) {
         this(title, creator);
         setDescription(description);
     }
 
-    public serviceTask(Long id, String title, User creator) {
+    public ServiceRequest(Long id, String title, User creator) {
         this(title, creator);
         this.id = id;
     }
@@ -50,19 +50,19 @@ public class serviceTask {
         setUpdatedAt();
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         if (createdAt == null) {
             throw new IllegalArgumentException("Created date cannot be null");
         }
         this.createdAt = createdAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt != null ? updatedAt : new Date();
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
     }
 
     private void setUpdatedAt() {
-        this.updatedAt = new Date();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void setTitle(String title) {
@@ -106,28 +106,28 @@ public class serviceTask {
         setUpdatedAt();
     }
 
-    public void setCompletedAt(Date completedAt) {
+    public void setCompletedAt(LocalDateTime completedAt) {
         this.completedAt = completedAt;
         setUpdatedAt();
     }
 
     // Геттеры
     public Long getId() { return id; }
-    public Date getCreatedAt() { return createdAt; }
-    public Date getUpdatedAt() { return updatedAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
     public String getTitle() { return title; }
     public String getDescription() { return description; }
     public RequestStatus getRequestStatus() { return requestStatus; }
     public User getCreator() { return creator; }
     public User getAssigner() { return assigner; }
-    public Date getCompletedAt() { return completedAt; }
+    public LocalDateTime getCompletedAt() { return completedAt; }
+
+    public String getStringRequestStatus() { return  requestStatus.toString(); }
 
 
 
-
-
-    public serviceTask copy() {
-        serviceTask copy = new serviceTask();
+    public ServiceRequest copy() {
+        ServiceRequest copy = new ServiceRequest();
         copy.setId(this.id);
         copy.setTitle(this.title);
         copy.setDescription(this.description);
@@ -150,7 +150,7 @@ public class serviceTask {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        serviceTask that = (serviceTask) o;
+        ServiceRequest that = (ServiceRequest) o;
         return Objects.equals(id, that.id) ||
                 (Objects.equals(title, that.title) &&
                         Objects.equals(creator, that.creator) &&

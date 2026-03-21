@@ -7,28 +7,26 @@ public class UserRequestDto {
     private String title;
     private String description;
     private String status;
-    private String creator;
-    private String assigner;
-    private String resolutionComment;
+    private Long creatorId;
+    private String creatorName;
+    private String creatorEmail;
+    private Long assigneeId;
+    private String assigneeName;
+    private String assigneeEmail;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime completedAt;
 
     public UserRequestDto() {}
 
-    public UserRequestDto(Long id, String title, String description, String status, String creator,
-                          String assigner, String resolutionComment, LocalDateTime createdAt, LocalDateTime updatedAt,
-                          LocalDateTime completedAt) {
+    public UserRequestDto(Long id, String title, String description,
+                          String status, Long creatorId, String creatorName) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
-        this.creator = creator;
-        this.assigner = assigner;
-        this.resolutionComment = resolutionComment;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.completedAt = completedAt;
+        this.creatorId = creatorId;
+        this.creatorName = creatorName;
     }
 
     // Геттеры и сеттеры
@@ -44,14 +42,23 @@ public class UserRequestDto {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public String getCreator() { return creator; }
-    public void setCreator(String creator) { this.creator = creator; }
+    public Long getCreatorId() { return creatorId; }
+    public void setCreatorId(Long creatorId) { this.creatorId = creatorId; }
 
-    public String getAssigner() { return assigner; }
-    public void setAssigner(String assigner) { this.assigner = assigner; }
+    public String getCreatorName() { return creatorName; }
+    public void setCreatorName(String creatorName) { this.creatorName = creatorName; }
 
-    public String getResolutionComment() { return resolutionComment; }
-    public void setResolutionComment(String serviceRequest) { this.resolutionComment = serviceRequest; }
+    public String getCreatorEmail() { return creatorEmail; }
+    public void setCreatorEmail(String creatorEmail) { this.creatorEmail = creatorEmail; }
+
+    public Long getAssigneeId() { return assigneeId; }
+    public void setAssigneeId(Long assigneeId) { this.assigneeId = assigneeId; }
+
+    public String getAssigneeName() { return assigneeName; }
+    public void setAssigneeName(String assigneeName) { this.assigneeName = assigneeName; }
+
+    public String getAssigneeEmail() { return assigneeEmail; }
+    public void setAssigneeEmail(String assigneeEmail) { this.assigneeEmail = assigneeEmail; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

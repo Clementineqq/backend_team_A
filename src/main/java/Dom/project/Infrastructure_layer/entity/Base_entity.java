@@ -13,10 +13,10 @@ public abstract class Base_entity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ID;
 
-    @Column(name = "date_create", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime dateCreate;
 
-    @Column(name = "date_update")
+    @Column(name = "updated_at")
     private LocalDateTime dateUpdate;
 
     @PrePersist

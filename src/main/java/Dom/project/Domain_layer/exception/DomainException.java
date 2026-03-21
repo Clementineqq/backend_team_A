@@ -1,6 +1,6 @@
 package Dom.project.Domain_layer.exception;
 
-public abstract class DomainException extends RuntimeException {
+public class DomainException extends RuntimeException {
 
     private final String errorCode;
     private final String field;

@@ -8,23 +8,23 @@ import jakarta.validation.constraints.NotBlank;
 public class AddressJpaEntity extends Base_entity {
 
     @Column(name = "region")
-    @NotBlank(message = "Это поле не может быть пустым")
+    @NotBlank(message = "This field cant be empty, region")
     String region;
     @Column(name = "city")
-    @NotBlank(message = "Это поле не может быть пустым")
+    @NotBlank(message = "This field cant be empty, city")
     String city;
     @Column(name = "street")
-    @NotBlank(message = "Это поле не может быть пустым")
+    @NotBlank(message = "This field cant be empty, street")
     String street;
     @Column(name = "house")
-    @NotBlank(message = "Это поле не может быть пустым")
+    @NotBlank(message = "This field cant be empty, house")
     String house;
     @Column(name = "flat")
-    @NotBlank(message = "Это поле не может быть пустым")
+    @NotBlank(message = "This field cant be empty, flat")
     String flat;
 
-    @Column(name = "TotalArea")
-    @NotBlank(message = "Это поле не может быть пустым")
+    @Column(name = "totalarea")
+    @NotBlank(message = "This field cant be empty, totalarea")
     String totalArea;
 
     public String getRegion() {

@@ -20,11 +20,12 @@ public class AddressMapper {
         addressJpa.setRegion(address.getRegion());
         addressJpa.setCity(address.getCity());
         addressJpa.setHouse(address.getHouse());
+        addressJpa.setStreet(address.getStreet());
         addressJpa.setFlat(address.getFlat());
         addressJpa.setTotalArea(address.getTotalArea());
         addressJpa.setDateCreate(address.getCreatedAt());
         addressJpa.setDateUpdate(address.getUpdatedAt());
-        addressJpa.setID(addressJpa.getID());
+        addressJpa.setID(address.getId());
 
         return addressJpa;
     }
@@ -36,11 +37,12 @@ public class AddressMapper {
         address.setRegion(addressJpa.getRegion());
         address.setCity(addressJpa.getCity());
         address.setHouse(addressJpa.getHouse());
+        address.setStreet(addressJpa.getStreet());
         address.setFlat(addressJpa.getFlat());
-        address.setTotalArea(address.getTotalArea());
-        address.setCreatedAt(address.getCreatedAt());
-        address.setId(address.getId());
+        address.setTotalArea(addressJpa.getTotalArea());
+        address.setCreatedAt(addressJpa.getDateCreate());
+        address.setId(addressJpa.getID());
 
-        return null;
+        return address;
     };
 }

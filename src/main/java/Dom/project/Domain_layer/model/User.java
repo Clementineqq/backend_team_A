@@ -1,9 +1,6 @@
 package Dom.project.Domain_layer.model;
 
-import Dom.project.Domain_layer.exception.InvalidUserException;
-import Dom.project.Domain_layer.exception.InvalidCompanyException;
-import Dom.project.Domain_layer.exception.InvalidCounterException;
-import Dom.project.Domain_layer.exception.InvalidAddressException;
+import Dom.project.Domain_layer.exception.*;
 import Dom.project.Domain_layer.enums.UserRole;
 import org.springframework.cglib.core.Local;
 
@@ -21,6 +18,7 @@ public class User {
     private String name;
     private String lastName;
     private String fatherName;
+    private UserRole role;
     private Address address;
     private Company company;
 
@@ -36,11 +34,17 @@ public class User {
         setPassword(password);
         setName(name);
         setLastName(lastName);
+
     }
 
     public User(Long id, String phone_number, String email, String password, String name, String lastName) {
         this(phone_number, email, password, name, lastName);
         this.id = id;
+    }
+
+    public User(Long id, String phone_number, String email, String password, String name, String lastName, UserRole role) {
+        this(id, phone_number, email, password, name, lastName);
+        this.role = role;
     }
 
     // Сеттеры с валидацией
@@ -155,6 +159,15 @@ public class User {
         setUpdatedAt();
     }
 
+    public void setRole(UserRole role){
+        if (role == null){
+            throw InvalidRoleException.roleCantBeNull();
+        }
+
+        this.role = role;
+        setUpdatedAt();
+    }
+
     // Геттеры
     public Long getId() { return id; }
     public LocalDateTime getCreatedAt() { return createdAt; }
@@ -167,6 +180,7 @@ public class User {
     public String getFatherName() { return fatherName; }
     public Address getAddress() { return address; }
     public Company getCompany() { return company; }
+    public UserRole getRole() { return role; }
 
 
     public String getFullName() {
@@ -310,12 +324,17 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
-                ", fullName='" + getFullName() + '\'' +
-                ", phone='" + phone_number + '\'' +
+                "company=" + company +
+                ", address=" + address +
+                ", role=" + role +
+                ", fatherName='" + fatherName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", address=" + (address != null ? address.getShortAddress() : "null") +
-                ", company=" + (company != null ? company.getName() : "null") +
+                ", phone_number='" + phone_number + '\'' +
+                ", updatedAt=" + updatedAt +
+                ", createdAt=" + createdAt +
+                ", id=" + id +
                 '}';
     }
 

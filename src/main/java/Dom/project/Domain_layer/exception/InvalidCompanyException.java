@@ -92,4 +92,20 @@ public class InvalidCompanyException extends DomainException {
         return new InvalidCompanyException("User with id " + userId + " is not a worker", "workers", userId);
     }
 
+
+
+      public static InvalidCompanyException passwordCannotBeEmpty() {
+        return new InvalidCompanyException("Company password cannot be empty", "password", null);
+    }
+
+    public static InvalidCompanyException passwordTooShort(int minLength) {
+        return new InvalidCompanyException(
+                "Company password must be at least " + minLength + " characters long", 
+                "password", 
+                "length < " + minLength);
+    }
+
+    public static InvalidCompanyException companyNotFoundByEmail(String email) {
+        return new InvalidCompanyException("Company not found with email: " + email, "email", email);
+    }
 }

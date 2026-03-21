@@ -1,5 +1,6 @@
 package Dom.project.Web_layer.api.dto;
 
+import Dom.project.Domain_layer.enums.UserRole;
 import org.springframework.security.crypto.codec.Hex;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,17 +16,19 @@ public class UserProfileDto {
     private String address;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private UserRole role;
     private List<UserCountersDto> userCounters;
     private List<UserRequestDto> userRequests;
 
     public UserProfileDto() {}
 
-    public UserProfileDto(Long id, String firstName, String lastName, String email, String phone) {
+    public UserProfileDto(Long id, String firstName, String lastName, String email, String phone, UserRole role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
+        this.role = role;
     }
 
     // Геттеры и сеттеры
@@ -64,4 +67,11 @@ public class UserProfileDto {
 
     public List<UserRequestDto> getUserRequests() { return userRequests; }
     public void setUserRequests(List<UserRequestDto> userRequests) { this.userRequests = userRequests; }
+
+    public UserRole getRole() {
+        return role;
+    }
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
 }

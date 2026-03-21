@@ -24,14 +24,14 @@ public class ServiceRequestJpaEntity extends Base_entity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_creator")
-    private UserJpaEntity assignedWorkerName;
+    private UserJpaEntity creator;
 
     @Length(max=1024)
     private String resolutionComment;
 
     @ManyToOne(fetch = FetchType.LAZY) 
     @JoinColumn(name = "id_assignee")
-    private UserJpaEntity user;
+    private UserJpaEntity assignee;
 
     @Column(name = "completed_at")
     private LocalDateTime completed_at;
@@ -61,12 +61,8 @@ public class ServiceRequestJpaEntity extends Base_entity{
         status = status;
     }
 
-    public UserJpaEntity getAssignedWorkerName() {
-        return assignedWorkerName;
-    }
-
-    public void setAssignedWorkerName(String assignedWorkerName) {
-        assignedWorkerName = assignedWorkerName;
+    public UserJpaEntity getCreator() {
+        return creator;
     }
 
     public String getResolutionComment() {
@@ -77,16 +73,16 @@ public class ServiceRequestJpaEntity extends Base_entity{
         resolutionComment = resolutionComment;
     }
 
-    public UserJpaEntity getUser() {
-        return user;
+    public UserJpaEntity getAssignee() {
+        return assignee;
     }
 
-    public void setUser(UserJpaEntity user) {
-        this.user = user;
+    public void setAssignee(UserJpaEntity user) {
+        this.assignee = user;
     }
 
-    public void setAssignedWorkerName(UserJpaEntity assignedWorkerName) {
-        this.assignedWorkerName = assignedWorkerName;
+    public void setCreator(UserJpaEntity assignedWorkerName) {
+        this.creator = assignedWorkerName;
     }
 
     public LocalDateTime getCompleted_at() {

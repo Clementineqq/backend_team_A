@@ -3,6 +3,7 @@ package Dom.project.Infrastructure_layer.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import Dom.project.Domain_layer.enums.UserRole;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.Email;
@@ -15,36 +16,40 @@ import jakarta.validation.constraints.Pattern;
 public class UserJpaEntity extends Base_entity {
     
     @Column(nullable = false, length = 50)
-    @NotBlank(message = "Имя обязательно")
+    @NotBlank(message = "Name cant be empty")
     private String name;
 
     @Column(nullable = false, length = 50, name="last_name")
-    @NotBlank(message = "Фамилия обязательна")
+    @NotBlank(message = "Last name cant be empty")
     private String surname;
 
     @Column(name = "fathers_name")
     private String father_name;
 
-    @Column(unique = true, length = 20)
-    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Некорректный формат телефона")
+    @Column(name="phone_number", unique = true, length = 20)
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Incorrect phone number")
     private String phone;
 
     @NotBlank
     @Column(unique = true, nullable = false)
-    @Email(message = "Некорректный email")
+    @Email(message = "Incorrect email")
     private String email;
 
     @OneToOne()
-    @JoinColumn(name="id_adress")
+    @JoinColumn(name="id_address")
     private AddressJpaEntity address;
-
-    @OneToMany()
-    @JoinColumn(name="id_counter")
-    private List<CounterJpaEntity> counters = new ArrayList<>();
 
     @ManyToOne()
     @JoinColumn(name="id_company")
     private CompanyJpaEntity company;
+
+    @Column(name = "password")
+    @NotBlank(message = "Password cant be empty")
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private UserRole role;
 
     public String getName() {
         return name;
@@ -86,14 +91,6 @@ public class UserJpaEntity extends Base_entity {
         this.address = address;
     }
 
-    public List<CounterJpaEntity> getCounters() {
-        return counters;
-    }
-
-    public void setCounters(List<CounterJpaEntity> meterReadings) {
-        this.counters = meterReadings;
-    }
-
     public CompanyJpaEntity getCompany() {
         return company;
     }
@@ -108,5 +105,21 @@ public class UserJpaEntity extends Base_entity {
 
     public void setFather_name(String father_name) {
         this.father_name = father_name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }
