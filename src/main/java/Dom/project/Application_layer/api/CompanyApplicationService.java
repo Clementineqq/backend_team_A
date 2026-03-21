@@ -78,19 +78,17 @@ public class CompanyApplicationService {
     }
 
 
-    // TODO: добавить разделение по ролям
     public CompanyProfileDto getCompanyById(Long companyId) {
-        System.out.println(companyId);
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new DomainException("Company not found"));
 
         // Получаем всех пользователей этой компании (члены + работники)
         List<User> members = userRepository.findByCompanyId(companyId); // нужно добавить в репозиторий
             // Поиск воркеров и владельца, разделено по ролям
-            List<User> workers = getUsersByRoleFromList(members, UserRole.Worker);
+        List<User> workers = getUsersByRoleFromList(members, UserRole.Worker);
 
             // Получаем все запросы, связанные с компанией (через пользователей)
-            List<ServiceRequest> companyRequests = serviceRequestRepository.findByCompanyId(companyId); // добавить в репозиторий
+        List<ServiceRequest> companyRequests = serviceRequestRepository.findByCompanyId(companyId); // добавить в репозиторий
 
         return convertToCompanyProfileDto(company, members, workers, companyRequests);
     }

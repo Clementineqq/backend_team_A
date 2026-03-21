@@ -1,6 +1,7 @@
 package Dom.project.Web_layer.api.controller;
 
 import Dom.project.Domain_layer.enums.UserRole;
+import Dom.project.Domain_layer.model.User;
 import Dom.project.Web_layer.api.dto.CompanyProfileDto;
 import Dom.project.Web_layer.api.dto.ServiceRequestDto;
 import Dom.project.Web_layer.api.dto.WorkerDto;
@@ -73,10 +74,16 @@ public class ServiceController {
     // TODO: дописать
     @GetMapping("/company_profile/{companyId}")
     public ResponseEntity<?> getCompanyProfileById(@PathVariable Long companyId) {
-        if (!companyService.checkAccess(companyService.getCurrentUser(), List.of(UserRole.Worker, UserRole.CompanyOwner, UserRole.Admin))){
+        User currUser = companyService.getCurrentUser();
+        if (!companyService.checkAccess(currUser, List.of(UserRole.Worker, UserRole.CompanyOwner, UserRole.Admin))){
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body("ACCESS DENIED");
+        }
+        if (currUser.getCompany().getId() != companyId && currUser.getRole() == UserRole.Worker){
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("ACCESS DENIED, YOU'RE WORKER IN ANOTHER COMPANY");
         }
 
         CompanyProfileDto profile = companyService.getCompanyById(companyId);
