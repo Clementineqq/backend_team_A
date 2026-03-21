@@ -35,7 +35,13 @@ public class ServiceRequestRepositoryAdapter implements IServiceRequestRepositor
 
     @Override
     public List<ServiceRequest> findByCreatorId(Long id) {
-        return List.of();
+        List<ServiceRequestJpaEntity> entities = _jpaRepository.findByCreatorId(id);
+        System.out.println(entities);
+        System.out.println(id);
+
+        return entities.stream()
+                .map(_mapper::toDomain)
+                .toList();
     }
 
     @Override

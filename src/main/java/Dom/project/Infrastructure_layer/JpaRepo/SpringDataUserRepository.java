@@ -6,6 +6,7 @@ import java.util.Optional;
 import Dom.project.Domain_layer.model.Counter;
 import Dom.project.Domain_layer.model.User;
 import Dom.project.Infrastructure_layer.entity.CounterJpaEntity;
+import Dom.project.Infrastructure_layer.entity.ServiceRequestJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import Dom.project.Infrastructure_layer.entity.UserJpaEntity;
@@ -19,4 +20,6 @@ public interface SpringDataUserRepository extends JpaRepository<UserJpaEntity, L
 
     @Query(value = "SELECT u FROM UserJpaEntity u WHERE u.company.id = ?1")
     List<UserJpaEntity> findByCompanyId(Long companyId);
+
+
 }
