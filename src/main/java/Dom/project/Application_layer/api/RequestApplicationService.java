@@ -32,7 +32,12 @@ public class RequestApplicationService {
 
     public List<UserRequestDto> getCurrentUserRequests() {
         User currentUser = getCurrentUser();
+        System.out.println("ID user: " + currentUser.getId());
+
         List<ServiceRequest> userRequests = serviceRequestRepository.findByCreatorId(currentUser.getId());
+        for (ServiceRequest serviceRequest : userRequests){
+            System.out.println(serviceRequest.getDescription());
+        };
 
         return userRequests.stream()
                 .map(this::convertToUserRequestDto)
@@ -97,7 +102,7 @@ public class RequestApplicationService {
         List<ServiceRequest> requests = serviceRequestRepository.findByCompanyId(currentUser.getCompany().getId());
         return requests.stream()
                 .map(this::convertToServiceRequestDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public ServiceRequestDto getRequestById(Long id) {

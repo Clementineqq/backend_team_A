@@ -71,6 +71,6 @@ public class ServiceRequestMapper {
         //serviceRequest.setesolutionComment(null);
         serviceRequest.setCompletedAt(serviceRequestJpa.getCompleted_at());
 
-        return null;
+        return serviceRequest;
     }
 }

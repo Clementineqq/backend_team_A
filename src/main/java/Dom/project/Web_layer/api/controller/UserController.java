@@ -56,7 +56,6 @@
 
         // GET /api/users/requests
         // Не рабочий
-        // todo: создать метод реквестов
         @GetMapping("/requests")
         public ResponseEntity<List<UserRequestDto>> getUserRequests() {
             List<UserRequestDto> requests = userRequestService.getCurrentUserRequests();

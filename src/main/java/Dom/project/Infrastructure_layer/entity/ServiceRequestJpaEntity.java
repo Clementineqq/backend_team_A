@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.Length;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "servicetask")
 public class ServiceRequestJpaEntity extends Base_entity{
 
     @Column(name = "title")
@@ -20,6 +21,7 @@ public class ServiceRequestJpaEntity extends Base_entity{
     private String description;
 
     @Column(name="status")
+    @Enumerated(EnumType.STRING)
     private RequestStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
