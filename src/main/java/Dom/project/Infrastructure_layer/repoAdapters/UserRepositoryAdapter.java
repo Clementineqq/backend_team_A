@@ -2,11 +2,13 @@ package Dom.project.Infrastructure_layer.repoAdapters;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import Dom.project.Domain_layer.exception.DomainException;
 import Dom.project.Infrastructure_layer.entity.AddressJpaEntity;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
 
 import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
@@ -69,7 +71,11 @@ public class UserRepositoryAdapter implements IUserRepository {
 
     @Override
     public List<User> findByCompanyId(Long companyId) {
-        return List.of();
+        List<UserJpaEntity> entities = _jpaRepository.findByCompanyId(companyId);
+
+        return entities.stream()
+                .map(_mapper::toDomain)
+                .toList();
     }
 
     @Override

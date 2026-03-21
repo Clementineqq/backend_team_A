@@ -46,6 +46,7 @@
 
         // PUT /api/users/profile
         //TODO: Протестить но без адреса
+        //TODO: Исправить с адресом B-)
         @PutMapping("/profile")
         public ResponseEntity<UserProfileDto> updateUserProfile(
                 @RequestBody UserProfileDto profileDto) {
@@ -55,6 +56,7 @@
 
         // GET /api/users/requests
         // Не рабочий
+        // todo: создать метод реквестов
         @GetMapping("/requests")
         public ResponseEntity<List<UserRequestDto>> getUserRequests() {
             List<UserRequestDto> requests = userRequestService.getCurrentUserRequests();

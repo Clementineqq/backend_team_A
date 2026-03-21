@@ -1,13 +1,16 @@
 package Dom.project.Web_layer.api.controller;
 
+import Dom.project.Domain_layer.enums.UserRole;
 import Dom.project.Web_layer.api.dto.CompanyProfileDto;
 import Dom.project.Web_layer.api.dto.ServiceRequestDto;
 import Dom.project.Web_layer.api.dto.WorkerDto;
 import Dom.project.Application_layer.api.WorkerApplicationService;
 import Dom.project.Application_layer.api.CompanyApplicationService;
 import Dom.project.Application_layer.api.RequestApplicationService;
+import jakarta.persistence.EntityExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +31,8 @@ public class ServiceController {
         this.companyService = companyService;
         this.requestService = requestService;
     }
+
+
 
     // GET /api/service/workers
     @GetMapping("/workers")
@@ -65,9 +70,23 @@ public class ServiceController {
         return ResponseEntity.noContent().build();
     }
 
+    // TODO: дописать
     @GetMapping("/company_profile/{companyId}")
-    public ResponseEntity<CompanyProfileDto> getCompanyProfileById(@PathVariable Long companyId) {
+    public ResponseEntity<?> getCompanyProfileById(@PathVariable Long companyId) {
+        if (!companyService.checkAccess(companyService.getCurrentUser(), List.of(UserRole.Worker, UserRole.CompanyOwner, UserRole.Admin))){
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("ACCESS DENIED");
+        }
+
         CompanyProfileDto profile = companyService.getCompanyById(companyId);
+
+        if (profile == null){
+            return ResponseEntity
+                    .notFound()
+                    .build();
+        }
+
         return ResponseEntity.ok(profile);
     }
 
@@ -77,6 +96,34 @@ public class ServiceController {
             @RequestBody CompanyProfileDto profileDto) {
         CompanyProfileDto updated = companyService.updateCompanyProfile(profileDto);
         return ResponseEntity.ok(updated);
+    }
+
+    // желательно чтобы все методы в зависимости от експшена выкидывали ошибку
+    @PostMapping("/company_profile/register")
+    public ResponseEntity<?> createCompanyProfile(
+            @RequestBody CompanyProfileDto profileDto) {
+        if(!companyService.checkAccess(companyService.getCurrentUser(), List.of(UserRole.Admin))){
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("ACCESS DENIED");
+        }
+
+        try {
+            CompanyProfileDto company = companyService.createCompanyProfile(profileDto);
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body("SUCCESS " + company.getCompanyName());
+
+        } catch (EntityExistsException e){
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("ALREADY EXISTS");
+        } catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
     }
 
     // GET /api/service/requests
@@ -101,6 +148,8 @@ public class ServiceController {
         ServiceRequestDto updated = requestService.updateRequestStatus(id, status);
         return ResponseEntity.ok(updated);
     }
+
+
 
 
 }

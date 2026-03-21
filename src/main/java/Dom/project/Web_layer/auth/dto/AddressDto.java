@@ -1,6 +1,9 @@
 package Dom.project.Web_layer.auth.dto;
 
+import Dom.project.Domain_layer.model.Address;
+
 public class AddressDto {
+    private Long id;
     private String region;
     private String city;
     private String street;
@@ -53,6 +56,12 @@ public class AddressDto {
     public void setTotalArea(Float totalArea) {
         this.totalArea = totalArea;
     }
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {
@@ -64,5 +73,31 @@ public class AddressDto {
                 ", flat='" + flat + '\'' +
                 ", totalArea=" + totalArea +
                 '}';
+    }
+
+    public Address toDomain(){
+        AddressDto addressDto = this;
+        Address address = new Address();
+
+        address.setRegion(addressDto.getRegion());
+        address.setCity(addressDto.getCity());
+        address.setHouse(addressDto.getHouse());
+        address.setStreet(addressDto.getStreet());
+        address.setFlat(addressDto.getFlat());
+
+        return address;
+    }
+
+    public static AddressDto toDto(Address address){
+        AddressDto addressDto = new AddressDto(
+                address.getRegion(),
+                address.getCity(),
+                address.getStreet(),
+                address.getHouse(),
+                address.getFlat(),
+                Float.valueOf(address.getTotalArea())
+        );
+
+        return addressDto;
     }
 }

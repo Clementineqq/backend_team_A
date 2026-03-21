@@ -93,13 +93,13 @@ public class AuthService {
 public User loginCompany(String email, String password) {
     System.out.println("логин компании: " + email);
     
-     Optional<Company> companyOpt = companyRepository.findByEmail(email);
+    Optional<Company> companyOpt = companyRepository.findByEmail(email);
     if (companyOpt.isEmpty()) {
         throw new EntityNotFoundException("Company not found with email: " + email);
     }
     
     Company company = companyOpt.get();
-      System.out.println("=== ОТЛАДКА ===");
+    System.out.println("=== ОТЛАДКА ===");
     System.out.println("Email из БД: '" + company.getEmail() + "'");
     System.out.println("Пароль из БД: '" + company.getPassword() + "'");
     System.out.println("Длина пароля из БД: " + (company.getPassword() != null ? company.getPassword().length() : 0));

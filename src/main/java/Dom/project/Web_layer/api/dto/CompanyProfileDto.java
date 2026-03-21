@@ -1,21 +1,23 @@
 package Dom.project.Web_layer.api.dto;
 
+import Dom.project.Web_layer.auth.dto.AddressDto;
+
 import java.util.List;
 
 public class CompanyProfileDto {
     Long id;
     private String companyName;
-    private String address;
     private String inn;
     private String kpp;
     private String email;
+    private AddressDto address;
     private List<UserProfileDto> members;
     private List<WorkerDto> workers;
     private List<ServiceRequestDto> companyRequests;  // Добавлено поле
 
     public CompanyProfileDto() {}
 
-    public CompanyProfileDto(Long id, String companyName, String address, String inn, String kpp, String email) {
+    public CompanyProfileDto(Long id, String companyName, AddressDto address, String inn, String kpp, String email) {
         this.id = id;
         this.companyName = companyName;
         this.address = address;
@@ -31,8 +33,8 @@ public class CompanyProfileDto {
     public String getCompanyName() { return companyName; }
     public void setCompanyName(String companyName) { this.companyName = companyName; }
 
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
+    public AddressDto getAddress() { return address; }
+    public void setAddress(AddressDto address) { this.address = address; }
 
     public String getInn() { return inn; }
     public void setInn(String inn) { this.inn = inn; }

@@ -11,6 +11,7 @@ public interface IUserRepository {
      Optional<User> findByEmail(String email);
      Optional<User> findByPhone(String phonenumber);
 
+
      List<User> findByCompanyId(Long companyId);
 
      void delete(User user);

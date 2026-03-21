@@ -3,6 +3,7 @@ package Dom.project.Infrastructure_layer.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import Dom.project.Domain_layer.enums.UserRole;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.Email;
@@ -46,6 +47,10 @@ public class UserJpaEntity extends Base_entity {
     @NotBlank(message = "Password cant be empty")
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private UserRole role;
+
     public String getName() {
         return name;
     }
@@ -86,7 +91,6 @@ public class UserJpaEntity extends Base_entity {
         this.address = address;
     }
 
-
     public CompanyJpaEntity getCompany() {
         return company;
     }
@@ -109,5 +113,13 @@ public class UserJpaEntity extends Base_entity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }

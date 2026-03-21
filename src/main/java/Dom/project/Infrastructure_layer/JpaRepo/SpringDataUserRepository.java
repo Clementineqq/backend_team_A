@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import Dom.project.Domain_layer.model.Counter;
+import Dom.project.Domain_layer.model.User;
 import Dom.project.Infrastructure_layer.entity.CounterJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,4 +16,7 @@ public interface SpringDataUserRepository extends JpaRepository<UserJpaEntity, L
 
     Optional<UserJpaEntity> findByEmail(String email);
     Optional<UserJpaEntity> findByPhone(String phonenumber);
+
+    @Query(value = "SELECT u FROM UserJpaEntity u WHERE u.company.id = ?1")
+    List<UserJpaEntity> findByCompanyId(Long companyId);
 }

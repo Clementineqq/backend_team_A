@@ -46,7 +46,8 @@ public class UserMapper {
         userJpa.setPhone(user.getPhone_number());
         userJpa.setSurname(user.getLastName());
         userJpa.setName(user.getName());
-        userJpa.setFather_name(userJpa.getFather_name());
+        userJpa.setFather_name(user.getFatherName());
+        userJpa.setRole(user.getRole());
 
         // установка адреса
         if (user.getAddress() != null){
@@ -85,6 +86,7 @@ public class UserMapper {
         user.setPhone_number(userJpa.getPhone());
         user.setCompany(companyMapper.toDomain(userJpa.getCompany()));
         user.setAddress(addressMapper.toDomain(userJpa.getAddress()));
+        user.setRole(userJpa.getRole());
 
         return user;
     }
