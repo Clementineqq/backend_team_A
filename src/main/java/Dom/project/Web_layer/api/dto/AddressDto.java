@@ -1,4 +1,4 @@
-package Dom.project.Web_layer.auth.dto;
+package Dom.project.Web_layer.api.dto;
 
 import Dom.project.Domain_layer.model.Address;
 

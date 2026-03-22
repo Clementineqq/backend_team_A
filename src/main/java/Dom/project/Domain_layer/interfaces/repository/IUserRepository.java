@@ -14,7 +14,9 @@ public interface IUserRepository {
 
      List<User> findByCompanyId(Long companyId);
 
+    // TODO: *
      void delete(User user);
 
+    // TODO: *
      List<User> findAllWithCompany();
 }

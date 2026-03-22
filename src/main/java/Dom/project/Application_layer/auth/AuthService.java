@@ -13,7 +13,7 @@ import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
 import Dom.project.Domain_layer.model.Address;
 import Dom.project.Domain_layer.model.Company;
 import Dom.project.Domain_layer.model.User;
-import Dom.project.Web_layer.auth.dto.AddressDto;
+import Dom.project.Web_layer.api.dto.AddressDto;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service

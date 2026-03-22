@@ -1,6 +1,6 @@
 package Dom.project.Web_layer.auth.dto;
 
-import Dom.project.Domain_layer.model.Address;
+import Dom.project.Web_layer.api.dto.AddressDto;
 
 public class RegisterRequest {
     private String email;

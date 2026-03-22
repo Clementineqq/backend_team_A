@@ -14,16 +14,14 @@ import Dom.project.Web_layer.api.dto.WorkerDto;
 import Dom.project.Web_layer.api.dto.UserProfileDto;
 import Dom.project.Web_layer.api.dto.ServiceRequestDto;
 import Dom.project.Domain_layer.exception.DomainException;
-import Dom.project.Web_layer.auth.dto.AddressDto;
+import Dom.project.Web_layer.api.dto.AddressDto;
 import jakarta.persistence.EntityExistsException;
-import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -86,6 +84,7 @@ public class CompanyApplicationService {
         List<User> members = userRepository.findByCompanyId(companyId); // нужно добавить в репозиторий
             // Поиск воркеров и владельца, разделено по ролям
         List<User> workers = getUsersByRoleFromList(members, UserRole.Worker);
+            //TODO: добавить в DTO CompanyOwner'а
 
             // Получаем все запросы, связанные с компанией (через пользователей)
         List<ServiceRequest> companyRequests = serviceRequestRepository.findByCompanyId(companyId); // добавить в репозиторий
