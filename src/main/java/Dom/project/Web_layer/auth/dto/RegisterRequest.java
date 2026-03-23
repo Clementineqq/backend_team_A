@@ -1,5 +1,6 @@
 package Dom.project.Web_layer.auth.dto;
 
+import Dom.project.Domain_layer.enums.UserRole;
 import Dom.project.Web_layer.api.dto.AddressDto;
 
 public class RegisterRequest {
@@ -8,6 +9,7 @@ public class RegisterRequest {
     private String surname;
     private String phone;
     private String password;
+    private UserRole role;
     private String id_company;
     private AddressDto address;
 
@@ -42,4 +44,14 @@ public class RegisterRequest {
         this.address = address;
     }
 
+    public UserRole getRole() {
+        if (this.role == null){
+            this.role = UserRole.User;
+        }
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
 }

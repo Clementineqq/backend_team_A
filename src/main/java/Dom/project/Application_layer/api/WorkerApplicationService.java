@@ -21,8 +21,9 @@ public class WorkerApplicationService {
         this.userRepository = userRepository;
     }
 
-    public List<WorkerDto> getAllWorkers() {
-        List<User> workers = userRepository.findAllWithCompany();
+    // добавил тут id, мб тут поменять как-то, хз как ты его получать хотел
+    public List<WorkerDto> getAllWorkers(Long companyId) {
+        List<User> workers = userRepository.findAllWorkersByCompanyId(companyId);
         return workers.stream()
                 .map(this::convertToWorkerDto)
                 .collect(Collectors.toList());

@@ -12,9 +12,9 @@ public interface IServiceRequestRepository {
     // TODO: проверить
     List<ServiceRequest> findByCreatorId(Long id);
 
-    // TODO: *
+    // done
     void delete(ServiceRequest serviceRequest);
 
-    // TODO: *
+    // done
     List<ServiceRequest> findByCompanyId(Long companyId);
 }

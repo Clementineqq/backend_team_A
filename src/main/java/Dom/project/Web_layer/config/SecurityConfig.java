@@ -26,8 +26,9 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll()  // всё что связано с auth доступно без токена
-                .anyRequest().authenticated()// всё остальное требует токен
+                    .requestMatchers("/auth/**").permitAll()// всё что связано с auth доступно без токена
+                    .requestMatchers("/api/service/company_profile/register").permitAll()
+                    .anyRequest().authenticated()// всё остальное требует токен
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         

@@ -2,6 +2,7 @@ package Dom.project.Application_layer.auth;
 
 import java.util.Optional;
 
+import Dom.project.Domain_layer.enums.UserRole;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class AuthService {
 
     }
     // Вот это пока не трогай
-    public User register(String email, String name, String surname, String phone, String password, String idCompany, AddressDto address) {
+    public User register(String email, String name, String surname, String phone, String password, String idCompany, AddressDto address, UserRole role) {
         System.out.println("регистрация");
 
         // if (userRepository.findByEmail(email).isPresent() ||
@@ -43,8 +44,7 @@ public class AuthService {
         // тута хешируем пароль
         String hashedPassword = passwordEncoder.encode(password);
         User user = new User(phone, email, hashedPassword, name, surname);
-
-        //TODO: добавить роль
+        user.setRole(role);
 
         Address domainAddress = new Address(
                 address.getStreet(),

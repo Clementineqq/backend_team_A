@@ -46,12 +46,17 @@ public class ServiceRequestRepositoryAdapter implements IServiceRequestRepositor
 
     @Override
     public void delete(ServiceRequest serviceRequest) {
-
+        System.out.println("DELETED SERVICE REQUEST ID: " + serviceRequest.getId());
+        _jpaRepository.deleteById(serviceRequest.getId());
     }
 
     @Override
     public List<ServiceRequest> findByCompanyId(Long companyId) {
-        return List.of();
+        List<ServiceRequestJpaEntity> entities = _jpaRepository.findByCompanyId(companyId);
+
+        return entities.stream()
+                .map(_mapper::toDomain)
+                .toList();
     }
 
     public Optional<ServiceRequestJpaEntity> findJpaById(Long id) {

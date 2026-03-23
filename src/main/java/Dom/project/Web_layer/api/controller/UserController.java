@@ -1,10 +1,17 @@
     package Dom.project.Web_layer.api.controller;
 
+    import Dom.project.Application_layer.api.CompanyApplicationService;
+    import Dom.project.Domain_layer.enums.UserRole;
+    import Dom.project.Domain_layer.model.ServiceRequest;
+    import Dom.project.Domain_layer.model.User;
+    import Dom.project.Web_layer.api.dto.ServiceRequestDto;
     import Dom.project.Web_layer.api.dto.UserCountersDto;
     import Dom.project.Web_layer.api.dto.UserProfileDto;
     import Dom.project.Web_layer.api.dto.UserRequestDto;
     import Dom.project.Application_layer.api.UserApplicationService;
     import Dom.project.Application_layer.api.RequestApplicationService;
+    import org.apache.tomcat.util.http.parser.HttpParser;
+    import org.aspectj.apache.bcel.generic.RET;
     import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.*;
@@ -17,11 +24,13 @@
 
         private final UserApplicationService userService;
         private final RequestApplicationService userRequestService;
+        private final CompanyApplicationService companyApplicationService;
 
         public UserController(UserApplicationService userService,
-                              RequestApplicationService userRequestService) {
+                              RequestApplicationService userRequestService, CompanyApplicationService companyApplicationService) {
             this.userService = userService;
             this.userRequestService = userRequestService;
+            this.companyApplicationService = companyApplicationService;
         }
 
         // GET /api/users/counters
@@ -54,6 +63,28 @@
             return ResponseEntity.ok(updated);
         }
 
+        // DELETE /api/users/profile
+        @DeleteMapping("/profile/{id}")
+        public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+            User currentUser = companyApplicationService.getCurrentUser();
+            System.out.println(currentUser.getRole());
+            boolean isOwner = currentUser.getId() == id;
+            boolean isAdmin = companyApplicationService.checkAccess(currentUser, List.of(UserRole.Admin));
+
+            System.out.println(currentUser.getId());
+
+            if (!isAdmin && !isOwner){
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("ACCESS DENIED");
+            }
+
+            userRequestService.deleteUser(id);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body("DELETED");
+        }
+
         // GET /api/users/requests
         // Не рабочий
         @GetMapping("/requests")
@@ -84,5 +115,21 @@
         public ResponseEntity<Void> deleteUserRequest(@PathVariable Long id) {
             userRequestService.deleteUserRequest(id);
             return ResponseEntity.noContent().build();
+        }
+
+        //тестовый метод, можешь поредачить взять отсюда часть
+        @GetMapping("/requests/get/{id}")
+        public ResponseEntity<?> test(@PathVariable Long id){
+            try {
+                List<ServiceRequestDto> requests = userRequestService.getAllRequests();
+
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(requests);
+            } catch (Exception e){
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(e.getMessage());
+            }
         }
     }

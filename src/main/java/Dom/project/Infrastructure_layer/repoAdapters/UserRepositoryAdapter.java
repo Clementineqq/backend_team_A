@@ -80,12 +80,17 @@ public class UserRepositoryAdapter implements IUserRepository {
 
     @Override
     public void delete(User user) {
-
+        System.out.println("DELETED USER ID: " + user.getId());
+        _jpaRepository.deleteById(user.getId());
     }
 
     @Override
-    public List<User> findAllWithCompany() {
-        return List.of();
+    public List<User> findAllWorkersByCompanyId(Long companyId) {
+        List<UserJpaEntity> entities = _jpaRepository.findByCompanyId(companyId);
+
+        return entities.stream()
+                .map(_mapper::toDomain)
+                .toList();
     }
 
     public Optional<UserJpaEntity> findJpaById(Long id) {

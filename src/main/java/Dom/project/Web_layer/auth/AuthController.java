@@ -1,6 +1,7 @@
 package Dom.project.Web_layer.auth;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ public class AuthController {
         this.jwtUtils = jwtUtils;
     }
 
+    @Transactional
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         User registeredUser = authService.register(
@@ -37,7 +39,8 @@ public class AuthController {
                 request.getPhone(),
                 request.getPassword(),
                 request.getId_company(),
-                request.getAddress()
+                request.getAddress(),
+                request.getRole()
         );
         
         String token = jwtUtils.generateToken(registeredUser.getEmail());
