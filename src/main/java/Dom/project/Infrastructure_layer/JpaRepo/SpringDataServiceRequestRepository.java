@@ -12,4 +12,6 @@ public interface SpringDataServiceRequestRepository extends JpaRepository<Servic
     @Query(value = "SELECT s FROM ServiceRequestJpaEntity s WHERE s.creator.id = ?1")
     List<ServiceRequestJpaEntity> findByCreatorId(Long creatorId);
 
+    @Query(value = "SELECT s FROM ServiceRequestJpaEntity s WHERE s.creator.company.id= ?1")
+    List<ServiceRequestJpaEntity> findByCompanyId(Long companyId);
 }

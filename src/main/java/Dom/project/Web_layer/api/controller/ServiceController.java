@@ -80,6 +80,7 @@ public class ServiceController {
                     .status(HttpStatus.FORBIDDEN)
                     .body("ACCESS DENIED");
         }
+        // TODO: добавить овнера
         if (currUser.getCompany().getId() != companyId && currUser.getRole() == UserRole.Worker){
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)

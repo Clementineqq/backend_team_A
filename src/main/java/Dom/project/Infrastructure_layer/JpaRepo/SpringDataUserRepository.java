@@ -21,5 +21,7 @@ public interface SpringDataUserRepository extends JpaRepository<UserJpaEntity, L
     @Query(value = "SELECT u FROM UserJpaEntity u WHERE u.company.id = ?1")
     List<UserJpaEntity> findByCompanyId(Long companyId);
 
+    @Query(value = "SELECT u FROM UserJpaEntity u WHERE u.company.id = ?1 AND u.role = 'Worker'")
+    List<UserJpaEntity> findAllWorkersByCompanyId(Long companyId);
 
 }

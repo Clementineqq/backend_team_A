@@ -1,7 +1,5 @@
 package Dom.project.Web_layer.api.dto;
 
-import Dom.project.Web_layer.auth.dto.AddressDto;
-
 import java.util.List;
 
 public class CompanyProfileDto {
@@ -14,6 +12,8 @@ public class CompanyProfileDto {
     private List<UserProfileDto> members;
     private List<WorkerDto> workers;
     private List<ServiceRequestDto> companyRequests;  // Добавлено поле
+    //TODO: *
+    private UserProfileDto companyOwner;
 
     public CompanyProfileDto() {}
 

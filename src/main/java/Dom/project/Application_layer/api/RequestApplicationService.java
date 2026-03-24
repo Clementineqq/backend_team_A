@@ -74,7 +74,18 @@ public class RequestApplicationService {
         return convertToUserRequestDto(serviceRequest);
     }
 
+    @Transactional
+    public void deleteUser(Long id){
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new DomainException("User with ID " + id + "not found"));
+
+        userRepository.delete(user);
+    }
+
     // TODO: Продумать как удаляем пока так
+    // Мне кажется не надо сообщять юзеру, кто там может удалить, а кто нет, достаточно access denied просто
+    // кроме того поч нельзя в обработке удалить запрос? Мне кажется его ваще удалять не нужно,
+    // просто статус в "Закрыт" условный переводить
     @Transactional
     public void deleteUserRequest(Long id) {
         ServiceRequest serviceRequest = serviceRequestRepository.findById(id)
@@ -96,7 +107,7 @@ public class RequestApplicationService {
     public List<ServiceRequestDto> getAllRequests() {
         User currentUser = getCurrentUser();
         if (currentUser.getCompany() == null) {
-            throw new DomainException("Текущий пользователь не состоит в компании");
+            throw new DomainException("User doesnt have company");
         }
         // Получаем все запросы всех сотрудников компании
         List<ServiceRequest> requests = serviceRequestRepository.findByCompanyId(currentUser.getCompany().getId());

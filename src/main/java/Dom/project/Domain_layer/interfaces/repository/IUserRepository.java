@@ -11,10 +11,13 @@ public interface IUserRepository {
      Optional<User> findByEmail(String email);
      Optional<User> findByPhone(String phonenumber);
 
-
+    // done
      List<User> findByCompanyId(Long companyId);
 
+    // done
      void delete(User user);
 
-     List<User> findAllWithCompany();
+    // done, но я не тестил это, по идее должно работать
+     List<User> findAllWorkersByCompanyId(Long companyId);
 }
+
