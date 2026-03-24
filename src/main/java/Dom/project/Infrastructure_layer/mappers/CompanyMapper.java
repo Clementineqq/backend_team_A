@@ -33,7 +33,6 @@ public class CompanyMapper {
         companyJpa.setID(company.getId());
         companyJpa.setDateCreate(company.getCreatedAt());
         companyJpa.setDateUpdate(company.getUpdatedAt());
-        companyJpa.setPassword(company.getPassword());
 
         if (company.getLegalAddress() != null){
             Long address_id = company.getLegalAddress().getId();
@@ -62,7 +61,6 @@ public class CompanyMapper {
         company.setId(companyJpa.getID());
         company.setLegalAddress(addressMapper.toDomain(
                 companyJpa.getLegal_address()));
-        company.setPassword(companyJpa.getPassword());
 
         return company;
 

@@ -77,16 +77,5 @@ public class CompanyJpaEntity extends Base_entity {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    @Column(name = "password", nullable = false)
-    private String password;
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
+    
 }
