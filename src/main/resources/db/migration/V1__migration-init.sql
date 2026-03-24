@@ -19,8 +19,6 @@ CREATE TABLE IF NOT EXISTS company (
     KPP                     varchar(9) NOT NULL,
     id_address              INT UNIQUE REFERENCES address(id) ON DELETE SET NULL,
     email                   varchar(255) UNIQUE NOT NULL,
-    resolution_comment      varchar(1024),
-    description             varchar(1024),
-    password                VARCHAR(255) NOT NULL
+    description             varchar(1024)
 );
 

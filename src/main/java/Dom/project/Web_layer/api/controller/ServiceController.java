@@ -37,8 +37,8 @@ public class ServiceController {
 
     // GET /api/service/workers
     @GetMapping("/workers")
-    public ResponseEntity<List<WorkerDto>> getWorkers() {
-        List<WorkerDto> workers = workerService.getAllWorkers();
+    public ResponseEntity<List<WorkerDto>> getWorkers(@PathVariable Long companyId) {
+        List<WorkerDto> workers = workerService.getAllWorkers(companyId);
         return ResponseEntity.ok(workers);
     }
 
