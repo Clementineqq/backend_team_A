@@ -52,7 +52,7 @@ public class AuthService {
                 address.getFlat(),
                 address.getCity(),
                 address.getRegion(),
-                String.valueOf(address.getTotalArea())
+                address.getTotalArea()
         );
 
         System.out.println("ADDRESS_DTO: " + address.toString());

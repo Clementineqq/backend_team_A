@@ -60,7 +60,7 @@ public class CompanyApplicationService {
                 profileDto.getAddress().getFlat(),
                 profileDto.getAddress().getCity(),
                 profileDto.getAddress().getRegion(),
-                String.valueOf(profileDto.getAddress().getTotalArea())
+                profileDto.getAddress().getTotalArea()
         );
 
         company.setLegalAddress(addressRepository.save(domainAddress));

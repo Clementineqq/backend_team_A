@@ -2,6 +2,7 @@ package Dom.project.Infrastructure_layer.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "address")
@@ -24,8 +25,8 @@ public class AddressJpaEntity extends Base_entity {
     String flat;
 
     @Column(name = "totalarea")
-    @NotBlank(message = "This field cant be empty, totalarea")
-    String totalArea;
+    @NotNull(message = "This field cant be empty, totalArea")
+    Double totalArea;
 
     public String getRegion() {
         return region;
@@ -59,11 +60,11 @@ public class AddressJpaEntity extends Base_entity {
         this.flat = flat;
     }
 
-    public String getTotalArea() {
+    public Double getTotalArea() {
         return totalArea;
     }
 
-    public void setTotalArea(String totalArea) {
+    public void setTotalArea(Double totalArea) {
         this.totalArea = totalArea;
     }
 

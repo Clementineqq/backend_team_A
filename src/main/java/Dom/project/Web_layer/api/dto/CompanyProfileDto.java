@@ -11,7 +11,7 @@ public class CompanyProfileDto {
     private AddressDto address;
     private List<UserProfileDto> members;
     private List<WorkerDto> workers;
-    private List<ServiceRequestDto> companyRequests;  // Добавлено поле
+    private List<ServiceRequestDto> companyRequests;
     private UserProfileDto companyOwner;
 
     public CompanyProfileDto() {}

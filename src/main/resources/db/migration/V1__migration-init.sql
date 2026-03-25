@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS address(
     flat                    varchar(255) NOT NULL,
     city                    varchar(255) NOT NULL,
     region                  varchar(255) NOT NULL,
-    totalArea               varchar(255) NOT NULL
+    totalArea               float NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS company (
@@ -19,6 +19,6 @@ CREATE TABLE IF NOT EXISTS company (
     KPP                     varchar(9) NOT NULL,
     id_address              INT REFERENCES address(id) ON DELETE SET NULL,
     email                   varchar(255) UNIQUE NOT NULL,
-    description             varchar(1024) NOT NULL
+    description             varchar(1024)
 );
 

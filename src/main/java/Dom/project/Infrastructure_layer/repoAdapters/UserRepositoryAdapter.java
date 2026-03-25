@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import Dom.project.Domain_layer.exception.DomainException;
 import Dom.project.Infrastructure_layer.entity.AddressJpaEntity;
+import Dom.project.Domain_layer.interfaces.repository.IAddressRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Query;
@@ -21,10 +22,12 @@ import Dom.project.Infrastructure_layer.mappers.UserMapper;
 public class UserRepositoryAdapter implements IUserRepository {
     private final SpringDataUserRepository _jpaRepository;
     private final UserMapper _mapper;
+    private final IAddressRepository iAddressRepository;
 
-    public UserRepositoryAdapter(SpringDataUserRepository jpaRepository, UserMapper mapper) {
+    public UserRepositoryAdapter(SpringDataUserRepository jpaRepository, UserMapper mapper, IAddressRepository iAddressRepository) {
         _jpaRepository= jpaRepository;
         _mapper = mapper;
+        this.iAddressRepository = iAddressRepository;
     }
 
     @Transactional
@@ -34,10 +37,9 @@ public class UserRepositoryAdapter implements IUserRepository {
             System.out.println("========== UserRepositoryAdapter.save ==========");
             System.out.println("1. Received user with email: " + user.getEmail());
             System.out.println("2. User password: '" + user.getPassword() + "'");
-
+            iAddressRepository.save(user.getAddress());
             UserJpaEntity entity = _mapper.toEntity(user);
             System.out.println("3. After toEntity - entity password: '" + (entity != null ? entity.getPassword() : "NULL ENTITY") + "'");
-
             UserJpaEntity saved = _jpaRepository.save(entity);
             System.out.println("4. After DB save - saved password: '" + saved.getPassword() + "'");
             User result = _mapper.toDomain(saved);
@@ -52,8 +54,8 @@ public class UserRepositoryAdapter implements IUserRepository {
             System.out.println("Not found exception, " + e.toString());
             throw e;
         }
-}
-   
+    }
+
     @Override
     public Optional<User> findById(Long id) {
         return _jpaRepository.findById(id).map(_mapper::toDomain);

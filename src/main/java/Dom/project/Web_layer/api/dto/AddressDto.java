@@ -9,9 +9,9 @@ public class AddressDto {
     private String street;
     private String house;
     private String flat;
-    private Float totalArea;
+    private Double totalArea;
 
-    public AddressDto(String region, String city, String street, String house, String flat, Float totalArea) {
+    public AddressDto(String region, String city, String street, String house, String flat, Double totalArea) {
         this.region = region;
         this.city = city;
         this.street = street;
@@ -50,10 +50,10 @@ public class AddressDto {
     public void setFlat(String flat) {
         this.flat = flat;
     }
-    public Float getTotalArea() {
+    public Double getTotalArea() {
         return totalArea;
     }
-    public void setTotalArea(Float totalArea) {
+    public void setTotalArea(Double totalArea) {
         this.totalArea = totalArea;
     }
     public Long getId() {
@@ -84,6 +84,7 @@ public class AddressDto {
         address.setHouse(addressDto.getHouse());
         address.setStreet(addressDto.getStreet());
         address.setFlat(addressDto.getFlat());
+        address.setTotalArea(addressDto.getTotalArea());
 
         return address;
     }
@@ -95,7 +96,7 @@ public class AddressDto {
                 address.getStreet(),
                 address.getHouse(),
                 address.getFlat(),
-                Float.valueOf(address.getTotalArea())
+                address.getTotalArea()
         );
 
         return addressDto;

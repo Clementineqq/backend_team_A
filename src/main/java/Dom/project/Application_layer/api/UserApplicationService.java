@@ -87,9 +87,18 @@ public class UserApplicationService {
         return convertToUserProfileDto(updatedUser);
     }
 
-    // TODO: Продумать получение и изменение адреса
+
     private Address convertToAddress(AddressDto address) {
-        return new Address();
+        Address domainAddress = new Address();
+
+        domainAddress.setCity(address.getCity());
+        domainAddress.setFlat(address.getFlat());
+        domainAddress.setHouse(address.getHouse());
+        domainAddress.setRegion(address.getRegion());
+        domainAddress.setStreet(address.getStreet());
+        domainAddress.setTotalArea(address.getTotalArea());
+
+        return domainAddress;
     }
 
     //Вспомогательный метод для получения текущего пользователя
