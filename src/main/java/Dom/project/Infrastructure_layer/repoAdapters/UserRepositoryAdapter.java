@@ -88,7 +88,7 @@ public class UserRepositoryAdapter implements IUserRepository {
 
     @Override
     public List<User> findAllWorkersByCompanyId(Long companyId) {
-        List<UserJpaEntity> entities = _jpaRepository.findByCompanyId(companyId);
+        List<UserJpaEntity> entities = _jpaRepository.findAllWorkersByCompanyId(companyId);
 
         return entities.stream()
                 .map(_mapper::toDomain)

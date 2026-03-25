@@ -34,16 +34,44 @@ public class ServiceController {
     }
 
     // GET /api/service/workers
-    @GetMapping("/workers")
-    public ResponseEntity<List<WorkerDto>> getWorkers(@PathVariable Long companyId) {
+    @GetMapping("/company_profile/workers/{companyId}")
+    public ResponseEntity<?> getWorkers(@PathVariable Long companyId) {
+        User currUser = companyService.getCurrentUser();
+        if (!companyService.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Admin))){
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("ACCESS DENIED");
+        }
+
+        if (currUser.getCompany().getId() != companyId && currUser.getRole() == UserRole.CompanyOwner){
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("ACCESS DENIED");
+        }
+
         List<WorkerDto> workers = workerService.getAllWorkers(companyId);
         return ResponseEntity.ok(workers);
     }
 
     // GET /api/service/workers/{id}
+    // TODO: доделать
     @GetMapping("/workers/{id}")
-    public ResponseEntity<WorkerDto> getWorkerById(@PathVariable Long id) {
+    public ResponseEntity<?> getWorkerById(@PathVariable Long id) {
+        User currUser = companyService.getCurrentUser();
+        if (!companyService.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Admin))){
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("ACCESS DENIED");
+        }
         WorkerDto worker = workerService.getWorkerById(id);
+
+        if (currUser.getCompany().getId() != worker.getCompanyProfileDto().getId() && currUser.getRole() == UserRole.CompanyOwner){
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("ACCESS DENIED");
+        }
+
+
         return ResponseEntity.ok(worker);
     }
 

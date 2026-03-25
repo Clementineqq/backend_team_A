@@ -119,14 +119,14 @@ public class WorkerApplicationService {
         dto.setMiddleName(user.getFatherName());
         dto.setEmail(user.getEmail());
         dto.setPhone(user.getPhone_number());
-        dto.setPassword(user.getPassword()); // обычно не передаём пароль
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
+        dto.setRole(user.getRole());
+        //TODO: Доделать
+        //dto.setCompanyProfileDto(user.getCompany());
         if (user.getAddress() != null) {
-            dto.setAddress(AddressDto.toDto(user.getAddress())); // или другой формат
+            dto.setAddress(AddressDto.toDto(user.getAddress()));
         }
-        // Запросы работника – можно подгрузить отдельно
-        // dto.setWorkerRequests(...);
         return dto;
     }
 }
