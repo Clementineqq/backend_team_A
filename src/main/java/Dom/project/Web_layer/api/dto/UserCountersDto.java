@@ -9,19 +9,19 @@ public class UserCountersDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Boolean isApproved;
-    private UserProfileDto userProfileDto;
+    private UserProfileDto owner;
 
     public UserCountersDto() {}
 
     public UserCountersDto(String name, String value, LocalDateTime createdAt,
                            LocalDateTime updatedAt, Boolean isApproved,
-                           UserProfileDto userProfileDto) {
+                           UserProfileDto owner) {
         this.name = name;
         this.value = value;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.isApproved = isApproved;
-        this.userProfileDto = userProfileDto;
+        this.owner = owner;
     }
 
     //Геттеры и сеттеры
@@ -40,8 +40,8 @@ public class UserCountersDto {
     public Boolean getIsApproved() { return isApproved; }
     public void setIsApproved(Boolean isApproved) { this.isApproved = isApproved; }
 
-    public UserProfileDto getUserProfileDto() { return userProfileDto; }
-    public void setUserProfileDto(UserProfileDto userProfileDto) { this.userProfileDto = userProfileDto; }
+    public UserProfileDto getOwner() { return owner; }
+    public void setOwner(UserProfileDto userProfileDto) { this.owner = userProfileDto; }
 
     public void setId(Long id) { this.id = id;}
     public Long getId() {return id;}

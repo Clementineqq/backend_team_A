@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS company (
     name                    varchar(255) NOT NULL,
     INN                     varchar(10) NOT NULL,
     KPP                     varchar(9) NOT NULL,
-    id_address              INT UNIQUE REFERENCES address(id) ON DELETE SET NULL,
+    id_address              INT REFERENCES address(id) ON DELETE SET NULL,
     email                   varchar(255) UNIQUE NOT NULL,
     description             varchar(1024) NOT NULL
 );

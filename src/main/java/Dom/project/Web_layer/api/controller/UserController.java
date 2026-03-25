@@ -34,19 +34,14 @@
         }
 
         // GET /api/users/counters
-        /*
-        Пока что не рабочий
-        //
         @GetMapping("/counters")
         public ResponseEntity<List<UserCountersDto>> getUserCounters() {
             List<UserCountersDto> counters = userService.getUserCounters();
             return ResponseEntity.ok(counters);
 
         }
-         */
 
         // GET /api/users/profile
-        // TODO: Протестить
         @GetMapping("/profile")
         public ResponseEntity<UserProfileDto> getUserProfile() {
             UserProfileDto profile = userService.getCurrentUserProfile();
@@ -54,8 +49,6 @@
         }
 
         // PUT /api/users/profile
-        //TODO: Протестить но без адреса
-        //TODO: Исправить с адресом B-)
         @PutMapping("/profile")
         public ResponseEntity<UserProfileDto> updateUserProfile(
                 @RequestBody UserProfileDto profileDto) {

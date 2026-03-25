@@ -33,8 +33,6 @@ public class ServiceController {
         this.requestService = requestService;
     }
 
-
-
     // GET /api/service/workers
     @GetMapping("/workers")
     public ResponseEntity<List<WorkerDto>> getWorkers(@PathVariable Long companyId) {
@@ -156,8 +154,5 @@ public class ServiceController {
         ServiceRequestDto updated = requestService.updateRequestStatus(id, status);
         return ResponseEntity.ok(updated);
     }
-
-
-
 
 }

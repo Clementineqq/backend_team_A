@@ -88,6 +88,14 @@ public class Counter {
         setUpdatedAt();
     }
 
+    public void setValueFromDatabase(Double value) {
+        if (value == null) {
+            this.value = 0.0;
+        } else {
+            this.value = value;
+        }
+    }
+
     public void setIsApproved(Boolean isApproved) {
         if (isApproved == null) {
             throw InvalidCounterException.approvedCannotBeNull();

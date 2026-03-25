@@ -10,10 +10,6 @@ import java.util.Optional;
 public interface ICounterRepository {
     Counter save(Counter counter);
     Optional<Counter> findById(Long id);
-
-    //done
     List<Counter> findByUserId(Long id);
-    
-    //done
     void delete(Counter counter);
 }

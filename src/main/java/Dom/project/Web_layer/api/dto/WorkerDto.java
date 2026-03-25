@@ -11,7 +11,7 @@ public class WorkerDto {
     private String email;
     private String phone;
     private String password;
-    private String address;
+    private AddressDto address;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<ServiceRequestDto> workerRequests;
@@ -19,7 +19,7 @@ public class WorkerDto {
     public WorkerDto() {}
 
     public WorkerDto(Long id, String firstName, String lastName, String middleName,
-                     String email, String phone, String password, String address,
+                     String email, String phone, String password, AddressDto address,
                      LocalDateTime createdAt, LocalDateTime updatedAt,
                      List<ServiceRequestDto> workerRequests) {
         this.id = id;
@@ -57,8 +57,8 @@ public class WorkerDto {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
+    public AddressDto getAddress() { return address; }
+    public void setAddress(AddressDto address) { this.address = address; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

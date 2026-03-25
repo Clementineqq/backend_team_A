@@ -12,18 +12,18 @@ public class CompanyProfileDto {
     private List<UserProfileDto> members;
     private List<WorkerDto> workers;
     private List<ServiceRequestDto> companyRequests;  // Добавлено поле
-    //TODO: *
     private UserProfileDto companyOwner;
 
     public CompanyProfileDto() {}
 
-    public CompanyProfileDto(Long id, String companyName, AddressDto address, String inn, String kpp, String email) {
+    public CompanyProfileDto(Long id, String companyName, AddressDto address, String inn, String kpp, String email, UserProfileDto companyOwner) {
         this.id = id;
         this.companyName = companyName;
         this.address = address;
         this.inn = inn;
         this.kpp = kpp;
         this.email = email;
+        this.companyOwner = companyOwner;
     }
 
     // Геттеры и сеттеры
@@ -53,4 +53,7 @@ public class CompanyProfileDto {
 
     public List<ServiceRequestDto> getCompanyRequests() { return companyRequests; }
     public void setCompanyRequests(List<ServiceRequestDto> companyRequests) { this.companyRequests = companyRequests; }
+
+    public UserProfileDto getCompanyOwner() { return companyOwner; }
+    public void setCompanyOwner(UserProfileDto companyOwner) {this.companyOwner = companyOwner;}
 }

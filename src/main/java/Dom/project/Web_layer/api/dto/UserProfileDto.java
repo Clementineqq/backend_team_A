@@ -13,7 +13,7 @@ public class UserProfileDto {
     private String email;
     private String phone;
     private String password;
-    private String address;
+    private AddressDto address;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private UserRole role;
@@ -22,13 +22,14 @@ public class UserProfileDto {
 
     public UserProfileDto() {}
 
-    public UserProfileDto(Long id, String firstName, String lastName, String email, String phone, UserRole role) {
+    public UserProfileDto(Long id, String firstName, String lastName, String email, String phone, UserRole role, AddressDto address) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
         this.role = role;
+        this.address = address;
     }
 
     // Геттеры и сеттеры
@@ -53,8 +54,8 @@ public class UserProfileDto {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
+    public AddressDto getAddress() { return address; }
+    public void setAddress(AddressDto address) { this.address = address; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

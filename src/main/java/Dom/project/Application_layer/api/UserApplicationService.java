@@ -3,6 +3,7 @@ package Dom.project.Application_layer.api;
 import Dom.project.Domain_layer.exception.DomainException;
 import Dom.project.Domain_layer.model.Address;
 import Dom.project.Infrastructure_layer.repoAdapters.UserRepositoryAdapter;
+import Dom.project.Web_layer.api.dto.AddressDto;
 import Dom.project.Web_layer.api.dto.UserCountersDto;
 import Dom.project.Web_layer.api.dto.UserProfileDto;
 import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
@@ -37,8 +38,6 @@ public class UserApplicationService {
         this.counterRepository = counterRepository;
     }
 
-    /*
-    TODO: Доделать
     public List<UserCountersDto> getUserCounters() {
         User currentUser = getCurrentUser();
 
@@ -48,7 +47,7 @@ public class UserApplicationService {
                 .map(this::convertToUserCountersDto)
                 .collect(Collectors.toList());
     }
-    */
+
 
     public UserProfileDto getCurrentUserProfile() {
         User currentUser = getCurrentUser();
@@ -89,7 +88,7 @@ public class UserApplicationService {
     }
 
     // TODO: Продумать получение и изменение адреса
-    private Address convertToAddress(String address) {
+    private Address convertToAddress(AddressDto address) {
         return new Address();
     }
 
@@ -113,6 +112,8 @@ public class UserApplicationService {
         dto.setPhone(user.getPhone_number());
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
+        dto.setAddress(AddressDto.toDto(user.getAddress()));
+        dto.setRole(user.getRole());
 
         return dto;
     }
@@ -125,6 +126,9 @@ public class UserApplicationService {
         dto.setCreatedAt(counter.getCreatedAt());
         dto.setUpdatedAt(counter.getUpdatedAt());
         dto.setIsApproved(counter.getIsApproved());
+        dto.setOwner(convertToUserProfileDto(counter.getOwner()));
         return dto;
     }
+
+
 }

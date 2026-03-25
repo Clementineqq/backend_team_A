@@ -13,12 +13,13 @@ public class CounterJpaEntity extends Base_entity{
     private UserJpaEntity user;
 
     @NotBlank(message = "Это поле не должно быть пустым")
+    @Enumerated(EnumType.STRING)
     @Column(name = "name")
     private MeterType type;
 
-    @Column(name = "value")
+    @Column(name = "counter_value")
     @NotBlank(message = "Это поле не должно быть пустым")
-    private double value;
+    private Double value;
 
     @Column(name = "is_approved")
     private boolean isApproved;

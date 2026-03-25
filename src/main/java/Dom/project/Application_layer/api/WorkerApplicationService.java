@@ -2,6 +2,7 @@ package Dom.project.Application_layer.api;
 
 import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
 import Dom.project.Domain_layer.model.User;
+import Dom.project.Web_layer.api.dto.AddressDto;
 import Dom.project.Web_layer.api.dto.WorkerDto;
 import Dom.project.Domain_layer.exception.DomainException;
 import org.springframework.security.core.Authentication;
@@ -55,10 +56,10 @@ public class WorkerApplicationService {
         newWorker.setCompany(currentUser.getCompany()); // привязываем к той же компании
 
         // Если есть адрес – установить (в DTO адрес строкой, надо преобразовать)
-        if (workerDto.getAddress() != null && !workerDto.getAddress().isEmpty()) {
+      //  if (workerDto.getAddress() != null && !workerDto.getAddress().isEmpty()) {
             // Преобразование строки в Address – оставим заглушку
             // newWorker.setAddress(parseAddress(workerDto.getAddress()));
-        }
+      //  }
 
         User saved = userRepository.save(newWorker);
         return convertToWorkerDto(saved);
@@ -122,7 +123,7 @@ public class WorkerApplicationService {
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
         if (user.getAddress() != null) {
-            dto.setAddress(user.getAddress().getFullAddress()); // или другой формат
+            dto.setAddress(AddressDto.toDto(user.getAddress())); // или другой формат
         }
         // Запросы работника – можно подгрузить отдельно
         // dto.setWorkerRequests(...);

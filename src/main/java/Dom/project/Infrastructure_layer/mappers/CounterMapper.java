@@ -50,7 +50,7 @@ public class CounterMapper {
 
         counter.setId(counterJpa.getID());
         counter.setName(counterJpa.getType());
-        counter.setValue(counter.getValue());
+        counter.setValueFromDatabase(counterJpa.getValue());
         counter.setCreatedAt(counterJpa.getDateCreate());
         counter.setIsApproved(counterJpa.isApproved());
         counter.setOwner(userMapper.toDomain(counterJpa.getUser()));

@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
     last_name       varchar(255),
     fathers_name    varchar(255),
     role            varchar(255),
-    id_address      INT UNIQUE REFERENCES address(id) ON DELETE SET NULL,
+    id_address      INT REFERENCES address(id) ON DELETE SET NULL,
     id_company      INT REFERENCES company(id) ON DELETE SET NULL
 );
 
@@ -33,6 +33,6 @@ CREATE TABLE IF NOT EXISTS counter (
     updated_at              TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     name                    varchar(255) NOT NULL,
     counter_value           float NOT NULL,
-    id_user                 INT UNIQUE REFERENCES users(id) ON DELETE SET NULL,
+    id_user                 INT REFERENCES users(id) ON DELETE SET NULL,
     is_approved             boolean DEFAULT false
 );

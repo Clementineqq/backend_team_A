@@ -181,7 +181,7 @@ public class CompanyApplicationService {
         dto.setUpdatedAt(user.getUpdatedAt());
         dto.setRole(user.getRole());
         if (user.getAddress() != null) {
-            dto.setAddress(user.getAddress().getFullAddress());
+            dto.setAddress(AddressDto.toDto(user.getAddress()));
         }
         return dto;
     }
@@ -197,7 +197,7 @@ public class CompanyApplicationService {
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
         if (user.getAddress() != null) {
-            dto.setAddress(user.getAddress().getFullAddress());
+            dto.setAddress(AddressDto.toDto(user.getAddress()));
         }
         return dto;
     }
