@@ -304,6 +304,7 @@ public class Company {
         setUpdatedAt();
     }
 
+    //TODO: Почистить
     private String password;
 
     public String getPassword() {

@@ -44,7 +44,7 @@ public class ServiceRequestJpaEntity extends Base_entity{
     }
 
     public void setTitle(String title) {
-        title = title;
+        this.title = title;
     }
 
     public String getDescription() {
@@ -52,7 +52,7 @@ public class ServiceRequestJpaEntity extends Base_entity{
     }
 
     public void setDescription(String description) {
-        description = description;
+        this.description = description;
     }
 
     public RequestStatus getStatus() {
@@ -60,7 +60,7 @@ public class ServiceRequestJpaEntity extends Base_entity{
     }
 
     public void setStatus(RequestStatus status) {
-        status = status;
+        this.status = status;
     }
 
     public UserJpaEntity getCreator() {
@@ -72,7 +72,7 @@ public class ServiceRequestJpaEntity extends Base_entity{
     }
 
     public void setResolutionComment(String resolutionComment) {
-        resolutionComment = resolutionComment;
+        this.resolutionComment = resolutionComment;
     }
 
     public UserJpaEntity getAssignee() {

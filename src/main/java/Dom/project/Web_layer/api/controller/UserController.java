@@ -79,7 +79,6 @@
         }
 
         // GET /api/users/requests
-        // Не рабочий
         @GetMapping("/requests")
         public ResponseEntity<List<UserRequestDto>> getUserRequests() {
             List<UserRequestDto> requests = userRequestService.getCurrentUserRequests();
@@ -87,7 +86,6 @@
         }
 
         // POST /api/users/requests
-        //TODO: Протестить
         @PostMapping("/requests")
         public ResponseEntity<UserRequestDto> createUserRequest(
                 @RequestBody UserRequestDto requestDto) {
@@ -96,7 +94,6 @@
         }
 
         // GET /api/users/requests/{id}
-        // TODO: Протестить
         @GetMapping("/requests/{id}")
         public ResponseEntity<UserRequestDto> getUserRequestById(@PathVariable Long id) {
             UserRequestDto request = userRequestService.getUserRequestById(id);

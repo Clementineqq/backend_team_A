@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS serviceTask(
     id_creator          INT REFERENCES users(id) ON DELETE SET NULL,
     id_assignee         INT REFERENCES users(id) ON DELETE SET NULL,
     completed_at        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    resolution_comment  varchar(1024) NOT NULL
+    resolution_comment  varchar(1024)
 );
 
 
