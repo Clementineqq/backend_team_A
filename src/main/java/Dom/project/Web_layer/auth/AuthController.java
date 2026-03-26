@@ -79,18 +79,4 @@ public class AuthController {
         return "TEST OK";
     }
 
-    @PostMapping("/company/login")
-    public ResponseEntity<AuthResponse> companyLogin(@RequestBody CompanyLoginRequest request) {
-        User companyUser = authService.loginCompany(request.getEmail(), request.getPassword());
-        
-        String token = jwtUtils.generateToken(companyUser.getEmail());
-        
-        return ResponseEntity.ok(new AuthResponse(
-            "Вход компании успешен!", 
-            token,
-            companyUser.getEmail(),
-            companyUser.getName() // Имя компании
-        ));
-    }
-
 }

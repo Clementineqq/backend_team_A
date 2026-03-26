@@ -1,5 +1,6 @@
 package Dom.project.Application_layer.api;
 
+import Dom.project.Domain_layer.enums.UserRole;
 import Dom.project.Web_layer.api.dto.ServiceRequestDto;
 import Dom.project.Web_layer.api.dto.UserRequestDto;
 import Dom.project.Domain_layer.interfaces.repository.IServiceRequestRepository;
@@ -72,14 +73,6 @@ public class RequestApplicationService {
         }
 
         return convertToUserRequestDto(serviceRequest);
-    }
-
-    @Transactional
-    public void deleteUser(Long id){
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new DomainException("User with ID " + id + "not found"));
-
-        userRepository.delete(user);
     }
 
     // TODO: Продумать как удаляем пока так
@@ -216,5 +209,9 @@ public class RequestApplicationService {
         }
 
         return dto;
+    }
+
+    public boolean checkAccess(User user, List<UserRole> requiredRoles){
+        return requiredRoles.contains(user.getRole());
     }
 }

@@ -1,5 +1,7 @@
 package Dom.project.Application_layer.api;
 
+import Dom.project.Domain_layer.enums.MeterType;
+import Dom.project.Domain_layer.enums.UserRole;
 import Dom.project.Domain_layer.exception.DomainException;
 import Dom.project.Domain_layer.model.Address;
 import Dom.project.Infrastructure_layer.repoAdapters.UserRepositoryAdapter;
@@ -11,11 +13,15 @@ import Dom.project.Domain_layer.interfaces.repository.IServiceRequestRepository;
 import Dom.project.Domain_layer.interfaces.repository.ICounterRepository;
 import Dom.project.Domain_layer.model.User;
 import Dom.project.Domain_layer.model.Counter;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,6 +52,43 @@ public class UserApplicationService {
         return userCounters.stream()
                 .map(this::convertToUserCountersDto)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void createCounter(UserCountersDto userCountersDto) {
+        Counter counter = convertUserCounterToDomain(userCountersDto);
+        counterRepository.save(counter);
+    }
+
+    @Transactional
+    public void deleteCounter(Long id) throws EntityNotFoundException, AccessDeniedException {
+        Counter counter = counterRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Counter not found"));
+
+        User currUser = getCurrentUser();
+        boolean isAdmin = checkAccess(currUser, List.of(UserRole.Admin));
+        if (currUser.getId() != counter.getOwner().getId() && !isAdmin) {
+            throw new AccessDeniedException("ACCESS DENIED");
+        }
+
+        counterRepository.delete(counter);
+    }
+
+    @Transactional
+    public void deleteUser(Long id) throws AccessDeniedException {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User with ID " + id + "not found"));
+        User currentUser = getCurrentUser();
+        boolean isOwner = currentUser.getId() == id;
+        boolean isAdmin = checkAccess(currentUser, List.of(UserRole.Admin));
+
+        System.out.println(currentUser.getId());
+
+        if (!isAdmin && !isOwner) {
+            throw new AccessDeniedException("ACCESS DENIED");
+        }
+
+        userRepository.delete(user);
     }
 
 
@@ -130,8 +173,8 @@ public class UserApplicationService {
     private UserCountersDto convertToUserCountersDto(Counter counter) {
         UserCountersDto dto = new UserCountersDto();
         dto.setId(counter.getId());
-        dto.setName(counter.getName().toString());
-        dto.setValue(String.valueOf(counter.getValue()));
+        dto.setName(counter.getName());
+        dto.setValue(counter.getValue());
         dto.setCreatedAt(counter.getCreatedAt());
         dto.setUpdatedAt(counter.getUpdatedAt());
         dto.setIsApproved(counter.getIsApproved());
@@ -139,5 +182,31 @@ public class UserApplicationService {
         return dto;
     }
 
+    //todo: протестить
+    private Counter convertUserCounterToDomain(UserCountersDto userCounterDto) {
+        Counter counter = new Counter(
+                userCounterDto.getName(),
+                userCounterDto.getValue(),
+                convertUserProfileToDomain(userCounterDto.getOwner())
+        );
+
+        return counter;
+    }
+
+    private User convertUserProfileToDomain(UserProfileDto userProfileDto) {
+        User user = new User(
+                userProfileDto.getPhone(),
+                userProfileDto.getEmail(),
+                userProfileDto.getPassword(),
+                userProfileDto.getFirstName(),
+                userProfileDto.getLastName(),
+                userProfileDto.getRole()
+                );
+        return user;
+    }
+
+    public boolean checkAccess(User user, List<UserRole> requiredRoles) {
+        return requiredRoles.contains(user.getRole());
+    }
 
 }

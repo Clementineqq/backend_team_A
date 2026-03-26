@@ -52,7 +52,6 @@ public class CompanyApplicationService {
         }
 
         Company company = convertToDomainCompany(profileDto);
-        company.setPassword("123123123"); // пока не отменим изменения Клима, пусть так будет
 
         Address domainAddress = new Address(
                 profileDto.getAddress().getStreet(),

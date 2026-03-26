@@ -27,11 +27,6 @@ public class CompanyRepositoryAdapter implements ICompanyRepository {
 
     @Override
     public Company save(Company company) {
-         if (company.getPassword() != null && !company.getPassword().isEmpty()) {
-            String hashedPassword = passwordEncoder.encode(company.getPassword());
-            company.setPassword(hashedPassword);
-        }
-
         CompanyJpaEntity entity = _mapper.toEntity(company);
         CompanyJpaEntity saved = _jpaRepository.save(entity);
 

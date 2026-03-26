@@ -54,7 +54,7 @@ public class ServiceController {
     }
 
     // GET /api/service/workers/{id}
-    // TODO: доделать
+    // TODO: доделать | саньку не трогать
     @GetMapping("/workers/{id}")
     public ResponseEntity<?> getWorkerById(@PathVariable Long id) {
         User currUser = companyService.getCurrentUser();
@@ -97,7 +97,6 @@ public class ServiceController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO: дописать
     @GetMapping("/company_profile/{companyId}")
     public ResponseEntity<?> getCompanyProfileById(@PathVariable Long companyId) {
         User currUser = companyService.getCurrentUser();
@@ -106,11 +105,14 @@ public class ServiceController {
                     .status(HttpStatus.FORBIDDEN)
                     .body("ACCESS DENIED");
         }
-        // TODO: добавить овнера
-        if (currUser.getCompany().getId() != companyId && currUser.getRole() == UserRole.Worker){
+
+        boolean isOwner  = currUser.getRole() == UserRole.Worker;
+        boolean isWorker = currUser.getRole() == UserRole.CompanyOwner;
+
+        if (currUser.getCompany().getId() != companyId && (isOwner || isWorker)){
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
-                    .body("ACCESS DENIED, YOU'RE WORKER IN ANOTHER COMPANY");
+                    .body("ACCESS DENIED");
         }
 
         CompanyProfileDto profile = companyService.getCompanyById(companyId);
