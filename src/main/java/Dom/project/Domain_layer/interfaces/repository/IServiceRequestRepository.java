@@ -9,7 +9,6 @@ public interface IServiceRequestRepository {
     ServiceRequest save(ServiceRequest serviceRequest);
     Optional<ServiceRequest> findById(Long id);
 
-    // TODO: проверить
     List<ServiceRequest> findByCreatorId(Long id);
     void delete(ServiceRequest serviceRequest);
     List<ServiceRequest> findByCompanyId(Long companyId);

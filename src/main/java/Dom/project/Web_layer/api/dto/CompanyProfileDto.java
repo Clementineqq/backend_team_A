@@ -8,22 +8,23 @@ public class CompanyProfileDto {
     private String inn;
     private String kpp;
     private String email;
+    private String descriprion;
     private AddressDto address;
     private List<UserProfileDto> members;
     private List<WorkerDto> workers;
     private List<ServiceRequestDto> companyRequests;
-    private UserProfileDto companyOwner;
+    private List<UserProfileDto> companyOwner;
 
     public CompanyProfileDto() {}
 
-    public CompanyProfileDto(Long id, String companyName, AddressDto address, String inn, String kpp, String email, UserProfileDto companyOwner) {
+    public CompanyProfileDto(Long id, String companyName, AddressDto address, String inn, String kpp, String email, String descriprion) {
         this.id = id;
         this.companyName = companyName;
         this.address = address;
         this.inn = inn;
         this.kpp = kpp;
         this.email = email;
-        this.companyOwner = companyOwner;
+        this.descriprion = descriprion;
     }
 
     // Геттеры и сеттеры
@@ -54,6 +55,10 @@ public class CompanyProfileDto {
     public List<ServiceRequestDto> getCompanyRequests() { return companyRequests; }
     public void setCompanyRequests(List<ServiceRequestDto> companyRequests) { this.companyRequests = companyRequests; }
 
-    public UserProfileDto getCompanyOwner() { return companyOwner; }
-    public void setCompanyOwner(UserProfileDto companyOwner) {this.companyOwner = companyOwner;}
+    public List<UserProfileDto> getCompanyOwner() { return companyOwner; }
+    public void setCompanyOwner(List<UserProfileDto> companyOwner) {this.companyOwner = companyOwner;}
+
+    public String getDescriprion() { return descriprion; }
+
+    public void setDescriprion(String descriprion) { this.descriprion = descriprion; }
 }

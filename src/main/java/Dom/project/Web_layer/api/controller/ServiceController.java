@@ -193,42 +193,70 @@ public class ServiceController {
     // GET /api/service/company_profile/{id}
     @GetMapping("/company_profile/{companyId}")
     public ResponseEntity<?> getCompanyProfileById(@PathVariable Long companyId) {
-        User currUser = utils.getCurrentUser();
-        if (!utils.checkAccess(currUser, List.of(UserRole.Worker, UserRole.CompanyOwner, UserRole.Admin))){
+        try {
+            User currUser = utils.getCurrentUser();
+
+            if (!utils.checkAccess(currUser, List.of(UserRole.Worker, UserRole.CompanyOwner, UserRole.Admin))) {
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("ACCESS DENIED");
+            }
+
+            if (!Objects.equals(currUser.getCompany().getId(), companyId) && utils.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Worker))) {
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("ACCESS DENIED");
+            }
+
+            CompanyProfileDto profile = companyService.getCompanyById(companyId);
+
+            return ResponseEntity.ok(profile);
+        } catch (EntityNotFoundException e){
             return ResponseEntity
-                    .status(HttpStatus.FORBIDDEN)
-                    .body("ACCESS DENIED");
-        }
-
-        boolean isOwner  = currUser.getRole() == UserRole.Worker;
-        boolean isWorker = currUser.getRole() == UserRole.CompanyOwner;
-
-        if (!Objects.equals(currUser.getCompany().getId(), companyId) && (isOwner || isWorker)){
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("NOT FOUND");
+        }  catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity
-                    .status(HttpStatus.FORBIDDEN)
-                    .body("ACCESS DENIED");
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
         }
-
-        CompanyProfileDto profile = companyService.getCompanyById(companyId);
-
-        if (profile == null){
-            return ResponseEntity
-                    .notFound()
-                    .build();
-        }
-
-        return ResponseEntity.ok(profile);
     }
 
-    // PUT /api/service/company_profile
-    @PutMapping("/company_profile")
-    public ResponseEntity<CompanyProfileDto> updateCompanyProfile(
-            @RequestBody CompanyProfileDto profileDto) {
-        CompanyProfileDto updated = companyService.updateCompanyProfile(profileDto);
-        return ResponseEntity.ok(updated);
-    }
+    // PUT /api/service/company_profile/{company_id}
+    @PutMapping("/company_profile/{company_id}")
+    public ResponseEntity<?> updateCompanyProfile(
+            @PathVariable Long company_id,
+            @RequestBody CompanyProfileDto profileDto)  {
+        try {
+            User currUser = utils.getCurrentUser();
 
-    // желательно чтобы все методы в зависимости от експшена выкидывали ошибку
+            if (!utils.checkAccess(currUser, List.of( UserRole.CompanyOwner, UserRole.Admin))) {
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("ACCESS DENIED");
+            }
+            if (!Objects.equals(currUser.getCompany().getId(), company_id) && currUser.getRole() == UserRole.CompanyOwner){
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("ACCESS DENIED");
+            }
+
+            CompanyProfileDto updated = companyService.updateCompanyProfile(profileDto, company_id);
+
+            return ResponseEntity.ok(updated);
+        } catch (EntityNotFoundException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("NOT FOUND");
+        }  catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
+    }
+    
     // POST /api/service/company_profile/register
     @PostMapping("/company_profile/register")
     public ResponseEntity<?> createCompanyProfile(

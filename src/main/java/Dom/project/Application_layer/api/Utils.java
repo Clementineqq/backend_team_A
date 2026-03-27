@@ -71,6 +71,7 @@ public class Utils {
         dto.setInn(company.getInn());
         dto.setKpp(company.getKpp());
         dto.setEmail(company.getEmail());
+        dto.setDescriprion(company.getDescription());
         if (company.getLegalAddress() != null) {
             dto.setAddress(AddressDto.toDto(company.getLegalAddress()));
         }
@@ -79,6 +80,27 @@ public class Utils {
         dto.setMembers(members.stream().map(this::convertToUserProfileDto).collect(Collectors.toList()));
         dto.setWorkers(workers.stream().map(this::convertToWorkerDto).collect(Collectors.toList()));
         dto.setCompanyRequests(requests.stream().map(this::convertToServiceRequestDto).collect(Collectors.toList()));
+
+        return dto;
+    }
+
+    public CompanyProfileDto convertToCompanyProfileDto(Company company, List<User> members, List<User> workers, List<ServiceRequest> requests, List<User> companyOwner) {
+        CompanyProfileDto dto = new CompanyProfileDto();
+        dto.setId(company.getId());
+        dto.setCompanyName(company.getName());
+        dto.setInn(company.getInn());
+        dto.setKpp(company.getKpp());
+        dto.setEmail(company.getEmail());
+        dto.setDescriprion(company.getDescription());
+        if (company.getLegalAddress() != null) {
+            dto.setAddress(AddressDto.toDto(company.getLegalAddress()));
+        }
+
+        // Преобразуем членов и работников в DTO
+        dto.setMembers(members.stream().map(this::convertToUserProfileDto).collect(Collectors.toList()));
+        dto.setWorkers(workers.stream().map(this::convertToWorkerDto).collect(Collectors.toList()));
+        dto.setCompanyRequests(requests.stream().map(this::convertToServiceRequestDto).collect(Collectors.toList()));
+        dto.setCompanyOwner(companyOwner.stream().map(this::convertToUserProfileDto).collect(Collectors.toList()));
 
         return dto;
     }
@@ -124,6 +146,7 @@ public class Utils {
         company.setKpp(profileDto.getKpp());
         company.setEmail(profileDto.getEmail());
         company.setLegalAddress(profileDto.getAddress().toDomain());
+        company.setDescription(profileDto.getDescriprion());
 
         return company;
     }

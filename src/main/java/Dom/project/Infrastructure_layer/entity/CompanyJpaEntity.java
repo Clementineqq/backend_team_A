@@ -28,6 +28,9 @@ public class CompanyJpaEntity extends Base_entity {
     @NotBlank(message = "КПП компании не может быть пустым")
     String kpp;
 
+    @Column(length = 1024, name="description")
+    String description;
+
     @Email(message = "Некорректный email")
     @Column(name="email", unique = true)
     @Length(min = 4, max = 255, message = "Некорректная длинна")
@@ -61,6 +64,10 @@ public class CompanyJpaEntity extends Base_entity {
     public void setKpp(String kpp) {
         this.kpp = kpp;
     }
+
+    public String getDescription() {return description;}
+
+    public void setDescription(String description) { this.description = description; }
 
     public AddressJpaEntity getLegal_address() {
         return legal_address;
