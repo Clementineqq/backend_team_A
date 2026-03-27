@@ -46,7 +46,7 @@ public class ServiceController {
                     .body("ACCESS DENIED");
         }
 
-        if (currUser.getCompany().getId() != companyId && currUser.getRole() == UserRole.CompanyOwner){
+        if (!currUser.getCompany().getId().equals(companyId) && currUser.getRole() == UserRole.CompanyOwner){
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body("ACCESS DENIED");

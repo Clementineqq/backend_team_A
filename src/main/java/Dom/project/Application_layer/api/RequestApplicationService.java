@@ -9,11 +9,13 @@ import Dom.project.Domain_layer.model.ServiceRequest;
 import Dom.project.Domain_layer.model.User;
 import Dom.project.Domain_layer.enums.RequestStatus;
 import Dom.project.Domain_layer.exception.DomainException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,16 +66,19 @@ public class RequestApplicationService {
         return utils.convertToUserRequestDto(savedRequest);
     }
 
-    public UserRequestDto getUserRequestById(Long id) {
+    public UserRequestDto getUserRequestById(Long id) throws EntityNotFoundException, AccessDeniedException, EntityNotFoundException {
         ServiceRequest serviceRequest = serviceRequestRepository.findById(id)
-                .orElseThrow(() -> new DomainException("Запрос с ID " + id + " не найден"));
+                .orElseThrow(() -> new EntityNotFoundException("Запрос с ID " + id + " не найден"));
 
         User currentUser = utils.getCurrentUser();
 
-        if (!serviceRequest.getCreator().getId().equals(currentUser.getId()) &&
-                (serviceRequest.getAssigner() == null ||
-                        !serviceRequest.getAssigner().getId().equals(currentUser.getId()))) {
-            throw new DomainException("У вас нет доступа к этому запросу");
+        boolean isAdmin = utils.checkAccess(currentUser, List.of(UserRole.Admin));
+        boolean isCreator = serviceRequest.getCreator().getId().equals(currentUser.getId());
+        boolean isAssigner = serviceRequest.getAssigner() == null ||
+                !serviceRequest.getAssigner().getId().equals(currentUser.getId());
+
+        if (!isAdmin && !isCreator && !isAssigner){
+            throw new AccessDeniedException("ACCESS DENIED");
         }
 
         return utils.convertToUserRequestDto(serviceRequest);

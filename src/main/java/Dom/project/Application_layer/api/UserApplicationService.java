@@ -62,10 +62,10 @@ public class UserApplicationService {
                 .orElseThrow(() -> new EntityNotFoundException("Cant find counter with id" + counterId));
 
         User currentUser = util.getCurrentUser();
-        boolean isOwner = currentUser.getId() == counter.getOwner().getId();
+        boolean isOwner = currentUser.getId().equals(counter.getOwner().getId());
         boolean isAdmin = util.checkAccess(currentUser, List.of(UserRole.Admin));
         boolean isCompanyWorker = util.checkAccess(currentUser, List.of(UserRole.Worker, UserRole.CompanyOwner))
-                && currentUser.getCompany().getId() == counter.getOwner().getCompany().getId();
+                && currentUser.getCompany().getId().equals(counter.getOwner().getCompany().getId());
 
         if (!isOwner && !isAdmin && !isCompanyWorker){
             throw new AccessDeniedException("ACCESS DENIED");
@@ -79,7 +79,7 @@ public class UserApplicationService {
                 .orElseThrow(() -> new EntityNotFoundException("Cant find counter with id" + idToUpdate));
 
         User currentUser = util.getCurrentUser();
-        boolean isOwner = currentUser.getId() == counterFromRepo.getOwner().getId();
+        boolean isOwner = currentUser.getId().equals(counterFromRepo.getOwner().getId());
         boolean isAdmin = util.checkAccess(currentUser, List.of(UserRole.Admin));
 
         if (!isOwner && !isAdmin){
@@ -112,6 +112,8 @@ public class UserApplicationService {
         return util.convertToUserCountersDto(created);
     }
 
+
+
     @Transactional
     public void deleteCounter(Long id) throws EntityNotFoundException, AccessDeniedException {
         Counter counter = counterRepository.findById(id)
@@ -119,7 +121,7 @@ public class UserApplicationService {
 
         User currUser = util.getCurrentUser();
         boolean isAdmin = util.checkAccess(currUser, List.of(UserRole.Admin));
-        if (currUser.getId() != counter.getOwner().getId() && !isAdmin) {
+        if (!currUser.getId().equals(counter.getOwner().getId()) && !isAdmin) {
             throw new AccessDeniedException("ACCESS DENIED");
         }
 
@@ -131,7 +133,7 @@ public class UserApplicationService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User with ID " + id + "not found"));
         User currentUser = util.getCurrentUser();
-        boolean isOwner = currentUser.getId() == id;
+        boolean isOwner = currentUser.getId().equals(id);
         boolean isAdmin = util.checkAccess(currentUser, List.of(UserRole.Admin));
 
         System.out.println(currentUser.getId());

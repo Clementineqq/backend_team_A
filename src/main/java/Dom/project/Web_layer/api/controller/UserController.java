@@ -189,24 +189,53 @@ public class UserController {
 
     // GET /api/users/requests
     @GetMapping("/requests")
-    public ResponseEntity<List<UserRequestDto>> getUserRequests() {
-        List<UserRequestDto> requests = userRequestService.getCurrentUserRequests();
-        return ResponseEntity.ok(requests);
+    public ResponseEntity<?> getUserRequests() {
+        try {
+            List<UserRequestDto> requests = userRequestService.getCurrentUserRequests();
+            return ResponseEntity.ok(requests);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
     }
 
     // POST /api/users/requests
     @PostMapping("/requests")
-    public ResponseEntity<UserRequestDto> createUserRequest(
+    public ResponseEntity<?> createUserRequest(
             @RequestBody UserRequestDto requestDto) {
-        UserRequestDto created = userRequestService.createUserRequest(requestDto);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+       try {
+           UserRequestDto created = userRequestService.createUserRequest(requestDto);
+           return new ResponseEntity<>(created, HttpStatus.CREATED);
+       } catch (Exception e){
+           System.out.println(e.getMessage());
+           return ResponseEntity
+                   .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                   .body("SERVER ERROR");
+       }
     }
 
     // GET /api/users/requests/{id}
     @GetMapping("/requests/{id}")
-    public ResponseEntity<UserRequestDto> getUserRequestById(@PathVariable Long id) {
-        UserRequestDto request = userRequestService.getUserRequestById(id);
-        return ResponseEntity.ok(request);
+    public ResponseEntity<?> getUserRequestById(@PathVariable Long id) {
+        try {
+            UserRequestDto request = userRequestService.getUserRequestById(id);
+            return ResponseEntity.ok(request);
+        } catch (AccessDeniedException e){
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(e.getMessage());
+        }catch (EntityNotFoundException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("NOT FOUND");
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
     }
 
     // DELETE /api/users/requests/{id}
@@ -214,23 +243,5 @@ public class UserController {
     public ResponseEntity<Void> deleteUserRequest(@PathVariable Long id) {
         userRequestService.deleteUserRequest(id);
         return ResponseEntity.noContent().build();
-    }
-
-    //тестовый метод, можешь поредачить взять отсюда часть
-    @GetMapping("/requests/get/{id}")
-    public ResponseEntity<?> test(@PathVariable Long id) {
-        try {
-            List<ServiceRequestDto> requests = userRequestService.getAllRequests();
-
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(requests);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("SERVER ERROR");
-        }
     }
 }
