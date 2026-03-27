@@ -1,6 +1,8 @@
 package Dom.project.Web_layer.auth;
 
+import Dom.project.Application_layer.api.Utils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +31,7 @@ public class AuthController {
         this.jwtUtils = jwtUtils;
     }
 
+    // POST /auth/register
     @Transactional
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
@@ -53,6 +56,7 @@ public class AuthController {
         ));
     }
 
+    // POST /auth/login
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         User loggedUser = authService.login(request.getEmail(), request.getPassword());
@@ -67,30 +71,10 @@ public class AuthController {
         ));
     }
 
-    @PostMapping("/logout/{userId}")
-    public ResponseEntity<String> logout(@PathVariable Long userId) {
-        authService.logout(userId);
-        return ResponseEntity.ok("Выход выполнен");
+    // GET /auth/logout
+    @GetMapping("/logout")
+    public ResponseEntity<String> logout() {
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok("LOGOUT COMPLETE");
     }
-
-    @GetMapping("/test")
-    public String test(){
-        System.out.println("Попал в тест");
-        return "TEST OK";
-    }
-
-    @PostMapping("/company/login")
-    public ResponseEntity<AuthResponse> companyLogin(@RequestBody CompanyLoginRequest request) {
-        User companyUser = authService.loginCompany(request.getEmail(), request.getPassword());
-        
-        String token = jwtUtils.generateToken(companyUser.getEmail());
-        
-        return ResponseEntity.ok(new AuthResponse(
-            "Вход компании успешен!", 
-            token,
-            companyUser.getEmail(),
-            companyUser.getName() // Имя компании
-        ));
-    }
-
 }

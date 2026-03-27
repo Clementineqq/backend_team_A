@@ -47,6 +47,11 @@ public class User {
         this.role = role;
     }
 
+    public User(String phone_number, String email, String password, String name, String lastName, UserRole role) {
+        this(phone_number, email, password, name, lastName);
+        this.role = role;
+    }
+
     // Сеттеры с валидацией
     public void setId(Long id) {
         if (id == null || id <= 0) {

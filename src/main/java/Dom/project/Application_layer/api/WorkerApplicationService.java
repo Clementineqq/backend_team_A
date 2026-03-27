@@ -17,9 +17,11 @@ import java.util.stream.Collectors;
 public class WorkerApplicationService {
 
     private final IUserRepository userRepository;
+    private Utils utils;
 
-    public WorkerApplicationService(IUserRepository userRepository) {
+    public WorkerApplicationService(IUserRepository userRepository, Utils utils) {
         this.userRepository = userRepository;
+        this.utils = utils;
     }
 
     // добавил тут id, мб тут поменять как-то, хз как ты его получать хотел
@@ -41,7 +43,7 @@ public class WorkerApplicationService {
 
     @Transactional
     public WorkerDto createWorker(WorkerDto workerDto) {
-        User currentUser = getCurrentUser();
+        User currentUser = utils.getCurrentUser();
         if (currentUser.getCompany() == null) {
             throw new DomainException("Текущий пользователь не принадлежит компании");
         }
@@ -71,7 +73,7 @@ public class WorkerApplicationService {
                 .orElseThrow(() -> new DomainException("Работник не найден"));
 
         // Проверка прав: только сам работник или его компания могут редактировать
-        User currentUser = getCurrentUser();
+        User currentUser = utils.getCurrentUser();
         if (!user.getId().equals(currentUser.getId()) &&
                 (currentUser.getCompany() == null || !currentUser.getCompany().getId().equals(user.getCompany().getId()))) {
             throw new DomainException("Нет прав на редактирование этого работника");
@@ -94,7 +96,7 @@ public class WorkerApplicationService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new DomainException("Работник не найден"));
 
-        User currentUser = getCurrentUser();
+        User currentUser = utils.getCurrentUser();
         if (!currentUser.getId().equals(user.getId()) &&
                 (currentUser.getCompany() == null || !currentUser.getCompany().getId().equals(user.getCompany().getId()))) {
             throw new DomainException("Нет прав на удаление этого работника");
@@ -104,13 +106,7 @@ public class WorkerApplicationService {
         userRepository.delete(user);
     }
 
-    private User getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getPrincipal().toString();
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new DomainException("Текущий пользователь не найден"));
-    }
-
+    // это тоже надо в utils перенести будет
     private WorkerDto convertToWorkerDto(User user) {
         WorkerDto dto = new WorkerDto();
         dto.setId(user.getId());

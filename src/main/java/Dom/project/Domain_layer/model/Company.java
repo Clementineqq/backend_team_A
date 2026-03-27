@@ -304,24 +304,6 @@ public class Company {
         setUpdatedAt();
     }
 
-    //TODO: Почистить
-    private String password;
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        if (password == null || password.trim().isEmpty()) {
-            throw InvalidCompanyException.passwordCannotBeEmpty();
-        }
-        if (password.length() < 6) {
-            throw InvalidCompanyException.passwordTooShort(6);
-        }
-        this.password = password;
-        setUpdatedAt();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

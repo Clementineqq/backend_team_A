@@ -208,6 +208,7 @@ public class Address {
                 Objects.equals(totalArea, other.totalArea);
     }
 
+    // TODO: проверку на null, если нуль, то не устанавливается
     public void update(Address newAddress) {
         if (newAddress == null) {
             throw InvalidAddressException.addressCannotBeNull();

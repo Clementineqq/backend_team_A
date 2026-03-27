@@ -86,45 +86,7 @@ public class AuthService {
 
     public void logout(Long userId) {
         System.out.println("выход из userId: " + userId);
-        
     }
-
- 
-public User loginCompany(String email, String password) {
-    System.out.println("логин компании: " + email);
-    
-    Optional<Company> companyOpt = companyRepository.findByEmail(email);
-    if (companyOpt.isEmpty()) {
-        throw new EntityNotFoundException("Company not found with email: " + email);
-    }
-    
-    Company company = companyOpt.get();
-    System.out.println("=== ОТЛАДКА ===");
-    System.out.println("Email из БД: '" + company.getEmail() + "'");
-    System.out.println("Пароль из БД: '" + company.getPassword() + "'");
-    System.out.println("Длина пароля из БД: " + (company.getPassword() != null ? company.getPassword().length() : 0));
-    System.out.println("Введенный пароль: '" + password + "'");
-    System.out.println("Длина введенного пароля: " + password.length());
-    System.out.println("Пароли равны? " + (company.getPassword() != null && company.getPassword().equals(password)));
-    System.out.println("================");
-    
-    if (company.getPassword() == null || password == null) {
-        throw InvalidUserException.incorrectPassword();
-    }
-    
-    if (!passwordEncoder.matches(password, company.getPassword())) {
-        throw InvalidUserException.incorrectPassword();
-    }
-    
-    // создаем тута пользовательский объект для возврата
-    User companyUser = new User();
-    companyUser.setEmail(company.getEmail());
-    companyUser.setName(company.getName());
-    companyUser.setLastName("(Компания)");
-    companyUser.setId(company.getId());
-    
-    return companyUser;
-}
 
 
 

@@ -1,5 +1,6 @@
 package Dom.project.Web_layer.api.controller;
 
+import Dom.project.Application_layer.api.Utils;
 import Dom.project.Domain_layer.enums.UserRole;
 import Dom.project.Domain_layer.model.User;
 import Dom.project.Web_layer.api.dto.CompanyProfileDto;
@@ -19,31 +20,33 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/service")
 public class ServiceController {
-    // TODO: добавить роль во все файлы
-
     private final WorkerApplicationService workerService;
     private final CompanyApplicationService companyService;
     private final RequestApplicationService requestService;
+    private Utils utils;
+
+    // todo: проверку счетчика
 
     public ServiceController(WorkerApplicationService workerService,
                              CompanyApplicationService companyService,
-                             RequestApplicationService requestService) {
+                             RequestApplicationService requestService, Utils utils) {
         this.workerService = workerService;
         this.companyService = companyService;
         this.requestService = requestService;
+        this.utils = utils;
     }
 
     // GET /api/service/workers
     @GetMapping("/company_profile/workers/{companyId}")
     public ResponseEntity<?> getWorkers(@PathVariable Long companyId) {
-        User currUser = companyService.getCurrentUser();
-        if (!companyService.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Admin))){
+        User currUser = utils.getCurrentUser();
+        if (!utils.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Admin))){
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body("ACCESS DENIED");
         }
 
-        if (currUser.getCompany().getId() != companyId && currUser.getRole() == UserRole.CompanyOwner){
+        if (!currUser.getCompany().getId().equals(companyId) && currUser.getRole() == UserRole.CompanyOwner){
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body("ACCESS DENIED");
@@ -54,11 +57,11 @@ public class ServiceController {
     }
 
     // GET /api/service/workers/{id}
-    // TODO: доделать
+    // TODO: доделать | саньку не трогать
     @GetMapping("/workers/{id}")
     public ResponseEntity<?> getWorkerById(@PathVariable Long id) {
-        User currUser = companyService.getCurrentUser();
-        if (!companyService.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Admin))){
+        User currUser = utils.getCurrentUser();
+        if (!utils.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Admin))){
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body("ACCESS DENIED");
@@ -97,20 +100,23 @@ public class ServiceController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO: дописать
+    // GET /api/service/company_profile/{id}
     @GetMapping("/company_profile/{companyId}")
     public ResponseEntity<?> getCompanyProfileById(@PathVariable Long companyId) {
-        User currUser = companyService.getCurrentUser();
-        if (!companyService.checkAccess(currUser, List.of(UserRole.Worker, UserRole.CompanyOwner, UserRole.Admin))){
+        User currUser = utils.getCurrentUser();
+        if (!utils.checkAccess(currUser, List.of(UserRole.Worker, UserRole.CompanyOwner, UserRole.Admin))){
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body("ACCESS DENIED");
         }
-        // TODO: добавить овнера
-        if (currUser.getCompany().getId() != companyId && currUser.getRole() == UserRole.Worker){
+
+        boolean isOwner  = currUser.getRole() == UserRole.Worker;
+        boolean isWorker = currUser.getRole() == UserRole.CompanyOwner;
+
+        if (currUser.getCompany().getId() != companyId && (isOwner || isWorker)){
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
-                    .body("ACCESS DENIED, YOU'RE WORKER IN ANOTHER COMPANY");
+                    .body("ACCESS DENIED");
         }
 
         CompanyProfileDto profile = companyService.getCompanyById(companyId);
@@ -133,10 +139,11 @@ public class ServiceController {
     }
 
     // желательно чтобы все методы в зависимости от експшена выкидывали ошибку
+    // POST /api/service/company_profile/register
     @PostMapping("/company_profile/register")
     public ResponseEntity<?> createCompanyProfile(
             @RequestBody CompanyProfileDto profileDto) {
-        if(!companyService.checkAccess(companyService.getCurrentUser(), List.of(UserRole.Admin))){
+        if(!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin))){
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body("ACCESS DENIED");
