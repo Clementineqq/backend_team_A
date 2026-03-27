@@ -22,7 +22,7 @@ BEGIN
         VALUES (
             '+79991234567',
             'admin@exmaple.ru',
-            '$2a$10$OENEHXXBdNaJzrvldYLvEODamvsamoKD0yLf28dS4APf2FpmGMCyu',
+            '$2a$10$OENEHXXBdNaJzrvldYLvEODamvsamoKD0yLf28dS4APf2FpmGMCyu', --password 148822869
             'Админ',
             'Админов',
             'Админович',

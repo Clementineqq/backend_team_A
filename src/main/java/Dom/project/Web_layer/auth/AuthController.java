@@ -1,6 +1,8 @@
 package Dom.project.Web_layer.auth;
 
+import Dom.project.Application_layer.api.Utils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -70,9 +72,9 @@ public class AuthController {
     }
 
     // GET /auth/logout
-    @GetMapping("/logout/{userId}")
-    public ResponseEntity<String> logout(@PathVariable Long userId) {
-        authService.logout(userId);
-        return ResponseEntity.ok("Выход выполнен");
+    @GetMapping("/logout")
+    public ResponseEntity<String> logout() {
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok("LOGOUT COMPLETE");
     }
 }

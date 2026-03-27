@@ -43,15 +43,21 @@ public class UserController {
 
     }
 
-    @GetMapping("/counters/{counterId}")
+    @GetMapping("/counters/{id}")
     public ResponseEntity<?> getCounterById(@PathVariable Long id){
         try{
-            //todo: *
             UserCountersDto counter = userService.getCounter(id);
-
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(counter);
+        } catch (EntityNotFoundException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("NOT FOUND");
+        } catch (AccessDeniedException e){
+            return  ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("ACCESS DENIED");
         } catch (Exception e){
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -63,10 +69,14 @@ public class UserController {
     // create counter
     // POST /api/users/counters
     @PostMapping("/counters")
-    public ResponseEntity<?> createCounter(UserCountersDto userCounterDto) {
+    public ResponseEntity<?> createCounter(@RequestBody UserCountersDto userCounterDto) {
         try {
-            userService.createCounter(userCounterDto);
-            return ResponseEntity.ok(userCounterDto);
+            UserCountersDto created = userService.createCounter(userCounterDto);
+            created.setOwner(null); // чтобы личную инфу юзера не отправлять.. как будто лишнее
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(created);
         } catch (Exception e){
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -78,19 +88,27 @@ public class UserController {
 
     // PUT api/users/counters/{id}
     @PutMapping("/counters/{id}")
-    public ResponseEntity<?> updateCounter(UserCountersDto userCountersDto, @PathVariable Long id){
+    public ResponseEntity<?> updateCounter(@RequestBody UserCountersDto userCountersDto, @PathVariable Long id){
         try{
-            //todo: *
+            UserCountersDto updated = userService.updateCounter(userCountersDto, id);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body("CREATED COUNTER");
+                    .body(updated);
+        } catch (EntityNotFoundException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("NOT FOUND");
+        } catch (AccessDeniedException e){
+            return  ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("ACCESS DENIED");
         } catch (Exception e){
+            System.out.println(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("SERVER ERROR");
         }
     }
-
 
     // delete counter
     // DELETE /api/users/counters/{id}
@@ -105,20 +123,28 @@ public class UserController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("NOT FOUND USER WITH ID " + id);
+                    .body("NOT FOUND COUNTER WITH ID " + id);
         } catch (AccessDeniedException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
         }
     }
 
 
     // GET /api/users/profile
     @GetMapping("/profile")
-    public ResponseEntity<UserProfileDto> getUserProfile() {
-        UserProfileDto profile = userService.getCurrentUserProfile();
-        return ResponseEntity.ok(profile);
+    public ResponseEntity<?> getUserProfile() {
+      try {
+          UserProfileDto profile = userService.getCurrentUserProfile();
+          return ResponseEntity.ok(profile);
+      } catch (Exception e){
+          System.out.println(e.getMessage());
+          return ResponseEntity
+                  .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                  .body("SERVER ERROR");
+      }
     }
 
     // PUT /api/users/profile

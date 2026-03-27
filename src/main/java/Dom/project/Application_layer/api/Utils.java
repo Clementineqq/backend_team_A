@@ -165,6 +165,7 @@ public class Utils {
         return counter;
     }
 
+    // возможно нахуй не надо, мб удалим, пока не воркает
     public User convertUserProfileToDomain(UserProfileDto userProfileDto) {
         User user = new User(
                 userProfileDto.getPhone(),

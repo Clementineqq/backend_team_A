@@ -25,6 +25,8 @@ public class ServiceController {
     private final RequestApplicationService requestService;
     private Utils utils;
 
+    // todo: проверку счетчика
+
     public ServiceController(WorkerApplicationService workerService,
                              CompanyApplicationService companyService,
                              RequestApplicationService requestService, Utils utils) {

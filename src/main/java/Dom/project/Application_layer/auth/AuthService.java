@@ -86,7 +86,6 @@ public class AuthService {
 
     public void logout(Long userId) {
         System.out.println("выход из userId: " + userId);
-        
     }
 
 

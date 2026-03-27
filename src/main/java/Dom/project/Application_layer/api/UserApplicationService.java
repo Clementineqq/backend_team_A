@@ -53,18 +53,63 @@ public class UserApplicationService {
 
         return userCounters.stream()
                 .map(util::convertToUserCountersDto)
+                .peek(dto -> dto.setOwner(null)) // аналогично, странно как-то возвращать все данные о юзере миллион раз
                 .collect(Collectors.toList());
     }
 
-    public UserCountersDto getCounter(Long counterId){
-        //todo: *
-        return null;
+    public UserCountersDto getCounter(Long counterId) throws AccessDeniedException, EntityNotFoundException {
+        Counter counter = counterRepository.findById(counterId)
+                .orElseThrow(() -> new EntityNotFoundException("Cant find counter with id" + counterId));
+
+        User currentUser = util.getCurrentUser();
+        boolean isOwner = currentUser.getId() == counter.getOwner().getId();
+        boolean isAdmin = util.checkAccess(currentUser, List.of(UserRole.Admin));
+        boolean isCompanyWorker = util.checkAccess(currentUser, List.of(UserRole.Worker, UserRole.CompanyOwner))
+                && currentUser.getCompany().getId() == counter.getOwner().getCompany().getId();
+
+        if (!isOwner && !isAdmin && !isCompanyWorker){
+            throw new AccessDeniedException("ACCESS DENIED");
+        }
+
+        return util.convertToUserCountersDto(counter);
+    }
+
+    public UserCountersDto updateCounter(UserCountersDto counter, Long idToUpdate) throws EntityNotFoundException, AccessDeniedException {
+        Counter counterFromRepo = counterRepository.findById(idToUpdate)
+                .orElseThrow(() -> new EntityNotFoundException("Cant find counter with id" + idToUpdate));
+
+        User currentUser = util.getCurrentUser();
+        boolean isOwner = currentUser.getId() == counterFromRepo.getOwner().getId();
+        boolean isAdmin = util.checkAccess(currentUser, List.of(UserRole.Admin));
+
+        if (!isOwner && !isAdmin){
+            throw new AccessDeniedException("ACCESS DENIED");
+        }
+
+        System.out.println(counter.getValue());
+
+        if (counter.getValue() != null){
+            counterFromRepo.setValue(counter.getValue());
+        }
+
+        if (counter.getName() != null){
+            counterFromRepo.setName(counter.getName());
+        }
+
+        counterRepository.save(counterFromRepo);
+        return util.convertToUserCountersDto(counterFromRepo);
     }
 
     @Transactional
-    public void createCounter(UserCountersDto userCountersDto) {
-        Counter counter = util.convertUserCounterToDomain(userCountersDto);
-        counterRepository.save(counter);
+    public UserCountersDto createCounter(UserCountersDto userCountersDto) {
+        User currentUser = util.getCurrentUser();
+
+        Counter counter = new Counter(userCountersDto.getName(), userCountersDto.getValue());
+        counter.setOwner(currentUser);
+        counter.setIsApproved(false);
+
+        Counter created = counterRepository.save(counter);
+        return util.convertToUserCountersDto(created);
     }
 
     @Transactional
@@ -136,7 +181,5 @@ public class UserApplicationService {
         User updatedUser = userRepository.save(currentUser);
         return util.convertToUserProfileDto(updatedUser);
     }
-
-
 
 }
