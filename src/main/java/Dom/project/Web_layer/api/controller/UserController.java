@@ -240,8 +240,50 @@ public class UserController {
 
     // DELETE /api/users/requests/{id}
     @DeleteMapping("/requests/{id}")
-    public ResponseEntity<Void> deleteUserRequest(@PathVariable Long id) {
-        userRequestService.deleteUserRequest(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteUserRequest(@PathVariable Long id) {
+        try {
+            userRequestService.deleteUserRequest(id);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body("DELETED");
+        } catch (AccessDeniedException e){
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(e.getMessage());
+        } catch (EntityNotFoundException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("NOT FOUND");
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
+
+    }
+
+    @PutMapping("requests/{id}")
+    public ResponseEntity<?> updateRequest(@RequestBody UserRequestDto userRequestDto, @PathVariable Long id){
+        try{
+            UserRequestDto updated = userRequestService.updateRequest(userRequestDto, id);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(updated);
+
+        } catch (AccessDeniedException e){
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(e.getMessage());
+        } catch (EntityNotFoundException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("NOT FOUND");
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
     }
 }

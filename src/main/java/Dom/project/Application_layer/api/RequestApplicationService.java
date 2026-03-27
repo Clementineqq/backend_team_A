@@ -88,22 +88,45 @@ public class RequestApplicationService {
     // Мне кажется не надо сообщять юзеру, кто там может удалить, а кто нет, достаточно access denied просто
     // кроме того поч нельзя в обработке удалить запрос? Мне кажется его ваще удалять не нужно,
     // просто статус в "Закрыт" условный переводить
+    // UPDATE: пусть пока ток админ может удалять заявки
     @Transactional
-    public void deleteUserRequest(Long id) {
+    public void deleteUserRequest(Long id) throws AccessDeniedException, EntityNotFoundException {
         ServiceRequest serviceRequest = serviceRequestRepository.findById(id)
-                .orElseThrow(() -> new DomainException("Запрос с ID " + id + " не найден"));
+                .orElseThrow(() -> new EntityNotFoundException("Запрос с ID " + id + " не найден"));
 
         User currentUser = utils.getCurrentUser();
 
-        if (!serviceRequest.getCreator().getId().equals(currentUser.getId())) {
-            throw new DomainException("Только создатель может удалить запрос");
-        }
-
-        if (serviceRequest.getRequestStatus() != RequestStatus.Created) {
-            throw new DomainException("Нельзя удалить запрос, который уже обрабатывается");
+        boolean isAdmin = utils.checkAccess(currentUser, List.of(UserRole.Admin));
+        if (!isAdmin){
+            throw new AccessDeniedException("ACCESS DENIED");
         }
 
         serviceRequestRepository.delete(serviceRequest);
+    }
+
+    public UserRequestDto updateRequest(UserRequestDto userRequestDto, Long id) throws AccessDeniedException, EntityNotFoundException{
+        ServiceRequest serviceRequest = serviceRequestRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Запрос с ID " + id + " не найден"));
+
+        User currentUser = utils.getCurrentUser();
+
+        boolean isAdmin = utils.checkAccess(currentUser, List.of(UserRole.Admin));
+        boolean isCreator = serviceRequest.getCreator().getId().equals(currentUser.getId());
+        if(!isAdmin && !isCreator){
+            throw new AccessDeniedException("ACCESS DENIED");
+        }
+
+        if(userRequestDto.getTitle() != null){
+            serviceRequest.setTitle(userRequestDto.getTitle());
+        }
+
+        if(userRequestDto.getDescription() != null){
+            serviceRequest.setDescription(userRequestDto.getDescription());
+        }
+
+        serviceRequestRepository.save(serviceRequest);
+
+        return utils.convertToUserRequestDto(serviceRequest);
     }
 
     public List<ServiceRequestDto> getAllRequests() {
