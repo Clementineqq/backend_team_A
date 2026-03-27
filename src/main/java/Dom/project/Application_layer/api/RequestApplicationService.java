@@ -27,9 +27,10 @@ public class RequestApplicationService {
     private Utils utils;
 
     public RequestApplicationService(IServiceRequestRepository serviceRequestRepository,
-                                     IUserRepository userRepository) {
+                                     IUserRepository userRepository, Utils utils) {
         this.serviceRequestRepository = serviceRequestRepository;
         this.userRepository = userRepository;
+        this.utils = utils;
     }
 
 

@@ -149,10 +149,17 @@ public class UserController {
 
     // PUT /api/users/profile
     @PutMapping("/profile")
-    public ResponseEntity<UserProfileDto> updateUserProfile(
+    public ResponseEntity<?> updateUserProfile(
             @RequestBody UserProfileDto profileDto) {
-        UserProfileDto updated = userService.updateUserProfile(profileDto);
-        return ResponseEntity.ok(updated);
+        try {
+            UserProfileDto updated = userService.updateUserProfile(profileDto);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
     }
 
     // DELETE /api/users/profile
@@ -172,6 +179,11 @@ public class UserController {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
         }
     }
 
