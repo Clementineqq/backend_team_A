@@ -29,6 +29,7 @@ public class AuthController {
         this.jwtUtils = jwtUtils;
     }
 
+    // POST /auth/register
     @Transactional
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
@@ -53,6 +54,7 @@ public class AuthController {
         ));
     }
 
+    // POST /auth/login
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         User loggedUser = authService.login(request.getEmail(), request.getPassword());
@@ -67,16 +69,10 @@ public class AuthController {
         ));
     }
 
-    @PostMapping("/logout/{userId}")
+    // GET /auth/logout
+    @GetMapping("/logout/{userId}")
     public ResponseEntity<String> logout(@PathVariable Long userId) {
         authService.logout(userId);
         return ResponseEntity.ok("Выход выполнен");
     }
-
-    @GetMapping("/test")
-    public String test(){
-        System.out.println("Попал в тест");
-        return "TEST OK";
-    }
-
 }

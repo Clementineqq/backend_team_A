@@ -43,6 +43,23 @@ public class UserController {
 
     }
 
+    @GetMapping("/counters/{counterId}")
+    public ResponseEntity<?> getCounterById(@PathVariable Long id){
+        try{
+            //todo: *
+            UserCountersDto counter = userService.getCounter(id);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(counter);
+        } catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
+    }
+
+
     // create counter
     // POST /api/users/counters
     @PostMapping("/counters")
@@ -53,6 +70,21 @@ public class UserController {
         } catch (Exception e){
             System.out.println(e.getMessage());
             e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
+    }
+
+    // PUT api/users/counters/{id}
+    @PutMapping("/counters/{id}")
+    public ResponseEntity<?> updateCounter(UserCountersDto userCountersDto, @PathVariable Long id){
+        try{
+            //todo: *
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body("CREATED COUNTER");
+        } catch (Exception e){
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("SERVER ERROR");

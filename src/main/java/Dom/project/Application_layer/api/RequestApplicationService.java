@@ -24,6 +24,7 @@ public class RequestApplicationService {
     private final IServiceRequestRepository serviceRequestRepository;
     private final IUserRepository userRepository;
     private IUserRepository userRepositoryAdapter;
+    private Utils utils;
 
     public RequestApplicationService(IServiceRequestRepository serviceRequestRepository,
                                      IUserRepository userRepository) {
@@ -31,8 +32,10 @@ public class RequestApplicationService {
         this.userRepository = userRepository;
     }
 
+
+
     public List<UserRequestDto> getCurrentUserRequests() {
-        User currentUser = getCurrentUser();
+        User currentUser = utils.getCurrentUser();
         System.out.println("ID user: " + currentUser.getId());
 
         List<ServiceRequest> userRequests = serviceRequestRepository.findByCreatorId(currentUser.getId());
@@ -41,13 +44,13 @@ public class RequestApplicationService {
         };
 
         return userRequests.stream()
-                .map(this::convertToUserRequestDto)
+                .map(utils::convertToUserRequestDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public UserRequestDto createUserRequest(UserRequestDto requestDto) {
-        User currentUser = getCurrentUser();
+        User currentUser = utils.getCurrentUser();
 
         ServiceRequest serviceRequest = new ServiceRequest();
         serviceRequest.setTitle(requestDto.getTitle());
@@ -57,14 +60,14 @@ public class RequestApplicationService {
 
         ServiceRequest savedRequest = serviceRequestRepository.save(serviceRequest);
 
-        return convertToUserRequestDto(savedRequest);
+        return utils.convertToUserRequestDto(savedRequest);
     }
 
     public UserRequestDto getUserRequestById(Long id) {
         ServiceRequest serviceRequest = serviceRequestRepository.findById(id)
                 .orElseThrow(() -> new DomainException("Запрос с ID " + id + " не найден"));
 
-        User currentUser = getCurrentUser();
+        User currentUser = utils.getCurrentUser();
 
         if (!serviceRequest.getCreator().getId().equals(currentUser.getId()) &&
                 (serviceRequest.getAssigner() == null ||
@@ -72,7 +75,7 @@ public class RequestApplicationService {
             throw new DomainException("У вас нет доступа к этому запросу");
         }
 
-        return convertToUserRequestDto(serviceRequest);
+        return utils.convertToUserRequestDto(serviceRequest);
     }
 
     // TODO: Продумать как удаляем пока так
@@ -84,7 +87,7 @@ public class RequestApplicationService {
         ServiceRequest serviceRequest = serviceRequestRepository.findById(id)
                 .orElseThrow(() -> new DomainException("Запрос с ID " + id + " не найден"));
 
-        User currentUser = getCurrentUser();
+        User currentUser = utils.getCurrentUser();
 
         if (!serviceRequest.getCreator().getId().equals(currentUser.getId())) {
             throw new DomainException("Только создатель может удалить запрос");
@@ -98,14 +101,14 @@ public class RequestApplicationService {
     }
 
     public List<ServiceRequestDto> getAllRequests() {
-        User currentUser = getCurrentUser();
+        User currentUser = utils.getCurrentUser();
         if (currentUser.getCompany() == null) {
             throw new DomainException("User doesnt have company");
         }
         // Получаем все запросы всех сотрудников компании
         List<ServiceRequest> requests = serviceRequestRepository.findByCompanyId(currentUser.getCompany().getId());
         return requests.stream()
-                .map(this::convertToServiceRequestDto)
+                .map(utils::convertToServiceRequestDto)
                 .toList();
     }
 
@@ -113,7 +116,7 @@ public class RequestApplicationService {
         ServiceRequest request = serviceRequestRepository.findById(id)
                 .orElseThrow(() -> new DomainException("Запрос не найден"));
 
-        User currentUser = getCurrentUser();
+        User currentUser = utils.getCurrentUser();
         boolean isCreator = request.getCreator() != null && request.getCreator().getId().equals(currentUser.getId());
         boolean isAssignee = request.getAssigner() != null && request.getAssigner().getId().equals(currentUser.getId());
         boolean sameCompany = currentUser.getCompany() != null &&
@@ -124,16 +127,15 @@ public class RequestApplicationService {
             throw new DomainException("Нет доступа к этому запросу");
         }
 
-        return convertToServiceRequestDto(request);
+        return utils.convertToServiceRequestDto(request);
     }
-
 
     @Transactional
     public ServiceRequestDto updateRequestStatus(Long id, String statusStr) {
         ServiceRequest request = serviceRequestRepository.findById(id)
                 .orElseThrow(() -> new DomainException("Запрос не найден"));
 
-        User currentUser = getCurrentUser();
+        User currentUser = utils.getCurrentUser();
         if (currentUser.getCompany() == null ||
                 (request.getCreator() != null && !currentUser.getCompany().getId().equals(request.getCreator().getCompany().getId()))) {
             throw new DomainException("Нет прав на изменение статуса запроса");
@@ -155,63 +157,6 @@ public class RequestApplicationService {
 
         request.setRequestStatus(newStatus);
         ServiceRequest updated = serviceRequestRepository.save(request);
-        return convertToServiceRequestDto(updated);
-    }
-
-    // --- Вспомогательные методы ---
-
-    private User getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getPrincipal().toString();
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new DomainException("Пользователь не найден"));
-    }
-
-    private ServiceRequestDto convertToServiceRequestDto(ServiceRequest request) {
-        ServiceRequestDto dto = new ServiceRequestDto();
-        dto.setId(request.getId());
-        dto.setTitle(request.getTitle());
-        dto.setDescription(request.getDescription());
-        dto.setStatus(request.getRequestStatus().toString());
-        if (request.getCreator() != null) {
-            dto.setCreator(request.getCreator().getFullName());
-        }
-        if (request.getAssigner() != null) {
-            dto.setAssigner(request.getAssigner().getFullName());
-        }
-        dto.setCreatedAt(request.getCreatedAt());
-        dto.setUpdatedAt(request.getUpdatedAt());
-        dto.setCompletedAt(request.getCompletedAt());
-        return dto;
-    }
-
-    private UserRequestDto convertToUserRequestDto(ServiceRequest serviceRequest) {
-        UserRequestDto dto = new UserRequestDto();
-        dto.setId(serviceRequest.getId());
-        dto.setTitle(serviceRequest.getTitle());
-        dto.setDescription(serviceRequest.getDescription());
-        dto.setStatus(serviceRequest.getStringRequestStatus());
-        dto.setCreatedAt(serviceRequest.getCreatedAt());
-        dto.setUpdatedAt(serviceRequest.getUpdatedAt());
-
-        if (serviceRequest.getCreator() != null) {
-            dto.setCreatorId(serviceRequest.getCreator().getId());
-            dto.setCreatorName(serviceRequest.getCreator().getFullName());
-        }
-
-        if (serviceRequest.getAssigner() != null) {
-            dto.setAssigneeId(serviceRequest.getAssigner().getId());
-            dto.setAssigneeName(serviceRequest.getAssigner().getFullName());
-        }
-
-        if (serviceRequest.getCompletedAt() != null) {
-            dto.setCompletedAt(serviceRequest.getCompletedAt());
-        }
-
-        return dto;
-    }
-
-    public boolean checkAccess(User user, List<UserRole> requiredRoles){
-        return requiredRoles.contains(user.getRole());
+        return utils.convertToServiceRequestDto(updated);
     }
 }

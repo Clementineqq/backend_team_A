@@ -33,30 +33,37 @@ public class UserApplicationService {
     private final IUserRepository userRepository;
     private final IServiceRequestRepository serviceRequestRepository;
     private final ICounterRepository counterRepository;
+    private Utils util;
 
     public UserApplicationService(UserRepositoryAdapter userRepositoryAdapter,
                                   IUserRepository userRepository,
                                   IServiceRequestRepository serviceRequestRepository,
-                                  ICounterRepository counterRepository) {
+                                  ICounterRepository counterRepository, Utils util) {
         this.userRepositoryAdapter = userRepositoryAdapter;
         this.userRepository = userRepository;
         this.serviceRequestRepository = serviceRequestRepository;
         this.counterRepository = counterRepository;
+        this.util = util;
     }
 
     public List<UserCountersDto> getUserCounters() {
-        User currentUser = getCurrentUser();
+        User currentUser = util.getCurrentUser();
 
         List<Counter> userCounters = counterRepository.findByUserId(currentUser.getId());
 
         return userCounters.stream()
-                .map(this::convertToUserCountersDto)
+                .map(util::convertToUserCountersDto)
                 .collect(Collectors.toList());
+    }
+
+    public UserCountersDto getCounter(Long counterId){
+        //todo: *
+        return null;
     }
 
     @Transactional
     public void createCounter(UserCountersDto userCountersDto) {
-        Counter counter = convertUserCounterToDomain(userCountersDto);
+        Counter counter = util.convertUserCounterToDomain(userCountersDto);
         counterRepository.save(counter);
     }
 
@@ -65,8 +72,8 @@ public class UserApplicationService {
         Counter counter = counterRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Counter not found"));
 
-        User currUser = getCurrentUser();
-        boolean isAdmin = checkAccess(currUser, List.of(UserRole.Admin));
+        User currUser = util.getCurrentUser();
+        boolean isAdmin = util.checkAccess(currUser, List.of(UserRole.Admin));
         if (currUser.getId() != counter.getOwner().getId() && !isAdmin) {
             throw new AccessDeniedException("ACCESS DENIED");
         }
@@ -78,9 +85,9 @@ public class UserApplicationService {
     public void deleteUser(Long id) throws AccessDeniedException {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User with ID " + id + "not found"));
-        User currentUser = getCurrentUser();
+        User currentUser = util.getCurrentUser();
         boolean isOwner = currentUser.getId() == id;
-        boolean isAdmin = checkAccess(currentUser, List.of(UserRole.Admin));
+        boolean isAdmin = util.checkAccess(currentUser, List.of(UserRole.Admin));
 
         System.out.println(currentUser.getId());
 
@@ -93,13 +100,13 @@ public class UserApplicationService {
 
 
     public UserProfileDto getCurrentUserProfile() {
-        User currentUser = getCurrentUser();
-        return convertToUserProfileDto(currentUser);
+        User currentUser = util.getCurrentUser();
+        return util.convertToUserProfileDto(currentUser);
     }
 
     @Transactional
     public UserProfileDto updateUserProfile(UserProfileDto profileDto) {
-        User currentUser = getCurrentUser();
+        User currentUser = util.getCurrentUser();
 
         if (profileDto.getFirstName() != null) {
             currentUser.setName(profileDto.getFirstName());
@@ -123,90 +130,13 @@ public class UserApplicationService {
 
         if (profileDto.getAddress() != null) {
 
-            currentUser.updateAddress(convertToAddress(profileDto.getAddress()));
+            currentUser.updateAddress(util.convertToAddress(profileDto.getAddress()));
         }
 
         User updatedUser = userRepository.save(currentUser);
-        return convertToUserProfileDto(updatedUser);
+        return util.convertToUserProfileDto(updatedUser);
     }
 
 
-    private Address convertToAddress(AddressDto address) {
-        Address domainAddress = new Address();
-
-        domainAddress.setCity(address.getCity());
-        domainAddress.setFlat(address.getFlat());
-        domainAddress.setHouse(address.getHouse());
-        domainAddress.setRegion(address.getRegion());
-        domainAddress.setStreet(address.getStreet());
-        domainAddress.setTotalArea(address.getTotalArea());
-
-        return domainAddress;
-    }
-
-    //Вспомогательный метод для получения текущего пользователя
-    private User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        String email = authentication.getPrincipal().toString();
-
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new DomainException("Текущий пользователь не найден"));
-    }
-
-    private UserProfileDto convertToUserProfileDto(User user) {
-        UserProfileDto dto = new UserProfileDto();
-        dto.setId(user.getId());
-        dto.setFirstName(user.getName());
-        dto.setLastName(user.getLastName());
-        dto.setMiddleName(user.getFatherName());
-        dto.setEmail(user.getEmail());
-        dto.setPhone(user.getPhone_number());
-        dto.setCreatedAt(user.getCreatedAt());
-        dto.setUpdatedAt(user.getUpdatedAt());
-        dto.setAddress(AddressDto.toDto(user.getAddress()));
-        dto.setRole(user.getRole());
-
-        return dto;
-    }
-
-    private UserCountersDto convertToUserCountersDto(Counter counter) {
-        UserCountersDto dto = new UserCountersDto();
-        dto.setId(counter.getId());
-        dto.setName(counter.getName());
-        dto.setValue(counter.getValue());
-        dto.setCreatedAt(counter.getCreatedAt());
-        dto.setUpdatedAt(counter.getUpdatedAt());
-        dto.setIsApproved(counter.getIsApproved());
-        dto.setOwner(convertToUserProfileDto(counter.getOwner()));
-        return dto;
-    }
-
-    //todo: протестить
-    private Counter convertUserCounterToDomain(UserCountersDto userCounterDto) {
-        Counter counter = new Counter(
-                userCounterDto.getName(),
-                userCounterDto.getValue(),
-                convertUserProfileToDomain(userCounterDto.getOwner())
-        );
-
-        return counter;
-    }
-
-    private User convertUserProfileToDomain(UserProfileDto userProfileDto) {
-        User user = new User(
-                userProfileDto.getPhone(),
-                userProfileDto.getEmail(),
-                userProfileDto.getPassword(),
-                userProfileDto.getFirstName(),
-                userProfileDto.getLastName(),
-                userProfileDto.getRole()
-                );
-        return user;
-    }
-
-    public boolean checkAccess(User user, List<UserRole> requiredRoles) {
-        return requiredRoles.contains(user.getRole());
-    }
 
 }
