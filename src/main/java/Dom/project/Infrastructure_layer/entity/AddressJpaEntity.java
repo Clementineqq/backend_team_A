@@ -2,30 +2,31 @@ package Dom.project.Infrastructure_layer.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "address")
 public class AddressJpaEntity extends Base_entity {
 
     @Column(name = "region")
-    @NotBlank(message = "Это поле не может быть пустым")
+    @NotBlank(message = "This field cant be empty, region")
     String region;
     @Column(name = "city")
-    @NotBlank(message = "Это поле не может быть пустым")
+    @NotBlank(message = "This field cant be empty, city")
     String city;
     @Column(name = "street")
-    @NotBlank(message = "Это поле не может быть пустым")
+    @NotBlank(message = "This field cant be empty, street")
     String street;
     @Column(name = "house")
-    @NotBlank(message = "Это поле не может быть пустым")
+    @NotBlank(message = "This field cant be empty, house")
     String house;
     @Column(name = "flat")
-    @NotBlank(message = "Это поле не может быть пустым")
+    @NotBlank(message = "This field cant be empty, flat")
     String flat;
 
-    @Column(name = "TotalArea")
-    @NotBlank(message = "Это поле не может быть пустым")
-    String totalArea;
+    @Column(name = "totalarea")
+    @NotNull(message = "This field cant be empty, totalArea")
+    Double totalArea;
 
     public String getRegion() {
         return region;
@@ -59,11 +60,11 @@ public class AddressJpaEntity extends Base_entity {
         this.flat = flat;
     }
 
-    public String getTotalArea() {
+    public Double getTotalArea() {
         return totalArea;
     }
 
-    public void setTotalArea(String totalArea) {
+    public void setTotalArea(Double totalArea) {
         this.totalArea = totalArea;
     }
 

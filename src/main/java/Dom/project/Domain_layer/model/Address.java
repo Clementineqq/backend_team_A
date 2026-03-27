@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
+import static Dom.project.Domain_layer.exception.InvalidAddressException.invalidAreaFormat;
+
 public class Address {
     private Long id;
     private LocalDateTime createdAt;
@@ -15,7 +17,7 @@ public class Address {
     private String flat;
     private String city;
     private String region;
-    private String totalArea;
+    private Double totalArea;
 
 
     // Конструкторы
@@ -39,13 +41,13 @@ public class Address {
         setFlat(flat);
     }
 
-    public Address(String street, String house, String flat, String city, String region, String totalArea) {
+    public Address(String street, String house, String flat, String city, String region, Double totalArea) {
         this(street, house, flat, city);
         setRegion(region);
         setTotalArea(totalArea);
     }
 
-    public Address(Long id, String street, String house, String flat, String city, String region, String totalArea) {
+    public Address(Long id, String street, String house, String flat, String city, String region, Double totalArea) {
         this(street, house, flat, city, region, totalArea);
         this.id = id;
     }
@@ -137,18 +139,11 @@ public class Address {
         setUpdatedAt();
     }
 
-    public void setTotalArea(String totalArea) {
-        if (totalArea != null && !totalArea.trim().isEmpty()) {
-            String trimmedArea = totalArea.trim();
-            // Проверка что это число с плавающей точкой
-            try {
-                Double.parseDouble(trimmedArea);
-            } catch (NumberFormatException e) {
-                throw InvalidAddressException.invalidAreaFormat();
-            }
-            this.totalArea = trimmedArea;
+    public void setTotalArea(Double totalArea) {
+        if (totalArea != null) {
+            this.totalArea = totalArea;
         } else {
-            this.totalArea = null;
+            throw invalidAreaFormat();
         }
         setUpdatedAt();
     }
@@ -162,7 +157,7 @@ public class Address {
     public String getFlat() { return flat; }
     public String getCity() { return city; }
     public String getRegion() { return region; }
-    public String getTotalArea() { return totalArea; }
+    public Double getTotalArea() { return totalArea; }
 
 
     // Бизнес - логика
@@ -213,6 +208,7 @@ public class Address {
                 Objects.equals(totalArea, other.totalArea);
     }
 
+    // TODO: проверку на null, если нуль, то не устанавливается
     public void update(Address newAddress) {
         if (newAddress == null) {
             throw InvalidAddressException.addressCannotBeNull();

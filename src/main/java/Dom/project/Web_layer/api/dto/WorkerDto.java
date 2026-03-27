@@ -1,5 +1,7 @@
 package Dom.project.Web_layer.api.dto;
 
+import Dom.project.Domain_layer.enums.UserRole;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,15 +13,19 @@ public class WorkerDto {
     private String email;
     private String phone;
     private String password;
-    private String address;
+    private UserRole role;
+    private AddressDto address;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private CompanyProfileDto companyProfileDto;
     private List<ServiceRequestDto> workerRequests;
 
-    public WorkerDto() {}
+    public WorkerDto() {
+
+    }
 
     public WorkerDto(Long id, String firstName, String lastName, String middleName,
-                     String email, String phone, String password, String address,
+                     String email, String phone, String password, AddressDto address,
                      LocalDateTime createdAt, LocalDateTime updatedAt,
                      List<ServiceRequestDto> workerRequests) {
         this.id = id;
@@ -57,8 +63,8 @@ public class WorkerDto {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
+    public AddressDto getAddress() { return address; }
+    public void setAddress(AddressDto address) { this.address = address; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
@@ -68,4 +74,10 @@ public class WorkerDto {
 
     public List<ServiceRequestDto> getWorkerRequests() { return workerRequests; }
     public void setWorkerRequests(List<ServiceRequestDto> workerRequests) { this.workerRequests = workerRequests; }
+
+    public UserRole getRole() { return role; }
+    public void setRole(UserRole role) { this.role = role; }
+
+    public CompanyProfileDto getCompanyProfileDto() {return companyProfileDto;}
+    public void setCompanyProfileDto(CompanyProfileDto companyProfileDto) {this.companyProfileDto = companyProfileDto;}
 }

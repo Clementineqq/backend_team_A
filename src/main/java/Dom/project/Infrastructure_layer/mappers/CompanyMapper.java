@@ -1,11 +1,12 @@
 package Dom.project.Infrastructure_layer.mappers;
 
+import org.springframework.stereotype.Component;
+
 import Dom.project.Domain_layer.model.Company;
 import Dom.project.Infrastructure_layer.entity.AddressJpaEntity;
 import Dom.project.Infrastructure_layer.entity.CompanyJpaEntity;
 import Dom.project.Infrastructure_layer.repoAdapters.AddressRepositoryAdapter;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.stereotype.Component;
 
 @Component
 public class CompanyMapper {
@@ -17,9 +18,9 @@ public class CompanyMapper {
         this.addressMapper = addressMapper;
     }
 
-
     public CompanyJpaEntity toEntity(Company company){
         if (company == null){
+            System.out.println("company = null");
             return null;
         }
 
@@ -29,7 +30,7 @@ public class CompanyMapper {
         companyJpa.setEmail(company.getEmail());
         companyJpa.setInn(company.getInn());
         companyJpa.setKpp(company.getKpp());
-        companyJpa.setID(companyJpa.getID());
+        companyJpa.setID(company.getId());
         companyJpa.setDateCreate(company.getCreatedAt());
         companyJpa.setDateUpdate(company.getUpdatedAt());
 
@@ -46,6 +47,7 @@ public class CompanyMapper {
 
     public Company toDomain(CompanyJpaEntity companyJpa){
         if (companyJpa == null){
+            System.out.println("companyJpa = null");
             return null;
         }
 

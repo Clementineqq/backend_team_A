@@ -5,23 +5,25 @@ import java.util.List;
 public class CompanyProfileDto {
     Long id;
     private String companyName;
-    private String address;
     private String inn;
     private String kpp;
     private String email;
+    private AddressDto address;
     private List<UserProfileDto> members;
     private List<WorkerDto> workers;
-    private List<ServiceRequestDto> companyRequests;  // Добавлено поле
+    private List<ServiceRequestDto> companyRequests;
+    private UserProfileDto companyOwner;
 
     public CompanyProfileDto() {}
 
-    public CompanyProfileDto(Long id, String companyName, String address, String inn, String kpp, String email) {
+    public CompanyProfileDto(Long id, String companyName, AddressDto address, String inn, String kpp, String email, UserProfileDto companyOwner) {
         this.id = id;
         this.companyName = companyName;
         this.address = address;
         this.inn = inn;
         this.kpp = kpp;
         this.email = email;
+        this.companyOwner = companyOwner;
     }
 
     // Геттеры и сеттеры
@@ -31,8 +33,8 @@ public class CompanyProfileDto {
     public String getCompanyName() { return companyName; }
     public void setCompanyName(String companyName) { this.companyName = companyName; }
 
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
+    public AddressDto getAddress() { return address; }
+    public void setAddress(AddressDto address) { this.address = address; }
 
     public String getInn() { return inn; }
     public void setInn(String inn) { this.inn = inn; }
@@ -51,4 +53,7 @@ public class CompanyProfileDto {
 
     public List<ServiceRequestDto> getCompanyRequests() { return companyRequests; }
     public void setCompanyRequests(List<ServiceRequestDto> companyRequests) { this.companyRequests = companyRequests; }
+
+    public UserProfileDto getCompanyOwner() { return companyOwner; }
+    public void setCompanyOwner(UserProfileDto companyOwner) {this.companyOwner = companyOwner;}
 }

@@ -1,35 +1,38 @@
 package Dom.project.Web_layer.api.dto;
 
+import Dom.project.Domain_layer.enums.MeterType;
+
+import java.nio.DoubleBuffer;
 import java.time.LocalDateTime;
 
 public class UserCountersDto {
     private Long id;
-    private String name;
-    private String value;
+    private MeterType name;
+    private Double value;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Boolean isApproved;
-    private UserProfileDto userProfileDto;
+    private UserProfileDto owner;
 
     public UserCountersDto() {}
 
-    public UserCountersDto(String name, String value, LocalDateTime createdAt,
+    public UserCountersDto(MeterType name, Double value, LocalDateTime createdAt,
                            LocalDateTime updatedAt, Boolean isApproved,
-                           UserProfileDto userProfileDto) {
+                           UserProfileDto owner) {
         this.name = name;
         this.value = value;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.isApproved = isApproved;
-        this.userProfileDto = userProfileDto;
+        this.owner = owner;
     }
 
     //Геттеры и сеттеры
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public MeterType getName() { return name; }
+    public void setName(MeterType name) { this.name = name; }
 
-    public String getValue() { return value; }
-    public void setValue(String value) { this.value = value; }
+    public Double getValue() { return value; }
+    public void setValue(Double value) { this.value = value; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
@@ -40,6 +43,9 @@ public class UserCountersDto {
     public Boolean getIsApproved() { return isApproved; }
     public void setIsApproved(Boolean isApproved) { this.isApproved = isApproved; }
 
-    public UserProfileDto getUserProfileDto() { return userProfileDto; }
-    public void setUserProfileDto(UserProfileDto userProfileDto) { this.userProfileDto = userProfileDto; }
+    public UserProfileDto getOwner() { return owner; }
+    public void setOwner(UserProfileDto userProfileDto) { this.owner = userProfileDto; }
+
+    public void setId(Long id) { this.id = id;}
+    public Long getId() {return id;}
 }
