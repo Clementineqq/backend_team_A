@@ -1,28 +1,21 @@
 package Dom.project.Application_layer.api;
 
 import Dom.project.Domain_layer.enums.UserRole;
-import Dom.project.Domain_layer.interfaces.repository.IAddressRepository;
-import Dom.project.Domain_layer.interfaces.repository.ICompanyRepository;
-import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
-import Dom.project.Domain_layer.interfaces.repository.IServiceRequestRepository;
-import Dom.project.Domain_layer.model.Address;
-import Dom.project.Domain_layer.model.Company;
-import Dom.project.Domain_layer.model.User;
-import Dom.project.Domain_layer.model.ServiceRequest;
-import Dom.project.Web_layer.api.dto.CompanyProfileDto;
-import Dom.project.Web_layer.api.dto.WorkerDto;
-import Dom.project.Web_layer.api.dto.UserProfileDto;
-import Dom.project.Web_layer.api.dto.ServiceRequestDto;
+import Dom.project.Domain_layer.interfaces.repository.*;
+import Dom.project.Domain_layer.model.*;
+import Dom.project.Web_layer.api.dto.*;
 import Dom.project.Domain_layer.exception.DomainException;
-import Dom.project.Web_layer.api.dto.AddressDto;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,16 +26,18 @@ public class CompanyApplicationService {
     private final IUserRepository userRepository;
     private final IServiceRequestRepository serviceRequestRepository;
     private final IAddressRepository addressRepository;
+    private final ICounterRepository counterRepository;
     private final Utils utils;
 
     public CompanyApplicationService(ICompanyRepository companyRepository,
                                      IUserRepository userRepository,
                                      IServiceRequestRepository serviceRequestRepository,
-                                     IAddressRepository addressRepository, Utils utils) throws EntityExistsException{
+                                     IAddressRepository addressRepository, ICounterRepository counterRepository, Utils utils) throws EntityExistsException{
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.serviceRequestRepository = serviceRequestRepository;
         this.addressRepository = addressRepository;
+        this.counterRepository = counterRepository;
         this.utils = utils;
     }
 
@@ -127,6 +122,20 @@ public class CompanyApplicationService {
         List<User> members = userRepository.findByCompanyId(updated.getId());
         List<ServiceRequest> requests = serviceRequestRepository.findByCompanyId(updated.getId());
         return utils.convertToCompanyProfileDto(updated, members, members, requests);
+    }
+
+    public UserCountersDto updateCounter(User worker, Long idToUpdate) throws EntityNotFoundException, AccessDeniedException {
+        Counter counterFromRepo = counterRepository.findById(idToUpdate)
+                .orElseThrow(() -> new EntityNotFoundException("Cant find counter with id" + idToUpdate));
+
+        if (!Objects.equals(worker.getCompany().getId(), counterFromRepo.getOwner().getCompany().getId())){
+            throw new AccessDeniedException("ACCESS DENIED");
+        }
+
+        counterFromRepo.setIsApproved(Boolean.TRUE);
+
+        counterRepository.save(counterFromRepo);
+        return utils.convertToUserCountersDto(counterFromRepo);
     }
 
     // --- Вспомогательные методы ---

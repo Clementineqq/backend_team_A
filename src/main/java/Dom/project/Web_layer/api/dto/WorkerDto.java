@@ -17,7 +17,7 @@ public class WorkerDto {
     private AddressDto address;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private CompanyProfileDto companyProfileDto;
+    private Long companyId;
     private List<ServiceRequestDto> workerRequests;
 
     public WorkerDto() {
@@ -78,6 +78,6 @@ public class WorkerDto {
     public UserRole getRole() { return role; }
     public void setRole(UserRole role) { this.role = role; }
 
-    public CompanyProfileDto getCompanyProfileDto() {return companyProfileDto;}
-    public void setCompanyProfileDto(CompanyProfileDto companyProfileDto) {this.companyProfileDto = companyProfileDto;}
+    public Long getCompanyId() {return companyId;}
+    public void setCompanyId(Long companyId) {this.companyId = companyId;}
 }
