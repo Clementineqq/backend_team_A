@@ -127,6 +127,7 @@ public class Utils {
         dto.setTitle(request.getTitle());
         dto.setDescription(request.getDescription());
         dto.setStatus(request.getRequestStatus().toString());
+        dto.setResolutionComment(request.getResolutionComment());
         if (request.getCreator() != null) {
             dto.setCreator(request.getCreator().getFullName());
         }
@@ -159,6 +160,7 @@ public class Utils {
         dto.setStatus(serviceRequest.getStringRequestStatus());
         dto.setCreatedAt(serviceRequest.getCreatedAt());
         dto.setUpdatedAt(serviceRequest.getUpdatedAt());
+        dto.setResolutionComment(serviceRequest.getResolutionComment());
 
         if (serviceRequest.getCreator() != null) {
             dto.setCreatorId(serviceRequest.getCreator().getId());

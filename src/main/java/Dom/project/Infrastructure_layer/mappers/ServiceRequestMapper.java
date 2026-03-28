@@ -31,7 +31,7 @@ public class ServiceRequestMapper {
         serviceRequestJpa.setDateCreate(serviceRequest.getCreatedAt());
         serviceRequestJpa.setDateUpdate(serviceRequest.getUpdatedAt());
         serviceRequestJpa.setID(serviceRequest.getId());
-        serviceRequestJpa.setResolutionComment(null);
+        serviceRequestJpa.setResolutionComment(serviceRequest.getResolutionComment());
 
         if (serviceRequest.getCreator() != null){
             Long id = serviceRequest.getCreator().getId();
@@ -67,8 +67,7 @@ public class ServiceRequestMapper {
         serviceRequest.setRequestStatus(serviceRequestJpa.getStatus());
         serviceRequest.setCreator(userMapper.toDomain(serviceRequestJpa.getCreator()));
         serviceRequest.setAssigner(userMapper.toDomain(serviceRequestJpa.getAssignee()));
-        //TODO: добавить в domain resolution comment (после пуша ильи)
-        //serviceRequest.setesolutionComment(null);
+        serviceRequest.setResolutionComment(serviceRequestJpa.getResolutionComment());
         serviceRequest.setCompletedAt(serviceRequestJpa.getCompleted_at());
 
         return serviceRequest;

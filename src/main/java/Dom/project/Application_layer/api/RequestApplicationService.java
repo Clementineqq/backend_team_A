@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -131,11 +132,20 @@ public class RequestApplicationService {
 
     public List<ServiceRequestDto> getAllRequests() {
         User currentUser = utils.getCurrentUser();
-        if (currentUser.getCompany() == null) {
+        if (currentUser.getCompany() == null && currentUser.getRole() != UserRole.Admin) {
             throw new DomainException("User doesnt have company");
         }
-        // Получаем все запросы всех сотрудников компании
-        List<ServiceRequest> requests = serviceRequestRepository.findByCompanyId(currentUser.getCompany().getId());
+        List<ServiceRequest> requests = new ArrayList<ServiceRequest>();
+        if (currentUser.getRole() == UserRole.CompanyOwner) {
+             requests = serviceRequestRepository.findByCompanyId(currentUser.getCompany().getId());
+        }
+        if (currentUser.getRole() == UserRole.Worker){
+            requests = serviceRequestRepository.findByCreatorId(currentUser.getId());
+        }
+        if (currentUser.getRole() == UserRole.Admin){
+            requests = serviceRequestRepository.findAllRequests();
+        }
+
         return requests.stream()
                 .map(utils::convertToServiceRequestDto)
                 .toList();
@@ -187,5 +197,14 @@ public class RequestApplicationService {
         request.setRequestStatus(newStatus);
         ServiceRequest updated = serviceRequestRepository.save(request);
         return utils.convertToServiceRequestDto(updated);
+    }
+
+    public List<ServiceRequestDto> getCompanyRequests(Long companyId) {
+
+        List<ServiceRequest> requests = serviceRequestRepository.findByCompanyId(companyId);
+
+        return requests.stream()
+                .map(utils::convertToServiceRequestDto)
+                .toList();
     }
 }

@@ -13,6 +13,7 @@ public class UserRequestDto {
     private Long assigneeId;
     private String assigneeName;
     private String assigneeEmail;
+    private String resolutionComment;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime completedAt;
@@ -68,4 +69,7 @@ public class UserRequestDto {
 
     public LocalDateTime getCompletedAt() { return completedAt; }
     public void setCompletedAt(LocalDateTime completedAt) { this.completedAt = completedAt; }
+
+    public String getResolutionComment() { return resolutionComment; }
+    public void setResolutionComment(String resolutionComment) { this.resolutionComment = resolutionComment; }
 }

@@ -12,4 +12,5 @@ public interface IServiceRequestRepository {
     List<ServiceRequest> findByCreatorId(Long id);
     void delete(ServiceRequest serviceRequest);
     List<ServiceRequest> findByCompanyId(Long companyId);
+    List<ServiceRequest> findAllRequests();
 }

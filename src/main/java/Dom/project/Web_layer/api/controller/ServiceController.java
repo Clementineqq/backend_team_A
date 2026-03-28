@@ -34,7 +34,7 @@ public class ServiceController {
         this.utils = utils;
     }
 
-    // GET /api/service/workers
+    // GET /api/service/company_profile/workers/{companyId}
     @GetMapping("/company_profile/workers/{companyId}")
     public ResponseEntity<?> getWorkers(@PathVariable Long companyId) {
         try {
@@ -256,7 +256,7 @@ public class ServiceController {
                     .body("SERVER ERROR");
         }
     }
-    
+
     // POST /api/service/company_profile/register
     @PostMapping("/company_profile/register")
     public ResponseEntity<?> createCompanyProfile(
@@ -287,25 +287,104 @@ public class ServiceController {
 
     // GET /api/service/requests
     @GetMapping("/requests")
-    public ResponseEntity<List<ServiceRequestDto>> getServiceRequests() {
-        List<ServiceRequestDto> requests = requestService.getAllRequests();
-        return ResponseEntity.ok(requests);
+    public ResponseEntity<?> getServiceRequests() {
+        try{
+            if(!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin, UserRole.Worker, UserRole.CompanyOwner))){
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("ACCESS DENIED");
+            }
+            List<ServiceRequestDto> requests = requestService.getAllRequests();
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(requests);
+        } catch (EntityNotFoundException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("NOT FOUND");
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
+    }
+
+    // GET /api/service/requests/company/{companyId}
+    @GetMapping("/requests/company/{companyId}")
+    public ResponseEntity<?> getServiceRequests(@PathVariable Long companyId) {
+        try{
+            if(!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin))){
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("ACCESS DENIED");
+            }
+            List<ServiceRequestDto> requests = requestService.getCompanyRequests(companyId);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(requests);
+        } catch (EntityNotFoundException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("NOT FOUND");
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
     }
 
     // GET /api/service/requests/{id}
     @GetMapping("/requests/{id}")
-    public ResponseEntity<ServiceRequestDto> getServiceRequestById(@PathVariable Long id) {
-        ServiceRequestDto request = requestService.getRequestById(id);
-        return ResponseEntity.ok(request);
+    public ResponseEntity<?> getServiceRequestById(@PathVariable Long id) {
+        try{
+            if(!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin, UserRole.Worker, UserRole.CompanyOwner))){
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("ACCESS DENIED");
+            }
+            ServiceRequestDto request = requestService.getRequestById(id);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(request);
+        } catch (EntityNotFoundException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("NOT FOUND");
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
     }
 
     // PUT /api/service/requests/{id}/status
     @PutMapping("/requests/{id}/status")
-    public ResponseEntity<ServiceRequestDto> updateRequestStatus(
+    public ResponseEntity<?> updateRequestStatus(
             @PathVariable Long id,
             @RequestBody String status) {
-        ServiceRequestDto updated = requestService.updateRequestStatus(id, status);
-        return ResponseEntity.ok(updated);
+        try{
+            if(!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin, UserRole.Worker, UserRole.CompanyOwner))){
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("ACCESS DENIED");
+            }
+            ServiceRequestDto updated = requestService.updateRequestStatus(id, status);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(updated);
+        } catch (EntityNotFoundException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("NOT FOUND");
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
     }
 
     //PUT /api/service/counters/{id}
