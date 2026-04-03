@@ -9,7 +9,10 @@ HARRO EVERUNYAN
 # 1. собрать образы
 docker-compose build --no-cache
 
-# 1.2. собрать проект (пропустить тесты, если ошибки ибанут)
+# 1.1. Если на камплюктере нема мавена, то 
+mvnw.cmd clean package -DskipTests
+
+# 1.2. а если есть, то собрать проект (-пропустить тесты, если ошибки ибанут)
 mvn clean package -DskipTests
 
 # 3. запустить
