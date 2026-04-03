@@ -114,7 +114,7 @@ public class ServiceController {
             return new ResponseEntity<>(created, HttpStatus.CREATED);
         } catch (EntityExistsException e) {
                 return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
+                    .status(HttpStatus.CONFLICT)
                     .body("ALREADY EXISTS");
         }  catch (Exception e){
                 System.out.println(e.getMessage());
