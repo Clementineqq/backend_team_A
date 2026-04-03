@@ -17,6 +17,7 @@ public class ServiceRequest {
     private User creator;
     private User assigner;
     private LocalDateTime completedAt;
+    private String resolutionComment;
 
     public ServiceRequest() {
         this.createdAt = LocalDateTime.now();
@@ -111,6 +112,10 @@ public class ServiceRequest {
         setUpdatedAt();
     }
 
+    public void setResolutionComment(String resolutionComment) {
+        this.resolutionComment = resolutionComment;
+    }
+
     // Геттеры
     public Long getId() { return id; }
     public LocalDateTime getCreatedAt() { return createdAt; }
@@ -121,7 +126,7 @@ public class ServiceRequest {
     public User getCreator() { return creator; }
     public User getAssigner() { return assigner; }
     public LocalDateTime getCompletedAt() { return completedAt; }
-
+    public String getResolutionComment() { return resolutionComment; }
     public String getStringRequestStatus() { return  requestStatus.toString(); }
 
 

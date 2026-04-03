@@ -1,26 +1,36 @@
 package Dom.project.Application_layer.api;
 
+import Dom.project.Domain_layer.enums.UserRole;
+import Dom.project.Domain_layer.interfaces.repository.IAddressRepository;
 import Dom.project.Domain_layer.interfaces.repository.IUserRepository;
+import Dom.project.Domain_layer.model.Company;
 import Dom.project.Domain_layer.model.User;
 import Dom.project.Web_layer.api.dto.AddressDto;
 import Dom.project.Web_layer.api.dto.WorkerDto;
 import Dom.project.Domain_layer.exception.DomainException;
+import jakarta.persistence.EntityExistsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class WorkerApplicationService {
 
+    private final PasswordEncoder passwordEncoder;
     private final IUserRepository userRepository;
+    private final IAddressRepository addressRepository;
     private Utils utils;
 
-    public WorkerApplicationService(IUserRepository userRepository, Utils utils) {
+    public WorkerApplicationService(PasswordEncoder passwordEncoder, IUserRepository userRepository, IAddressRepository addressRepository, Utils utils) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.addressRepository = addressRepository;
         this.utils = utils;
     }
 
@@ -42,10 +52,17 @@ public class WorkerApplicationService {
     }
 
     @Transactional
-    public WorkerDto createWorker(WorkerDto workerDto) {
-        User currentUser = utils.getCurrentUser();
+    public WorkerDto createWorker(User currentUser, WorkerDto workerDto) {
         if (currentUser.getCompany() == null) {
             throw new DomainException("Текущий пользователь не принадлежит компании");
+        }
+        Optional<User> isExistEmail = userRepository.findByEmail(workerDto.getEmail());
+        if (isExistEmail.isPresent()){
+            throw new EntityExistsException("User with this name already exists");
+        }
+        Optional<User> isExistPhone = userRepository.findByPhone(workerDto.getPhone());
+        if (isExistPhone.isPresent()){
+            throw new EntityExistsException("User with this name already exists");
         }
 
         User newWorker = new User();
@@ -54,38 +71,36 @@ public class WorkerApplicationService {
         newWorker.setFatherName(workerDto.getMiddleName());
         newWorker.setEmail(workerDto.getEmail());
         newWorker.setPhone_number(workerDto.getPhone());
-        newWorker.setPassword(workerDto.getPassword()); // в реальности пароль хешируется
-        newWorker.setCompany(currentUser.getCompany()); // привязываем к той же компании
+        newWorker.setRole(UserRole.Worker);
 
-        // Если есть адрес – установить (в DTO адрес строкой, надо преобразовать)
-      //  if (workerDto.getAddress() != null && !workerDto.getAddress().isEmpty()) {
-            // Преобразование строки в Address – оставим заглушку
-            // newWorker.setAddress(parseAddress(workerDto.getAddress()));
-      //  }
+        String hashedPassword = passwordEncoder.encode(workerDto.getPassword());
+        newWorker.setPassword(hashedPassword);
+
+        newWorker.setCompany(currentUser.getCompany());
+
+         if (workerDto.getAddress() != null) {
+             newWorker.setAddress(addressRepository.save(utils.convertToAddress(workerDto.getAddress())));
+            }
 
         User saved = userRepository.save(newWorker);
         return convertToWorkerDto(saved);
     }
 
     @Transactional
-    public WorkerDto updateWorker(Long id, WorkerDto workerDto) {
+    public WorkerDto updateWorker(Long id, WorkerDto worker) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new DomainException("Работник не найден"));
 
-        // Проверка прав: только сам работник или его компания могут редактировать
-        User currentUser = utils.getCurrentUser();
-        if (!user.getId().equals(currentUser.getId()) &&
-                (currentUser.getCompany() == null || !currentUser.getCompany().getId().equals(user.getCompany().getId()))) {
-            throw new DomainException("Нет прав на редактирование этого работника");
-        }
 
-        if (workerDto.getFirstName() != null) user.setName(workerDto.getFirstName());
-        if (workerDto.getLastName() != null) user.setLastName(workerDto.getLastName());
-        if (workerDto.getMiddleName() != null) user.setFatherName(workerDto.getMiddleName());
-        if (workerDto.getEmail() != null) user.setEmail(workerDto.getEmail());
-        if (workerDto.getPhone() != null) user.setPhone_number(workerDto.getPhone());
-        if (workerDto.getPassword() != null) user.setPassword(workerDto.getPassword());
-        // Адрес – аналогично созданию
+        if (worker.getFirstName() != null) user.setName(worker.getFirstName());
+        if (worker.getLastName() != null) user.setLastName(worker.getLastName());
+        if (worker.getMiddleName() != null) user.setFatherName(worker.getMiddleName());
+        if (worker.getEmail() != null) user.setEmail(worker.getEmail());
+        if (worker.getPhone() != null) user.setPhone_number(worker.getPhone());
+        if (worker.getPassword() != null) user.setPassword(worker.getPassword());
+        if (worker.getAddress() != null) {
+            user.updateAddress(utils.convertToAddress(worker.getAddress()));
+        }
 
         User updated = userRepository.save(user);
         return convertToWorkerDto(updated);
@@ -96,13 +111,6 @@ public class WorkerApplicationService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new DomainException("Работник не найден"));
 
-        User currentUser = utils.getCurrentUser();
-        if (!currentUser.getId().equals(user.getId()) &&
-                (currentUser.getCompany() == null || !currentUser.getCompany().getId().equals(user.getCompany().getId()))) {
-            throw new DomainException("Нет прав на удаление этого работника");
-        }
-
-        // Можно либо физически удалить, либо пометить как удалённого
         userRepository.delete(user);
     }
 
@@ -118,8 +126,7 @@ public class WorkerApplicationService {
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
         dto.setRole(user.getRole());
-        //TODO: Доделать
-        //dto.setCompanyProfileDto(user.getCompany());
+        dto.setCompanyId(user.getCompany().getId());
         if (user.getAddress() != null) {
             dto.setAddress(AddressDto.toDto(user.getAddress()));
         }

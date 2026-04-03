@@ -17,6 +17,7 @@ public class Company {
     private String name;
     private String inn;
     private String kpp;
+    private String description;
     private Address legalAddress;
     private String email;
     private List<User> members;
@@ -40,8 +41,9 @@ public class Company {
         setLegalAddress(legalAddress);
     }
 
-    public Company(String name, String inn, String kpp, Address legalAddress, String email) {
+    public Company(String name, String inn, String kpp, Address legalAddress, String email, String description) {
         this(name, inn, legalAddress);
+        this.description = description;
         setKpp(kpp);
         setEmail(email);
     }
@@ -143,6 +145,10 @@ public class Company {
         setUpdatedAt();
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     // Геттеры
     public Long getId() {
         return id;
@@ -195,6 +201,9 @@ public class Company {
         return Collections.unmodifiableList(workers);
     }
 
+    public String getDescription() { return description; }
+
+
     public void update(Company newData) {
         if (newData == null) {
             throw InvalidCompanyException.companyCannotBeNull();
@@ -233,6 +242,18 @@ public class Company {
         }
     }
 
+    public void updateAddress(Address newAddress) {
+        if (newAddress == null) {
+            throw InvalidAddressException.addressCannotBeNull();
+        }
+        if (this.legalAddress != null) {
+            this.legalAddress.update(newAddress);
+        } else {
+            setLegalAddress(newAddress);
+        }
+        setUpdatedAt();
+    }
+
     public Company copy() {
         Company copy = new Company();
         copy.setId(this.id);
@@ -243,6 +264,7 @@ public class Company {
         copy.setEmail(this.email);
         copy.setCreatedAt(this.createdAt);
         copy.setUpdatedAt(this.updatedAt);
+        copy.setDescription(this.description);
         return copy;
     }
 
@@ -327,8 +349,8 @@ public class Company {
                 ", kpp='" + kpp + '\'' +
                 ", city='" + (legalAddress != null ? legalAddress.getCity() : "null") + '\'' +
                 ", email='" + email + '\'' +
+                ", descriptiom='" + description +'\'' +
                 '}';
     }
-
 }
 

@@ -59,6 +59,15 @@ public class ServiceRequestRepositoryAdapter implements IServiceRequestRepositor
                 .toList();
     }
 
+    @Override
+    public List<ServiceRequest> findAllRequests() {
+        List<ServiceRequestJpaEntity> entities = _jpaRepository.findAll();
+
+        return entities.stream()
+                .map(_mapper::toDomain)
+                .toList();
+    }
+
     public Optional<ServiceRequestJpaEntity> findJpaById(Long id) {
         return _jpaRepository.findById(id);
     }
