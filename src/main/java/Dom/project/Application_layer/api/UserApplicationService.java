@@ -13,7 +13,9 @@ import Dom.project.Domain_layer.interfaces.repository.IServiceRequestRepository;
 import Dom.project.Domain_layer.interfaces.repository.ICounterRepository;
 import Dom.project.Domain_layer.model.User;
 import Dom.project.Domain_layer.model.Counter;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -103,6 +105,18 @@ public class UserApplicationService {
     @Transactional
     public UserCountersDto createCounter(UserCountersDto userCountersDto) {
         User currentUser = util.getCurrentUser();
+        // Получаем все счетчики пользователя
+        List<Counter> counters = counterRepository.findByUserId(currentUser.getId());
+        for(Counter counter : counters){
+            if (counter.getName() == userCountersDto.getName()){
+                throw new EntityExistsException("Counter with this type already exists");
+            }
+        }
+
+        if (userCountersDto.getValue() == null || userCountersDto.getName() == null){
+            throw new NullPointerException("Field cant be null while creating counter");
+        }
+
 
         Counter counter = new Counter(userCountersDto.getName(), userCountersDto.getValue());
         counter.setOwner(currentUser);

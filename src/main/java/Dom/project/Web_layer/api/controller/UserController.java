@@ -10,6 +10,7 @@ import Dom.project.Web_layer.api.dto.UserProfileDto;
 import Dom.project.Web_layer.api.dto.UserRequestDto;
 import Dom.project.Application_layer.api.UserApplicationService;
 import Dom.project.Application_layer.api.RequestApplicationService;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.tomcat.util.http.parser.HttpParser;
 import org.aspectj.apache.bcel.generic.RET;
@@ -77,7 +78,21 @@ public class UserController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(created);
-        } catch (Exception e){
+        } catch (EntityExistsException e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("COUNTER WITH THIS TYPE ALREADY EXISTS");
+        } catch (NullPointerException e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("FIELD CANT BE EMPTY");
+        }
+
+        catch (Exception e){
             System.out.println(e.getMessage());
             e.printStackTrace();
             return ResponseEntity
@@ -127,11 +142,15 @@ public class UserController {
         } catch (AccessDeniedException e) {
             System.out.println(e.getMessage());
             return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("ACCESS DENIED");
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("SERVER ERROR");
         }
     }
-
 
     // GET /api/users/profile
     @GetMapping("/profile")

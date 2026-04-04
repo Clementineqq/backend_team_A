@@ -59,7 +59,7 @@ public class AuthController {
             ));
         } catch (EntityExistsException e) {
             return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
+                    .status(HttpStatus.UNAUTHORIZED)
                     .body("ALREADY EXISTS");
         }  catch (Exception e){
             System.out.println(e.getMessage());
