@@ -1,10 +1,12 @@
 # backend_team_A
 HARRO EVERUNYAN
+Здешняя инструкция актуальна только для тестирования самого бэка, прикрепляю ссылку на типадеплой:
+https://github.com/Clementineqq/tipa_deploy_team_A
 
-пипипиппупу
-я не дизигнер, но для теста докера такие-то команды
 
 
+
+ 
 
 # 1. собрать образы
 docker-compose build --no-cache
