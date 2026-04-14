@@ -1,5 +1,6 @@
 package Dom.project.Infrastructure_layer.repoAdapters;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,11 +43,18 @@ public class CompanyRepositoryAdapter implements ICompanyRepository {
         return _jpaRepository.findByEmail(email).map(_mapper::toDomain);
     }
 
+    @Override
+    public List<Company> findAll() {
+        List<CompanyJpaEntity> entities = _jpaRepository.findAll();
+
+        return entities.stream()
+                .map(_mapper::toDomain)
+                .toList();
+    }
+
     public Optional<CompanyJpaEntity> findJpaById(Long id) {
         return _jpaRepository.findById(id);
     }
-
-    
 
 
 }
