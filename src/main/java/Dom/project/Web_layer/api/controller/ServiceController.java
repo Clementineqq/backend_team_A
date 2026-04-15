@@ -114,7 +114,7 @@ public class ServiceController {
             return new ResponseEntity<>(created, HttpStatus.CREATED);
         } catch (EntityExistsException e) {
                 return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
+                    .status(HttpStatus.CONFLICT)
                     .body("ALREADY EXISTS");
         }  catch (Exception e){
                 System.out.println(e.getMessage());
@@ -223,6 +223,28 @@ public class ServiceController {
         }
     }
 
+    //GET /api/service/company_profile
+    @GetMapping("/company_profile")
+    public ResponseEntity<?> getCompanies(){
+        try {
+            List<CompanyProfileDto> companies = companyService.getCompanies();
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(companies);
+
+        } catch (AccessDeniedException e) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(e.getMessage());
+
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
+    }
+
     // PUT /api/service/company_profile/{company_id}
     @PutMapping("/company_profile/{company_id}")
     public ResponseEntity<?> updateCompanyProfile(
@@ -230,6 +252,7 @@ public class ServiceController {
             @RequestBody CompanyProfileDto profileDto)  {
         try {
             User currUser = utils.getCurrentUser();
+
 
             if (!utils.checkAccess(currUser, List.of( UserRole.CompanyOwner, UserRole.Admin))) {
                 return ResponseEntity
@@ -335,6 +358,7 @@ public class ServiceController {
         }
     }
 
+
     // GET /api/service/requests/{id}
     @GetMapping("/requests/{id}")
     public ResponseEntity<?> getServiceRequestById(@PathVariable Long id) {
@@ -418,5 +442,4 @@ public class ServiceController {
                     .body("SERVER ERROR");
         }
     }
-
 }

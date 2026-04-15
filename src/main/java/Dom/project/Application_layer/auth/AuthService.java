@@ -3,6 +3,7 @@ package Dom.project.Application_layer.auth;
 import java.util.Optional;
 
 import Dom.project.Domain_layer.enums.UserRole;
+import jakarta.persistence.EntityExistsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,10 +37,10 @@ public class AuthService {
     public User register(String email, String name, String surname, String phone, String password, String idCompany, AddressDto address, UserRole role) {
         System.out.println("регистрация");
 
-        // if (userRepository.findByEmail(email).isPresent() ||
-        //     userRepository.findByPhone(phone).isPresent()) {
-        //     throw InvalidUserException.userAlreadyExists(phone, email);
-        // }
+         if (userRepository.findByEmail(email).isPresent() ||
+             userRepository.findByPhone(phone).isPresent()) {
+            throw new EntityExistsException("User with this email or phone already exists");
+         }
 
         // тута хешируем пароль
         String hashedPassword = passwordEncoder.encode(password);

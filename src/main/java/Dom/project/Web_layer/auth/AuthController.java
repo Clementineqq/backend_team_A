@@ -1,6 +1,8 @@
 package Dom.project.Web_layer.auth;
 
 import Dom.project.Application_layer.api.Utils;
+import jakarta.persistence.EntityExistsException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,26 +36,38 @@ public class AuthController {
     // POST /auth/register
     @Transactional
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
-        User registeredUser = authService.register(
-                request.getEmail(),
-                request.getName(),
-                request.getSurname(),
-                request.getPhone(),
-                request.getPassword(),
-                request.getId_company(),
-                request.getAddress(),
-                request.getRole()
-        );
-        
-        String token = jwtUtils.generateToken(registeredUser.getEmail());
-        
-        return ResponseEntity.ok(new AuthResponse(
-            "Регистрация успешна!", 
-            token,
-            registeredUser.getEmail(),
-            registeredUser.getFullName()
-        ));
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        try {
+            User registeredUser = authService.register(
+                    request.getEmail(),
+                    request.getName(),
+                    request.getSurname(),
+                    request.getPhone(),
+                    request.getPassword(),
+                    request.getId_company(),
+                    request.getAddress(),
+                    request.getRole()
+            );
+
+            String token = jwtUtils.generateToken(registeredUser.getEmail());
+
+            return ResponseEntity.ok(new AuthResponse(
+                    "Регистрация успешна!",
+                    token,
+                    registeredUser.getEmail(),
+                    registeredUser.getFullName()
+            ));
+        } catch (EntityExistsException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("ALREADY EXISTS");
+        }  catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
+
     }
 
     // POST /auth/login

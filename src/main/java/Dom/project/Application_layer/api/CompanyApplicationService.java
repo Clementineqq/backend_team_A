@@ -138,4 +138,24 @@ public class CompanyApplicationService {
         return utils.convertToUserCountersDto(counterFromRepo);
     }
 
+    // Получить список всех компаний
+    // Возвращает без списокв участников, воркеров и реквестов
+    // Если это нужно, то лучше взять ID и сделать запрос повторный на конкретную компанию
+    public List<CompanyProfileDto> getCompanies() throws AccessDeniedException {
+        User currentUser = utils.getCurrentUser();
+
+        boolean isAdmin = utils.checkAccess(currentUser, List.of(UserRole.Admin));
+        if (!isAdmin) throw new AccessDeniedException("ACCESS DENIED");
+
+        List<Company> companies = companyRepository.findAll();
+        List<CompanyProfileDto> res_companies = new ArrayList<>();
+
+        for (Company company : companies){
+            CompanyProfileDto companyProfileDto = utils.convertToCompanyProfileDto(
+                    company, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+            res_companies.add(companyProfileDto);
+        }
+
+        return res_companies;
+    }
 }
