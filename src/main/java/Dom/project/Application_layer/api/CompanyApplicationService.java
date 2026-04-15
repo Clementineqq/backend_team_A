@@ -158,4 +158,19 @@ public class CompanyApplicationService {
 
         return res_companies;
     }
+
+    public List<UserCountersDto> getAllCountersInCompany() throws AccessDeniedException {
+        User currentUser = utils.getCurrentUser();
+
+        boolean hasAccess = utils.checkAccess(currentUser, List.of(UserRole.Admin, UserRole.Worker, UserRole.CompanyOwner));
+        if (!hasAccess) throw new AccessDeniedException("ACCESS DENIED");
+
+        List<Counter> counters = counterRepository.findAllByCompanyId(currentUser.getCompany().getId());
+
+        return counters.stream()
+                .map(utils::convertToUserCountersDto)
+                .peek(dto -> dto.getOwner().setAddress(null))
+                .peek(dto -> dto.getOwner().setPhone(null))// аналогично, странно как-то возвращать все данные о юзере миллион раз
+                .collect(Collectors.toList());
+    }
 }

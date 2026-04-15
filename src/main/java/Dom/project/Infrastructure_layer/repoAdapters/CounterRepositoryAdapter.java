@@ -49,6 +49,15 @@ public class CounterRepositoryAdapter implements ICounterRepository {
         _jpaRepository.deleteById(counter.getId());
     }
 
+    @Override
+    public List<Counter> findAllByCompanyId(Long id) {
+        List<CounterJpaEntity> entities = _jpaRepository.findByCompanyId(id);
+
+        return entities.stream()
+                .map(_mapper::toDomain)
+                .toList();
+    }
+
     public Optional<CounterJpaEntity> findJpaById(Long id) {
         return _jpaRepository.findById(id);
     }

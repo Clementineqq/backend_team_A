@@ -12,4 +12,6 @@ public interface ICounterRepository {
     Optional<Counter> findById(Long id);
     List<Counter> findByUserId(Long id);
     void delete(Counter counter);
+
+    List<Counter> findAllByCompanyId(Long id);
 }

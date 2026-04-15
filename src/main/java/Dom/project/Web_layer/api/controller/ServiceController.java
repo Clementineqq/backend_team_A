@@ -53,16 +53,16 @@ public class ServiceController {
 
             List<WorkerDto> workers = workerService.getAllWorkers(companyId);
             return ResponseEntity.ok(workers);
-            } catch (EntityNotFoundException e){
-                    return ResponseEntity
-                            .status(HttpStatus.NOT_FOUND)
-                            .body("NOT FOUND");
-            } catch (Exception e){
-                    System.out.println(e.getMessage());
-                    return ResponseEntity
-                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .body("SERVER ERROR");
-            }
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("NOT FOUND");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
 
     }
 
@@ -71,14 +71,14 @@ public class ServiceController {
     public ResponseEntity<?> getWorkerById(@PathVariable Long id) {
         try {
             User currUser = utils.getCurrentUser();
-            if (!utils.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Admin))){
+            if (!utils.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Admin))) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .body("ACCESS DENIED");
             }
             WorkerDto worker = workerService.getWorkerById(id);
 
-            if (!Objects.equals(currUser.getCompany().getId(), worker.getCompanyId()) && currUser.getRole() == UserRole.CompanyOwner){
+            if (!Objects.equals(currUser.getCompany().getId(), worker.getCompanyId()) && currUser.getRole() == UserRole.CompanyOwner) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .body("ACCESS DENIED");
@@ -86,11 +86,11 @@ public class ServiceController {
 
 
             return ResponseEntity.ok(worker);
-        }  catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("NOT FOUND");
-        }   catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -104,7 +104,7 @@ public class ServiceController {
     public ResponseEntity<?> createWorker(@RequestBody WorkerDto workerDto) {
         try {
             User currUser = utils.getCurrentUser();
-            if (!utils.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Admin))){
+            if (!utils.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Admin))) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .body("ACCESS DENIED");
@@ -113,12 +113,12 @@ public class ServiceController {
             WorkerDto created = workerService.createWorker(currUser, workerDto);
             return new ResponseEntity<>(created, HttpStatus.CREATED);
         } catch (EntityExistsException e) {
-                return ResponseEntity
+            return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body("ALREADY EXISTS");
-        }  catch (Exception e){
-                System.out.println(e.getMessage());
-                return ResponseEntity
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("SERVER ERROR");
         }
@@ -127,17 +127,17 @@ public class ServiceController {
     // PUT /api/service/workers/{id}
     @PutMapping("/workers/{id}")
     public ResponseEntity<?> updateWorker(@PathVariable Long id,
-                                                  @RequestBody WorkerDto workerDto) {
+                                          @RequestBody WorkerDto workerDto) {
         try {
             User currUser = utils.getCurrentUser();
-            if (!utils.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Admin))){
+            if (!utils.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Admin))) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .body("ACCESS DENIED");
             }
             WorkerDto worker = workerService.getWorkerById(id);
 
-            if (!Objects.equals(currUser.getCompany().getId(), worker.getCompanyId()) && currUser.getRole() == UserRole.CompanyOwner){
+            if (!Objects.equals(currUser.getCompany().getId(), worker.getCompanyId()) && currUser.getRole() == UserRole.CompanyOwner) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .body("ACCESS DENIED");
@@ -146,11 +146,11 @@ public class ServiceController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(updated);
-        }  catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("NOT FOUND");
-        }  catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -162,27 +162,27 @@ public class ServiceController {
     @DeleteMapping("/workers/{id}")
     public ResponseEntity<?> deleteWorker(@PathVariable Long id) {
 
-        try{
+        try {
             User currUser = utils.getCurrentUser();
-            if (!utils.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Admin))){
+            if (!utils.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Admin))) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .body("ACCESS DENIED");
             }
             WorkerDto worker = workerService.getWorkerById(id);
 
-            if (!Objects.equals(currUser.getCompany().getId(), worker.getCompanyId()) && currUser.getRole() == UserRole.CompanyOwner){
+            if (!Objects.equals(currUser.getCompany().getId(), worker.getCompanyId()) && currUser.getRole() == UserRole.CompanyOwner) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .body("ACCESS DENIED");
             }
             workerService.deleteWorker(id);
             return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("NOT FOUND");
-        }  catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -211,11 +211,11 @@ public class ServiceController {
             CompanyProfileDto profile = companyService.getCompanyById(companyId);
 
             return ResponseEntity.ok(profile);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("NOT FOUND");
-        }  catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -225,7 +225,7 @@ public class ServiceController {
 
     //GET /api/service/company_profile
     @GetMapping("/company_profile")
-    public ResponseEntity<?> getCompanies(){
+    public ResponseEntity<?> getCompanies() {
         try {
             List<CompanyProfileDto> companies = companyService.getCompanies();
             return ResponseEntity
@@ -237,7 +237,7 @@ public class ServiceController {
                     .status(HttpStatus.FORBIDDEN)
                     .body(e.getMessage());
 
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -249,17 +249,17 @@ public class ServiceController {
     @PutMapping("/company_profile/{company_id}")
     public ResponseEntity<?> updateCompanyProfile(
             @PathVariable Long company_id,
-            @RequestBody CompanyProfileDto profileDto)  {
+            @RequestBody CompanyProfileDto profileDto) {
         try {
             User currUser = utils.getCurrentUser();
 
 
-            if (!utils.checkAccess(currUser, List.of( UserRole.CompanyOwner, UserRole.Admin))) {
+            if (!utils.checkAccess(currUser, List.of(UserRole.CompanyOwner, UserRole.Admin))) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .body("ACCESS DENIED");
             }
-            if (!Objects.equals(currUser.getCompany().getId(), company_id) && currUser.getRole() == UserRole.CompanyOwner){
+            if (!Objects.equals(currUser.getCompany().getId(), company_id) && currUser.getRole() == UserRole.CompanyOwner) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .body("ACCESS DENIED");
@@ -268,11 +268,11 @@ public class ServiceController {
             CompanyProfileDto updated = companyService.updateCompanyProfile(profileDto, company_id);
 
             return ResponseEntity.ok(updated);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("NOT FOUND");
-        }  catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -284,7 +284,7 @@ public class ServiceController {
     @PostMapping("/company_profile/register")
     public ResponseEntity<?> createCompanyProfile(
             @RequestBody CompanyProfileDto profileDto) {
-        if(!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin))){
+        if (!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin))) {
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body("ACCESS DENIED");
@@ -297,11 +297,11 @@ public class ServiceController {
                     .status(HttpStatus.CREATED)
                     .body("SUCCESS " + company.getCompanyName());
 
-        } catch (EntityExistsException e){
+        } catch (EntityExistsException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body("ALREADY EXISTS");
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
@@ -311,8 +311,8 @@ public class ServiceController {
     // GET /api/service/requests
     @GetMapping("/requests")
     public ResponseEntity<?> getServiceRequests() {
-        try{
-            if(!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin, UserRole.Worker, UserRole.CompanyOwner))){
+        try {
+            if (!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin, UserRole.Worker, UserRole.CompanyOwner))) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .body("ACCESS DENIED");
@@ -321,11 +321,11 @@ public class ServiceController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(requests);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("NOT FOUND");
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -336,8 +336,8 @@ public class ServiceController {
     // GET /api/service/requests/company/{companyId}
     @GetMapping("/requests/company/{companyId}")
     public ResponseEntity<?> getServiceRequests(@PathVariable Long companyId) {
-        try{
-            if(!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin))){
+        try {
+            if (!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin))) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .body("ACCESS DENIED");
@@ -346,11 +346,11 @@ public class ServiceController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(requests);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("NOT FOUND");
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -362,8 +362,8 @@ public class ServiceController {
     // GET /api/service/requests/{id}
     @GetMapping("/requests/{id}")
     public ResponseEntity<?> getServiceRequestById(@PathVariable Long id) {
-        try{
-            if(!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin, UserRole.Worker, UserRole.CompanyOwner))){
+        try {
+            if (!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin, UserRole.Worker, UserRole.CompanyOwner))) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .body("ACCESS DENIED");
@@ -372,11 +372,11 @@ public class ServiceController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(request);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("NOT FOUND");
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -389,8 +389,8 @@ public class ServiceController {
     public ResponseEntity<?> updateRequestStatus(
             @PathVariable Long id,
             @RequestBody String status) {
-        try{
-            if(!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin, UserRole.Worker, UserRole.CompanyOwner))){
+        try {
+            if (!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin, UserRole.Worker, UserRole.CompanyOwner))) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .body("ACCESS DENIED");
@@ -399,11 +399,11 @@ public class ServiceController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(updated);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("NOT FOUND");
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -415,10 +415,10 @@ public class ServiceController {
     @PutMapping("counters/{id}")
     public ResponseEntity<?> updateUserCounters(
             @PathVariable Long id) {
-        try{
+        try {
             User correntUser = utils.getCurrentUser();
 
-            if(!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin, UserRole.Worker, UserRole.CompanyOwner))){
+            if (!utils.checkAccess(utils.getCurrentUser(), List.of(UserRole.Admin, UserRole.Worker, UserRole.CompanyOwner))) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .body("ACCESS DENIED");
@@ -427,15 +427,36 @@ public class ServiceController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(updated);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("NOT FOUND");
-        } catch (AccessDeniedException e){
-            return  ResponseEntity
+        } catch (AccessDeniedException e) {
+            return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body("ACCESS DENIED");
-        } catch (Exception e){
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("SERVER ERROR");
+        }
+    }
+
+    // GET /api/service/counters
+    @GetMapping("counters")
+    public ResponseEntity<?> getAllCountersInCompany() {
+        try {
+            List<UserCountersDto> counters = companyService.getAllCountersInCompany();
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(counters);
+
+        } catch (AccessDeniedException e) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("ACCESS DENIED");
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

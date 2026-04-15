@@ -12,4 +12,7 @@ public interface SpringDataCounterRepository extends JpaRepository<CounterJpaEnt
     @Query(value = "SELECT c FROM CounterJpaEntity c WHERE c.user.id = ?1")
     List<CounterJpaEntity> findByUserId(Long userId);
 
+    @Query(value = "SELECT c FROM CounterJpaEntity c WHERE c.user.company.id = ?1")
+    List<CounterJpaEntity> findByCompanyId(Long companyId);
+
 }
